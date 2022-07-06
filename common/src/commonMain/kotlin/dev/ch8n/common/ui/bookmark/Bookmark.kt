@@ -5,5 +5,5 @@ import dev.ch8n.common.data.model.Bookmark
 interface BookmarkPresenter {
     fun createBookmark(bookmark: Bookmark)
     fun removeBookmark(bookmark: Bookmark)
-    fun modifyBookmark(bookmark: Bookmark)
+    fun updateBookmark(bookmark: Bookmark)
 }
