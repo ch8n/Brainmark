@@ -1,0 +1,26 @@
+-- Create table tag
+CREATE TABLE Tag(
+    id TEXT NOT NULL PRIMARY KEY UNIQUE,
+    name TEXT NOT NULL
+);
+
+-- Create table Bookmark
+-- TODO add list of tagss
+CREATE TABLE Bookmark(
+    id TEXT NOT NULL PRIMARY KEY UNIQUE,
+    url TEXT NOT NULL UNIQUE,
+    createdAt INTEGER NOT NULL,
+    remindAt INTEGER NOT NULL,
+    isReviewed INTEGER AS Boolean DEFAULT 0,
+    notes TEXT
+);
+
+
+-- Insert into Tag
+INSERT OR REPLACE INTO Tag(id, name)
+VALUES(?,?);
+
+-- Insert into Bookmark
+INSERT OR REPLACE INTO Bookmark(id, url,createdAt,remindAt,isReviewed,notes)
+VALUES(?,?,?,?,?,?);
+

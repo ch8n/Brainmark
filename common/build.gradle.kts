@@ -1,6 +1,11 @@
 import org.jetbrains.compose.compose
 
 object Common {
+    object SqlDelight {
+        const val dbName = "BrainmarkDB"
+        const val packageName = "dev.ch8n.common"
+    }
+
     object Versions {
         const val kotlinVersion = "1.6.10"
         const val coroutinesVersion = "1.6.3"
@@ -47,6 +52,12 @@ plugins {
     kotlin("plugin.serialization") version kotlinVersion
     id("com.android.library")
     id("com.squareup.sqldelight")
+}
+
+sqldelight {
+    database(Common.SqlDelight.dbName) {
+        packageName = Common.SqlDelight.packageName
+    }
 }
 
 group = "dev.ch8n"

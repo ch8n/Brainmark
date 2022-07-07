@@ -5,8 +5,7 @@ data class Bookmark(
     val url: String,
     val tags: List<Tags>,
     val createAt: Long,
-    val deadLine: Long,
+    val remindAt: Long,
     val isReviewed: Boolean,
-    val summaryUrl: String,
     val notes: String
 )
