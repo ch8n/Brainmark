@@ -1,5 +1,6 @@
 buildscript {
     val kotlinVersion = "1.6.10"
+    val sqlDelightVersion = "1.5.3"
 
     repositories {
         gradlePluginPortal()
@@ -9,6 +10,7 @@ buildscript {
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
         classpath("com.android.tools.build:gradle:7.0.4")
+        classpath("com.squareup.sqldelight:gradle-plugin:$sqlDelightVersion")
     }
 }
 
