@@ -1,8 +1,46 @@
 import org.jetbrains.compose.compose
 
+object Common {
+    object Versions {
+        const val kotlinVersion = "1.6.10"
+        const val coroutinesVersion = "1.6.3"
+        const val serializationVersion = "1.3.3"
+        const val ktorVersion = "2.0.3"
+    }
+
+    object Dependencies {
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
+        const val serializationKTX = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationVersion}"
+        const val ktorClient = "io.ktor:ktor-client-core:${Versions.ktorVersion}"
+    }
+}
+
+object Desktop {
+    const val name = "desktop"
+    const val jvmTarget = "11"
+}
+
+object Android {
+    object Versions {
+        const val appCompat = "1.4.2"
+        const val coreKtx = "1.8.0"
+        const val ktorVersion = Common.Versions.ktorVersion
+        const val coroutineVersion = Common.Versions.coroutinesVersion
+    }
+
+    object Dependencies {
+        const val appCompat = "androidx.appcompat:appcompat:${Versions.appCompat}"
+        const val coreKtx = "androidx.core:core-ktx:${Versions.coreKtx}"
+        const val ktorAndroid = "io.ktor:ktor-client-okhttp:${Versions.ktorVersion}"
+        const val coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
+    }
+}
+
 plugins {
+    val kotlinVersion = "1.6.10"
     kotlin("multiplatform")
     id("org.jetbrains.compose") version "1.1.0"
+    kotlin("plugin.serialization") version kotlinVersion
     id("com.android.library")
 }
 
@@ -11,9 +49,9 @@ version = "1.0"
 
 kotlin {
     android()
-    jvm("desktop") {
+    jvm(Desktop.name) {
         compilations.all {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = Desktop.jvmTarget
         }
     }
     sourceSets {
@@ -22,6 +60,9 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
+                implementation(Common.Dependencies.coroutines)
+                implementation(Common.Dependencies.serializationKTX)
+                implementation(Common.Dependencies.ktorClient)
             }
         }
         val commonTest by getting {
@@ -31,8 +72,9 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.appcompat:appcompat:1.4.2")
-                api("androidx.core:core-ktx:1.8.0")
+                api(Android.Dependencies.appCompat)
+                api(Android.Dependencies.coreKtx)
+                api(Android.Dependencies.ktorAndroid)
             }
         }
         val androidTest by getting {
