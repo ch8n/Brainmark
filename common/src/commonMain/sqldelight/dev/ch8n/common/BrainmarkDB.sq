@@ -1,26 +1,52 @@
--- Create table tag
-CREATE TABLE Tag(
+import kotlin.collections.List;
+
+----------Tags Table----------------
+
+CREATE TABLE TagEntity(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
     name TEXT NOT NULL
 );
 
--- Create table Bookmark
--- TODO add list of tagss
-CREATE TABLE Bookmark(
+
+getAllTags:
+SELECT * FROM TagEntity;
+
+getTagById:
+SELECT * FROM TagEntity
+WHERE id = :id;
+
+upsertTag:
+INSERT OR REPLACE INTO TagEntity(id, name)
+VALUES(?,?);
+
+deleteTag:
+DELETE FROM TagEntity
+WHERE id = :id;
+
+
+----------Bookmarks Table----------------
+
+CREATE TABLE BookmarkEntity(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
     url TEXT NOT NULL UNIQUE,
     createdAt INTEGER NOT NULL,
     remindAt INTEGER NOT NULL,
     isReviewed INTEGER AS Boolean DEFAULT 0,
-    notes TEXT
+    notes TEXT,
+    tags TEXT AS List<String> NOT NULL
 );
 
+getBookmarks :
+SELECT * FROM BookmarkEntity;
 
--- Insert into Tag
-INSERT OR REPLACE INTO Tag(id, name)
-VALUES(?,?);
+getBookmarksById :
+SELECT * FROM BookmarkEntity
+WHERE id = :id;
 
--- Insert into Bookmark
-INSERT OR REPLACE INTO Bookmark(id, url,createdAt,remindAt,isReviewed,notes)
-VALUES(?,?,?,?,?,?);
+upsertBookmark:
+INSERT OR REPLACE INTO BookmarkEntity(id, url,createdAt,remindAt,isReviewed,notes,tags)
+VALUES(?,?,?,?,?,?,?);
 
+deleteBookmark:
+DELETE FROM BookmarkEntity
+WHERE id = :id;

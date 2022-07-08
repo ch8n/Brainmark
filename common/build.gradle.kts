@@ -1,9 +1,10 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.*
 import org.jetbrains.compose.compose
 
 object Common {
     object SqlDelight {
-        const val dbName = "BrainmarkDB"
-        const val packageName = "dev.ch8n.common"
+        const val databaseName = "BrainmarkDB"
+        const val packageName = "dev.ch8n.sqlDB"
     }
 
     object Versions {
@@ -19,15 +20,27 @@ object Common {
         const val serializationKTX = "org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.serializationVersion}"
         const val ktorClient = "io.ktor:ktor-client-core:${Versions.ktorVersion}"
         const val sqlDelight = "com.squareup.sqldelight:runtime:${Versions.sqlDelightVersion}"
+        const val sqlDelightCoroutineKTX = "com.squareup.sqldelight:coroutines-extensions:${Versions.sqlDelightVersion}"
     }
 }
 
 object Desktop {
     const val name = "desktop"
     const val jvmTarget = "11"
+
+    object Versions {
+        const val sqlDelightVersion = Common.Versions.sqlDelightVersion
+    }
+
+    object Dependencies {
+        const val sqlDelightDesktop = "com.squareup.sqldelight:sqlite-driver:${Versions.sqlDelightVersion}"
+    }
 }
 
 object Android {
+
+    const val sqlDelightDatabaseName = Common.SqlDelight.databaseName
+
     object Versions {
         const val appCompat = "1.4.2"
         const val coreKtx = "1.8.0"
@@ -52,11 +65,21 @@ plugins {
     kotlin("plugin.serialization") version kotlinVersion
     id("com.android.library")
     id("com.squareup.sqldelight")
+    id("com.codingfeline.buildkonfig")
 }
 
 sqldelight {
-    database(Common.SqlDelight.dbName) {
+    database(Common.SqlDelight.databaseName) {
         packageName = Common.SqlDelight.packageName
+    }
+}
+
+buildkonfig {
+    packageName = "dev.ch8n.brainmark"
+    objectName = "SharedConfig"
+
+    defaultConfigs {
+        buildConfigField(Type.STRING, "SqlDelightDbName", "${Common.SqlDelight.databaseName}.db")
     }
 }
 
@@ -79,6 +102,8 @@ kotlin {
                 implementation(Common.Dependencies.coroutines)
                 implementation(Common.Dependencies.serializationKTX)
                 implementation(Common.Dependencies.ktorClient)
+                implementation(Common.Dependencies.sqlDelight)
+                implementation(Common.Dependencies.sqlDelightCoroutineKTX)
             }
         }
         val commonTest by getting {
@@ -91,6 +116,7 @@ kotlin {
                 api(Android.Dependencies.appCompat)
                 api(Android.Dependencies.coreKtx)
                 api(Android.Dependencies.ktorAndroid)
+                api(Android.Dependencies.sqlDelightAndroid)
             }
         }
         val androidTest by getting {
@@ -101,6 +127,7 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 api(compose.preview)
+                api(Desktop.Dependencies.sqlDelightDesktop)
             }
         }
         val desktopTest by getting
