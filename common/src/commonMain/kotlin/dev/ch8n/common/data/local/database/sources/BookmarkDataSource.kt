@@ -34,7 +34,7 @@ class BookmarkDataSourceImpl constructor(
 
     private val queries = database.brainmarkDBQueries
 
-    override fun getAllBookmarks(): Flow<List<Bookmark>> = queries.getAllBookmarks()
+    override fun getAllBookmarks(): Flow<List<Bookmark>> = queries.getBookmarks()
         .asFlow()
         .distinctUntilChanged()
         .mapToList(dispatcher)
@@ -63,7 +63,8 @@ class BookmarkDataSourceImpl constructor(
             createdAt = bookmark.createdAt,
             remindAt = bookmark.remindAt,
             notes = bookmark.notes,
-            tags = bookmark.tagsIds
+            tags = bookmark.tagsIds,
+            isReviewed = bookmark.isReviewed
         )
         return@withContext bookmark.id
     }
