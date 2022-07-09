@@ -17,11 +17,11 @@ dependencies {
 }
 
 android {
-    compileSdkVersion(32)
+    compileSdkVersion(31)
     defaultConfig {
         applicationId = "dev.ch8n.android"
         minSdkVersion(24)
-        targetSdkVersion(32)
+        targetSdkVersion(31)
         versionCode = 1
         versionName = "1.0"
     }
