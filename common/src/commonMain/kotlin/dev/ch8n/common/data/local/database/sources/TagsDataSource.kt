@@ -5,16 +5,16 @@ import com.squareup.sqldelight.runtime.coroutines.mapToList
 import dev.ch8n.common.TagEntity
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.sqlDB.BrainmarkDB
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
 
 interface TagsDataSource {
     fun getAllTags(): Flow<List<Tags>>
     suspend fun getTagById(id: String): Tags?
     suspend fun deleteTag(id: String)
-    suspend fun createTag(tag: Tags)
-    suspend fun updateTag(tag: Tags)
+    suspend fun createTag(tag: Tags): String
+    suspend fun updateTag(tag: Tags): String
+    suspend fun getTagsByIds(ids: List<String>): List<Tags>
 }
 
 fun TagEntity.toTags() = Tags(
@@ -24,7 +24,7 @@ fun TagEntity.toTags() = Tags(
 
 class TagsDataSourceImpl constructor(
     private val database: BrainmarkDB,
-    private val dispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : TagsDataSource {
 
     private val queries = database.brainmarkDBQueries
@@ -44,9 +44,19 @@ class TagsDataSourceImpl constructor(
         queries.deleteTag(id)
     }
 
-    override suspend fun createTag(tag: Tags): Unit = withContext(dispatcher) {
+    override suspend fun createTag(tag: Tags): String = withContext(dispatcher) {
         queries.upsertTag(tag.id, tag.name)
+        return@withContext tag.id
     }
 
-    override suspend fun updateTag(tag: Tags) = createTag(tag)
+    override suspend fun updateTag(tag: Tags): String = createTag(tag)
+
+    override suspend fun getTagsByIds(ids: List<String>): List<Tags> = withContext(dispatcher) {
+        coroutineScope {
+            ids
+                .map { id -> async { getTagById(id) } }
+                .awaitAll()
+                .filterNotNull()
+        }
+    }
 }

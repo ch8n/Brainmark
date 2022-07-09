@@ -13,6 +13,9 @@ object Common {
         const val serializationVersion = "1.3.3"
         const val ktorVersion = "2.0.3"
         const val sqlDelightVersion = "1.5.3"
+
+        //https://github.com/benasher44/uuid/releases/tag/0.4.0
+        const val uuidVersion = "0.4.0"
     }
 
     object Dependencies {
@@ -21,6 +24,7 @@ object Common {
         const val ktorClient = "io.ktor:ktor-client-core:${Versions.ktorVersion}"
         const val sqlDelight = "com.squareup.sqldelight:runtime:${Versions.sqlDelightVersion}"
         const val sqlDelightCoroutineKTX = "com.squareup.sqldelight:coroutines-extensions:${Versions.sqlDelightVersion}"
+        const val uuid = "com.benasher44:uuid:${Versions.uuidVersion}"
     }
 }
 
@@ -104,6 +108,7 @@ kotlin {
                 implementation(Common.Dependencies.ktorClient)
                 implementation(Common.Dependencies.sqlDelight)
                 implementation(Common.Dependencies.sqlDelightCoroutineKTX)
+                implementation(Common.Dependencies.uuid)
             }
         }
         val commonTest by getting {

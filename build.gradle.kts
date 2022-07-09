@@ -3,8 +3,8 @@ buildscript {
     val kotlinVersion = "1.6.10"
     //https://cashapp.github.io/sqldelight/
     val sqlDelightVersion = "1.5.3"
-//    //https://github.com/yshrsmz/BuildKonfig
-   val buildKonfigVersion = "0.11.0"
+    //https://github.com/yshrsmz/BuildKonfig
+    val buildKonfigVersion = "0.11.0"
 
     repositories {
         gradlePluginPortal()
