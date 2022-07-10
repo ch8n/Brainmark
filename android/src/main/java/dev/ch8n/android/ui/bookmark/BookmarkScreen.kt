@@ -5,18 +5,19 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.ch8n.common.data.model.Bookmark
+import dev.ch8n.common.ui.screens.BookmarkScreenController
 
 @Composable
-fun BookmarkScreen() {
+fun BookmarkScreen(bookmarkController: BookmarkScreenController) {
+    val bookmark by bookmarkController.bookmark.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -48,18 +49,16 @@ fun BookmarkScreen() {
                     .padding(top = 78.dp)
             )
 
-            val (bookmark, setBookmark) = remember { mutableStateOf(Bookmark.EMPTY) }
 
             TextField(
                 value = bookmark.url,
                 onValueChange = {
-                    setBookmark.invoke(bookmark.copy(url = it))
+                    bookmarkController.onChangeBookmarkUrl(it)
                 },
                 label = {
                     Text("Bookmark url", color = Color.White)
                 },
-
-                )
+            )
 
             Text(
                 text = bookmark.tagsIds.joinToString(","),
@@ -78,7 +77,9 @@ fun BookmarkScreen() {
                 )
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
-                    onClick = {}
+                    onClick = {
+                        bookmarkController.onChangeReminderTime()
+                    }
                 ) {
                     Text("Selected date", color = Color.White)
                 }
@@ -87,7 +88,7 @@ fun BookmarkScreen() {
             TextField(
                 value = bookmark.notes,
                 onValueChange = {
-                    setBookmark.invoke(bookmark.copy(notes = it))
+                    bookmarkController.onChangeNotes(it)
                 },
                 label = {
                     Text("Notes", color = Color.White)
@@ -100,7 +101,7 @@ fun BookmarkScreen() {
                 Checkbox(
                     checked = bookmark.isReviewed,
                     onCheckedChange = {
-                        setBookmark.invoke(bookmark.copy(isReviewed = it))
+                        bookmarkController.onChangeReviewed(it)
                     }
                 )
             }
@@ -108,7 +109,7 @@ fun BookmarkScreen() {
             Button(
                 modifier = Modifier,
                 onClick = {
-
+                    bookmarkController.onCreateBookmark()
                 }
             ) {
                 Text("Save Bookmark")
