@@ -16,6 +16,16 @@ object Common {
 
         //https://github.com/benasher44/uuid/releases/tag/0.4.0
         const val uuidVersion = "0.4.0"
+
+        //https://github.com/arkivanov/Essenty#lifecyle
+        const val essentyLifecycleVersion = "0.4.1"
+
+        //https://github.com/arkivanov/Essenty#backpresseddispatcher
+        const val essentyBackPressDispatcherVersion = "0.4.1"
+
+        //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
+        const val decomposeVersion = "0.7.0"
+
     }
 
     object Dependencies {
@@ -25,6 +35,11 @@ object Common {
         const val sqlDelight = "com.squareup.sqldelight:runtime:${Versions.sqlDelightVersion}"
         const val sqlDelightCoroutineKTX = "com.squareup.sqldelight:coroutines-extensions:${Versions.sqlDelightVersion}"
         const val uuid = "com.benasher44:uuid:${Versions.uuidVersion}"
+        const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
+        const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
+        const val essentyLifecycle = "com.arkivanov.essenty:lifecycle:${Versions.essentyLifecycleVersion}"
+        const val essentyBackPressDispatcher =
+            "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcherVersion}"
     }
 }
 
@@ -109,6 +124,10 @@ kotlin {
                 implementation(Common.Dependencies.sqlDelight)
                 implementation(Common.Dependencies.sqlDelightCoroutineKTX)
                 implementation(Common.Dependencies.uuid)
+                implementation(Common.Dependencies.decompose)
+                implementation(Common.Dependencies.decomposeKXT)
+                implementation(Common.Dependencies.essentyLifecycle)
+                implementation(Common.Dependencies.essentyBackPressDispatcher)
             }
         }
         val commonTest by getting {

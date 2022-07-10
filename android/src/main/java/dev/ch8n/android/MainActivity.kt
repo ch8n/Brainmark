@@ -6,13 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import dev.ch8n.android.ui.bookmark.BookmarkScreen
+import dev.ch8n.android.ui.tag.TagScreen
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                BookmarkScreen()
+                TagScreen()
             }
         }
     }

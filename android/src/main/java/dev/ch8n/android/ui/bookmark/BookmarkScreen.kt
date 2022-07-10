@@ -59,7 +59,7 @@ fun BookmarkScreen() {
                     Text("Bookmark url", color = Color.White)
                 },
 
-            )
+                )
 
             Text(
                 text = bookmark.tagsIds.joinToString(","),
