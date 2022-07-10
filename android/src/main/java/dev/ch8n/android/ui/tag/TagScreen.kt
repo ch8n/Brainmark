@@ -1,27 +1,26 @@
 package dev.ch8n.android.ui.tag
 
-import androidx.compose.runtime.Composable
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
-import androidx.compose.material.Checkbox
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
+import dev.ch8n.common.ui.screens.TagScreenController
+
 
 @Composable
-fun TagScreen() {
+fun TagScreen(controller: TagScreenController) {
+    val tag by controller.tag.collectAsState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -53,12 +52,10 @@ fun TagScreen() {
                     .padding(top = 78.dp)
             )
 
-            val (tag, setTag) = remember { mutableStateOf(Tags.EMPTY) }
-
             TextField(
                 value = tag.name,
                 onValueChange = {
-                    setTag.invoke(tag.copy(name = it))
+                    controller.onTagTextChange(it)
                 },
                 label = {
                     Text("Tag", color = Color.White)
@@ -66,7 +63,9 @@ fun TagScreen() {
             )
 
             Button(
-                onClick = {}
+                onClick = {
+                    controller.createNewTag(it)
+                }
             ) {
                 Text("Save tag", color = Color.White)
             }
