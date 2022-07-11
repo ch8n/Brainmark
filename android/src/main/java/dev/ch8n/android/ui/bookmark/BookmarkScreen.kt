@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.ui.screens.BookmarkScreenController
+import dev.ch8n.common.ui.controllers.BookmarkScreenController
+import dev.ch8n.common.ui.navigation.AppNavigation
 
 @Composable
-fun BookmarkScreen(bookmarkController: BookmarkScreenController) {
+fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: AppNavigation) {
     val bookmark by bookmarkController.bookmark.collectAsState()
 
     Box(

@@ -13,12 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.ch8n.common.data.model.Tags
-import dev.ch8n.common.ui.screens.TagScreenController
+import dev.ch8n.common.ui.controllers.TagScreenController
+import dev.ch8n.common.ui.navigation.AppNavigation
 
 
 @Composable
-fun TagScreen(controller: TagScreenController) {
+fun TagScreen(controller: TagScreenController, navigation: AppNavigation) {
     val tag by controller.tag.collectAsState()
 
     Box(

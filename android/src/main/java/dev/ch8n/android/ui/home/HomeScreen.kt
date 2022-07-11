@@ -12,9 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.ch8n.common.ui.controllers.HomeScreenController
+import dev.ch8n.common.ui.navigation.AppNavigation
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(homeScreenController: HomeScreenController, navigation: AppNavigation) {
+
     Box(
         modifier = Modifier
             .fillMaxSize()

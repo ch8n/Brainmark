@@ -1,16 +1,17 @@
-package dev.ch8n.common.ui.screens
+package dev.ch8n.common.ui.controllers
 
 import dev.ch8n.common.data.model.Tags
 import com.arkivanov.decompose.ComponentContext
 import dev.ch8n.common.domain.usecases.TagUseCases
+import dev.ch8n.common.utils.DecomposeController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class TagScreenController(
-    private val componentContext: ComponentContext,
+    componentContext: ComponentContext,
     private val tagUseCases: TagUseCases,
-) : ComponentContext by componentContext {
+) : DecomposeController(componentContext) {
 
     private val _tag = MutableStateFlow(Tags.EMPTY)
     val tag: StateFlow<Tags> = _tag.asStateFlow()

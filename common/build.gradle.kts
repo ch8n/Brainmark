@@ -21,7 +21,10 @@ object Common {
         const val essentyLifecycleVersion = "0.4.1"
 
         //https://github.com/arkivanov/Essenty#backpresseddispatcher
-        const val essentyBackPressDispatcherVersion = "0.4.1"
+        const val essentyBackPressDispatcher = "0.4.1"
+
+        //https://github.com/arkivanov/Essenty#parcelable-and-parcelize
+        const val essentyParcelable = "0.4.1"
 
         //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
         const val decomposeVersion = "0.7.0"
@@ -38,8 +41,8 @@ object Common {
         const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
         const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
         const val essentyLifecycle = "com.arkivanov.essenty:lifecycle:${Versions.essentyLifecycleVersion}"
-        const val essentyBackPressDispatcher =
-            "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcherVersion}"
+        const val essentyBackPressDispatcher = "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
+        const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
     }
 }
 
@@ -128,6 +131,7 @@ kotlin {
                 implementation(Common.Dependencies.decomposeKXT)
                 implementation(Common.Dependencies.essentyLifecycle)
                 implementation(Common.Dependencies.essentyBackPressDispatcher)
+                implementation(Common.Dependencies.essentyParcelable)
             }
         }
         val commonTest by getting {
