@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.router.pop
 import dev.ch8n.common.ui.controllers.TagScreenController
 import dev.ch8n.common.ui.navigation.AppNavigation
 
@@ -31,7 +32,7 @@ fun TagScreen(controller: TagScreenController, navigation: AppNavigation) {
                 .align(Alignment.TopStart)
                 .padding(16.dp),
             onClick = {
-
+                navigation.router.pop()
             }
         ) {
             Text("goto Home Screen")
@@ -64,7 +65,7 @@ fun TagScreen(controller: TagScreenController, navigation: AppNavigation) {
 
             Button(
                 onClick = {
-                    controller.createNewTag(it)
+                    controller.createNewTag(tag)
                 }
             ) {
                 Text("Save tag", color = Color.White)

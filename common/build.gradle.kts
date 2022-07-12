@@ -28,7 +28,6 @@ object Common {
 
         //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
         const val decomposeVersion = "0.7.0"
-
     }
 
     object Dependencies {
@@ -88,6 +87,7 @@ plugins {
     id("com.android.library")
     id("com.squareup.sqldelight")
     id("com.codingfeline.buildkonfig")
+    id("kotlin-parcelize")
 }
 
 sqldelight {

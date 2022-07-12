@@ -5,11 +5,11 @@ import com.squareup.sqldelight.db.SqlDriver
 import dev.ch8n.common.BookmarkEntity
 import dev.ch8n.sqlDB.BrainmarkDB
 
-expect class SqlDriverFactory {
+expect class SqlDriverFactory() {
     fun createDriver(): SqlDriver
 }
 
-val listOfStringsAdapter = object : ColumnAdapter<List<String>, String> {
+private val listOfStringsAdapter = object : ColumnAdapter<List<String>, String> {
     override fun decode(databaseValue: String): List<String> =
         if (databaseValue.isEmpty()) {
             listOf()

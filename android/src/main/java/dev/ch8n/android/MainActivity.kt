@@ -13,10 +13,13 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import dev.ch8n.android.ui.bookmark.BookmarkScreen
 import dev.ch8n.android.ui.home.HomeScreen
 import dev.ch8n.android.ui.tag.TagScreen
+import dev.ch8n.common.domain.usecases.BookmarkUseCases
+import dev.ch8n.common.domain.usecases.GetAllBookmarkUseCase
 import dev.ch8n.common.ui.navigation.AppNavigation
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.controllers.TagScreenController
+import dev.ch8n.common.utils.PlatformDependencies
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     @OptIn(ExperimentalDecomposeApi::class)
     fun brainMarkApp() {
+        PlatformDependencies.setApplicationContext(applicationContext)
         val componentContext = defaultComponentContext()
         val navigation = AppNavigation(componentContext)
         setContent {

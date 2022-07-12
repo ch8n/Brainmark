@@ -23,7 +23,7 @@ class TagScreenController(
     }
 
     fun createNewTag(tag: Tags) = with(tag) {
-        tagUseCases.createTagUseCase(id, name)
+        tagUseCases.createTagUseCase(name)
     }
 
     fun updateTag(tag: Tags) = with(tag) {

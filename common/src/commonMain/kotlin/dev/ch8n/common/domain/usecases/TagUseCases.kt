@@ -10,7 +10,7 @@ class TagUseCases(
     val getAllTagsUseCase: GetAllTagsUseCase,
     val getTagByIdUseCase: GetTagByIdUseCase,
     val getTagsByIdsUseCase: GetTagsByIdsUseCase,
-    val createTagUseCase: UpdateTagUseCase,
+    val createTagUseCase: CreateTagUseCase,
     val updateTagUseCase: UpdateTagUseCase,
     val deleteTagUseCase: DeleteTagUseCase
 )
