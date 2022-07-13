@@ -7,19 +7,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.arkivanov.decompose.router.pop
 import dev.ch8n.common.ui.controllers.TagScreenController
-import dev.ch8n.common.ui.navigation.AppNavigation
 
 
 @Composable
-fun TagScreen(controller: TagScreenController, navigation: AppNavigation) {
+fun TagScreen(controller: TagScreenController) {
     val tag by controller.tag.collectAsState()
 
     Box(
@@ -27,16 +27,6 @@ fun TagScreen(controller: TagScreenController, navigation: AppNavigation) {
             .fillMaxSize()
             .background(Color.Black),
     ) {
-        Button(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(16.dp),
-            onClick = {
-                navigation.router.pop()
-            }
-        ) {
-            Text("goto Home Screen")
-        }
 
         Column(
             modifier = Modifier
@@ -70,6 +60,17 @@ fun TagScreen(controller: TagScreenController, navigation: AppNavigation) {
             ) {
                 Text("Save tag", color = Color.White)
             }
+        }
+
+        Button(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp),
+            onClick = {
+                controller.navigateBack()
+            }
+        ) {
+            Text("goto Home Screen")
         }
     }
 }

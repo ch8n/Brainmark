@@ -12,15 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.arkivanov.decompose.router.push
 import dev.ch8n.common.ui.controllers.HomeScreenController
-import dev.ch8n.common.ui.navigation.AppNavigation
 import dev.ch8n.common.ui.navigation.Destinations
 
 @Composable
 fun HomeScreen(
-    homeScreenController: HomeScreenController,
-    navigation: AppNavigation
+    controller: HomeScreenController
 ) {
 
     Box(
@@ -42,7 +39,7 @@ fun HomeScreen(
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
             onClick = {
-                navigation.router.push(Destinations.Bookmark)
+                controller.navigateTo(Destinations.Bookmark)
             }
         ) {
             Text("Add Bookmark")

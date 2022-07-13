@@ -13,12 +13,10 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import dev.ch8n.android.ui.bookmark.BookmarkScreen
 import dev.ch8n.android.ui.home.HomeScreen
 import dev.ch8n.android.ui.tag.TagScreen
-import dev.ch8n.common.domain.usecases.BookmarkUseCases
-import dev.ch8n.common.domain.usecases.GetAllBookmarkUseCase
-import dev.ch8n.common.ui.navigation.AppNavigation
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.controllers.TagScreenController
+import dev.ch8n.common.ui.navigation.NavHostComponent
 import dev.ch8n.common.utils.PlatformDependencies
 
 class MainActivity : AppCompatActivity() {
@@ -30,19 +28,16 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalDecomposeApi::class)
     fun brainMarkApp() {
         PlatformDependencies.setApplicationContext(applicationContext)
-        val componentContext = defaultComponentContext()
-        val navigation = AppNavigation(componentContext)
+        val navigation = NavHostComponent(defaultComponentContext())
         setContent {
             MaterialTheme {
-                navigation.render {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Children(routerState = navigation.router.state) { child ->
-                            when (val controller = child.instance) {
-                                is BookmarkScreenController -> BookmarkScreen(controller, navigation)
-                                is TagScreenController -> TagScreen(controller, navigation)
-                                is HomeScreenController -> HomeScreen(controller, navigation)
-                                else -> throw IllegalStateException("Unhandled controller and ui at navigation")
-                            }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Children(routerState = navigation.rootRouterState) { child ->
+                        when (val controller = child.instance) {
+                            is BookmarkScreenController -> BookmarkScreen(controller)
+                            is TagScreenController -> TagScreen(controller)
+                            is HomeScreenController -> HomeScreen(controller)
+                            else -> throw IllegalStateException("Unhandled controller and ui at navigation")
                         }
                     }
                 }

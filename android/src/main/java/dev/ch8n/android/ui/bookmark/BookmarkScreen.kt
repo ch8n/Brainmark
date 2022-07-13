@@ -4,38 +4,33 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.arkivanov.decompose.router.pop
-import com.arkivanov.decompose.router.push
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
-import dev.ch8n.common.ui.navigation.AppNavigation
 import dev.ch8n.common.ui.navigation.Destinations
 
 @Composable
-fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: AppNavigation) {
-    val bookmark by bookmarkController.bookmark.collectAsState()
+fun BookmarkScreen(
+    controller: BookmarkScreenController
+) {
+    val bookmark by controller.bookmark.collectAsState()
 
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black),
     ) {
-        Button(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(16.dp),
-            onClick = {
-                navigation.router.pop()
-            }
-        ) {
-            Text("goto Home Screen")
-        }
+
 
         Column(
             modifier = Modifier
@@ -56,7 +51,7 @@ fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: App
             TextField(
                 value = bookmark.url,
                 onValueChange = {
-                    bookmarkController.onChangeBookmarkUrl(it)
+                    controller.onChangeBookmarkUrl(it)
                 },
                 label = {
                     Text("Bookmark url", color = Color.White)
@@ -70,7 +65,7 @@ fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: App
 
             Button(
                 onClick = {
-                    navigation.router.push(Destinations.Tag)
+                    controller.navigateTo(Destinations.Tag)
                 }
             ) {
                 Text("Create tag", color = Color.White)
@@ -83,7 +78,7 @@ fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: App
                 Spacer(modifier = Modifier.padding(16.dp))
                 Button(
                     onClick = {
-                        bookmarkController.onChangeReminderTime()
+                        controller.onChangeReminderTime()
                     }
                 ) {
                     Text("Selected date", color = Color.White)
@@ -93,7 +88,7 @@ fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: App
             TextField(
                 value = bookmark.notes,
                 onValueChange = {
-                    bookmarkController.onChangeNotes(it)
+                    controller.onChangeNotes(it)
                 },
                 label = {
                     Text("Notes", color = Color.White)
@@ -106,7 +101,7 @@ fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: App
                 Checkbox(
                     checked = bookmark.isReviewed,
                     onCheckedChange = {
-                        bookmarkController.onChangeReviewed(it)
+                        controller.onChangeReviewed(it)
                     }
                 )
             }
@@ -114,12 +109,23 @@ fun BookmarkScreen(bookmarkController: BookmarkScreenController, navigation: App
             Button(
                 modifier = Modifier,
                 onClick = {
-                    bookmarkController.onCreateBookmark()
+                    controller.onCreateBookmark()
                 }
             ) {
                 Text("Save Bookmark")
             }
 
+        }
+
+        Button(
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(16.dp),
+            onClick = {
+                controller.navigateBack()
+            }
+        ) {
+            Text("goto Home Screen")
         }
     }
 }
