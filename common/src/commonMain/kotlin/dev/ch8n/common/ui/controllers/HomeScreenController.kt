@@ -14,8 +14,20 @@ class HomeScreenController(
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
-    private val _bookmarks = MutableStateFlow(listOf(Bookmark.EMPTY))
+    private val _bookmarks = MutableStateFlow(listOf(Bookmark.SAMPLE))
     val bookmarks: StateFlow<List<Bookmark>> = _bookmarks.asStateFlow()
+
+    fun setBookmarkReviewed(bookmark: Bookmark, isReviewed: Boolean) {
+        changeState {
+            this.map {
+                if (it.id == bookmark.id) {
+                    it.copy(isReviewed = isReviewed)
+                } else {
+                    it
+                }
+            }
+        }
+    }
 
     private inline fun changeState(reducer: List<Bookmark>.() -> List<Bookmark>): List<Bookmark> {
         val updatedBookmarks = bookmarks.value.reducer()

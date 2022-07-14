@@ -4,6 +4,7 @@ import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import dev.ch8n.common.BookmarkEntity
 import dev.ch8n.common.data.model.Bookmark
+import dev.ch8n.common.data.model.Meta
 import dev.ch8n.sqlDB.BrainmarkDB
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -24,7 +25,9 @@ fun BookmarkEntity.toBookmark() = Bookmark(
     createdAt = createdAt,
     remindAt = remindAt,
     isReviewed = isReviewed,
-    notes = notes
+    notes = notes,
+    // TODO fix
+    meta = Meta.default
 )
 
 class BookmarkDataSourceImpl constructor(
