@@ -13,22 +13,17 @@ class NavHostComponent(
     componentContext: ComponentContext,
 ) : DecomposeController(componentContext) {
 
-    private val bookmarkUseCases = DomainInjector.bookmarkUseCase
-    private val tagUseCases = DomainInjector.tagUseCase
-
     private val router: Router<Destinations, DecomposeController> = router(
         initialConfiguration = Destinations.Home,
         childFactory = ::createComponents,
         handleBackButton = true
     )
-
     private fun createComponents(
         destinations: Destinations,
         context: ComponentContext
     ): DecomposeController = when (destinations) {
         is Destinations.Bookmark -> BookmarkScreenController(
             componentContext = context,
-            createBookmarkUseCase = bookmarkUseCases.createBookmarkUseCase,
             navigateTo = ::navigateTo,
             navigateBack = ::navigateBack,
         )
@@ -39,7 +34,6 @@ class NavHostComponent(
         )
         is Destinations.Tag -> TagScreenController(
             componentContext = context,
-            tagUseCases = tagUseCases,
             navigateTo = ::navigateTo,
             navigateBack = ::navigateBack,
         )
