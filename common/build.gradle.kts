@@ -11,7 +11,8 @@ object Common {
         const val kotlinVersion = "1.6.10"
         const val coroutinesVersion = "1.6.3"
         const val serializationVersion = "1.3.3"
-        const val ktorVersion = "2.0.3"
+
+        // https://cashapp.github.io/sqldelight/
         const val sqlDelightVersion = "1.5.3"
 
         //https://github.com/benasher44/uuid/releases/tag/0.4.0
@@ -28,6 +29,9 @@ object Common {
 
         //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
         const val decomposeVersion = "0.7.0"
+
+        //https://ktor.io/docs/getting-started-ktor-client-multiplatform-mobile.html
+        const val ktorVersion = "2.0.3"
     }
 
     object Dependencies {

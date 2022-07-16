@@ -12,8 +12,10 @@ KMM Bookmark Manager
 6. export/import bookmark as CSV
 7. Sync bookmarks between devices
 
-# Application TechStack
+# Design System
+[Figma link](https://www.figma.com/file/mexiothtFvdlsQ5G8Pnfx1/BrainMark?node-id=0%3A1)
 
+# Application TechStack
 1. Kotlin Multiplatform : TODO links
     1. Target Platform
         1. Android

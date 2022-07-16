@@ -3,6 +3,12 @@ package dev.ch8n.common.data.model
 import com.benasher44.uuid.uuid4
 
 
+/**
+ * TODO
+ * 1. save meta details to DB
+ * 2. save primary tag and secondary tag in DB
+ * 3. save color of tag in DB
+ */
 data class Meta(
     val title: String,
     val image: String,

@@ -20,6 +20,8 @@ object Android {
         //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
         const val decomposeVersion = "0.7.0"
 
+        // https://coil-kt.github.io/coil/compose/
+        const val coilVersion = "2.1.0"
     }
 
     object Dependencies {
@@ -29,6 +31,7 @@ object Android {
         const val essentyBackPressDispatcher =
             "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
         const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
+        const val coil = "io.coil-kt:coil-compose:${Versions.coilVersion}"
     }
 }
 
@@ -45,6 +48,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.5.0")
     implementation(Android.Dependencies.decompose)
     implementation(Android.Dependencies.decomposeKXT)
+    implementation(Android.Dependencies.coil)
 }
 
 android {
