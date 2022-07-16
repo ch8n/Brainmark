@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.*
 interface BookmarkDataSource {
     fun getAllBookmarks(): Flow<List<Bookmark>>
     suspend fun getBookmarkById(id: String): Bookmark?
-    suspend fun getBookmarksByIds(id: List<String>): List<Bookmark>
-    suspend fun deleteBookmark(ids: String)
+    suspend fun getBookmarksByIds(ids: List<String>): List<Bookmark>
+    suspend fun deleteBookmark(id: String)
     suspend fun createBookmark(bookmark: Bookmark): String
     suspend fun updateBookmark(bookmark: Bookmark): String
 }
