@@ -1,12 +1,9 @@
 package dev.ch8n.android.ui.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Checkbox
@@ -25,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import dev.ch8n.android.design.BookmarkCard
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.navigation.Destinations
 
@@ -45,78 +43,15 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             bookmarks.forEach { bookmark ->
-                Card(
+
+                BookmarkCard(
                     modifier = Modifier
-                        .padding(24.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    contentColor = Color.White,
-                    elevation = 2.dp
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        AsyncImage(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .shadow(8.dp, RoundedCornerShape(8.dp)),
-                            model = bookmark.meta.image,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop
-                        )
+                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .height(400.dp),
+                    bookmark = bookmark
+                )
 
-                        Text(
-                            text = bookmark.meta.title,
-                            style = TextStyle(
-                                fontWeight = FontWeight.SemiBold,
-                                color = Color.Black,
-                                fontSize = 18.sp
-                            ),
-                            maxLines = 3,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Text(
-                            text = bookmark.meta.description,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Normal,
-                                color = Color.Black,
-                                fontSize = 16.sp,
-                            ),
-                            maxLines = 4,
-                            overflow = TextOverflow.Ellipsis
-                        )
-
-                        Text(
-                            text = bookmark.meta.siteName,
-                            style = TextStyle(
-                                textDecoration = TextDecoration.Underline,
-                                fontWeight = FontWeight.Medium,
-                                color = Color.Black,
-                                fontSize = 12.sp
-                            ),
-                        )
-
-                        Button(
-                            modifier = Modifier.align(Alignment.End),
-                            onClick = {},
-                        ) {
-                            Text(
-                                text = "Schedule Review",
-                                style = TextStyle(
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 14.sp
-                                ),
-                            )
-                        }
-                    }
-
-                }
             }
         }
 

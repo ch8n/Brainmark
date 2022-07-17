@@ -56,7 +56,10 @@ class CreateTagUseCase(
     operator fun invoke(name: String) = flow {
         val id = tagsDataSource.createTag(
             tag = Tags(
-                id = uuid4().toString(), name = name
+                id = uuid4().toString(),
+                name = name,
+                //TODO fix
+                color = ""
             )
         )
         emit(id)

@@ -64,13 +64,14 @@ class CreateBookmarkUseCase(
             bookmark = Bookmark(
                 id = uuid4().toString(),
                 url = url,
-                tagsIds = tagIds,
                 createdAt = createdAt,
                 remindAt = remindAt,
                 isReviewed = isReviewed,
                 notes = notes,
                 //TODO fix
-                meta = Meta.default
+                meta = Meta.default,
+                primaryTagId = "",
+                secondaryTagIds = tagIds,
             )
         )
         emit(id)

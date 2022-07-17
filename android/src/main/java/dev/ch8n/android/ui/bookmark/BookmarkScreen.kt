@@ -59,7 +59,9 @@ fun BookmarkScreen(
             )
 
             Text(
-                text = bookmark.tagsIds.joinToString(","),
+                text = bookmark.run {
+                    primaryTagId + secondaryTagIds.joinToString(",")
+                },
                 color = Color.White,
             )
 

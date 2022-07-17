@@ -21,13 +21,14 @@ interface BookmarkDataSource {
 fun BookmarkEntity.toBookmark() = Bookmark(
     id = id,
     url = url,
-    tagsIds = tags,
     createdAt = createdAt,
     remindAt = remindAt,
     isReviewed = isReviewed,
     notes = notes,
     // TODO fix
-    meta = Meta.default
+    meta = Meta.default,
+    primaryTagId = "",
+    secondaryTagIds = tags
 )
 
 class BookmarkDataSourceImpl constructor(
@@ -66,7 +67,8 @@ class BookmarkDataSourceImpl constructor(
             createdAt = bookmark.createdAt,
             remindAt = bookmark.remindAt,
             notes = bookmark.notes,
-            tags = bookmark.tagsIds,
+            // TODO fix tags
+            tags = bookmark.secondaryTagIds,
             isReviewed = bookmark.isReviewed
         )
         return@withContext bookmark.id

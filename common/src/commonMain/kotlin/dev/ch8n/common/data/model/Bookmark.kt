@@ -30,7 +30,8 @@ data class Meta(
 data class Bookmark(
     val id: String,
     val url: String,
-    val tagsIds: List<String>,
+    val primaryTagId: String,
+    val secondaryTagIds: List<String>,
     val createdAt: Long,
     val remindAt: Long,
     val isReviewed: Boolean,
@@ -42,7 +43,8 @@ data class Bookmark(
             get() = Bookmark(
                 id = uuid4().toString(),
                 url = "",
-                tagsIds = listOf(),
+                primaryTagId = "",
+                secondaryTagIds = listOf(),
                 createdAt = 0L,
                 remindAt = 0L,
                 isReviewed = false,
@@ -54,7 +56,8 @@ data class Bookmark(
             get() = Bookmark(
                 id = uuid4().toString(),
                 url = "https://www.lipsum.com/",
-                tagsIds = listOf(),
+                primaryTagId = "",
+                secondaryTagIds = listOf(),
                 createdAt = 0L,
                 remindAt = 0L,
                 isReviewed = false,

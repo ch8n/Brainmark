@@ -35,9 +35,13 @@ class BookmarkScreenController(
     }
 
     fun onTagUpdated(tag: Tags) {
-        val tags = bookmark.value.tagsIds.toMutableList()
+        val tags = bookmark.value.run {
+            val list = mutableListOf(primaryTagId)
+            list.addAll(secondaryTagIds)
+            list
+        }
         changeState {
-            copy(tagsIds = tags + tag.id)
+            copy(secondaryTagIds = tags + tag.id)
         }
     }
 
@@ -65,7 +69,8 @@ class BookmarkScreenController(
             createdAt = createdAt,
             remindAt = remindAt,
             isReviewed = isReviewed,
-            tagIds = tagsIds,
+            //TODO fix tags
+            tagIds = secondaryTagIds,
             notes = notes
         )
     }

@@ -19,7 +19,8 @@ interface TagsDataSource {
 
 fun TagEntity.toTags() = Tags(
     id = id,
-    name = name
+    name = name,
+    color = ""
 )
 
 class TagsDataSourceImpl constructor(
