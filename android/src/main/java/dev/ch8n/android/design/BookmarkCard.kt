@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import dev.ch8n.android.R.drawable
+import dev.ch8n.android.design.theme.codGray
+import dev.ch8n.android.design.theme.mineShaft
 import dev.ch8n.android.utils.parseColor
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
@@ -43,8 +45,8 @@ fun BookmarkCard(
         val allTags = getAllTagsUseCase.invoke(tagIds).firstOrNull() ?: emptyList()
         // TODO fix remove sample
         val sampleTags = mutableListOf<Tags>()
-        sampleTags.add(Tags.TAG_JAVA)
         sampleTags.add(Tags.TAG_KOTLIN)
+        sampleTags.add(Tags.TAG_JAVA)
         setTags.invoke(sampleTags)
     }
 
@@ -55,7 +57,7 @@ fun BookmarkCard(
 
     Box(
         modifier = modifier
-            .background("#373333".parseColor())
+            .background(mineShaft)
             .clip(borderShape)
             .border(
                 width = 2.dp,
@@ -82,7 +84,8 @@ fun BookmarkCard(
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
-                val cardColor = remember { "#161515".parseColor().copy(alpha = 0.48f) }
+
+                val cardColor = remember { codGray.copy(alpha = 0.48f) }
                 Box(
                     modifier = Modifier
                         .padding(24.dp)
@@ -109,6 +112,18 @@ fun BookmarkCard(
                             .align(Alignment.Center)
                     )
                 }
+
+                AsyncImage(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(48.dp))
+                        .border(4.dp, primaryColor, RoundedCornerShape(48.dp))
+                        .align(Alignment.BottomEnd),
+                    model = bookmark.meta.image,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
             }
 
             Text(
