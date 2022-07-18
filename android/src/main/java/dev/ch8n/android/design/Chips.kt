@@ -63,7 +63,7 @@ fun IconChip(
     Box(
         modifier = modifier
             .border(1.dp, borderColor, RoundedCornerShape(16.dp))
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(16.dp))
             .background(chipColor)
             .clickable { onClick.invoke() }
     ) {

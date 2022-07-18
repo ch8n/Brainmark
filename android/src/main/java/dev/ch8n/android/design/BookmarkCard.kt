@@ -77,12 +77,7 @@ fun BookmarkCard(
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
-                        .clip(borderShape)
-                        .border(
-                            width = 2.dp,
-                            color = primaryColor,
-                            shape = borderShape
-                        ),
+                        .clip(borderShape),
                     model = bookmark.meta.image,
                     contentDescription = null,
                     contentScale = ContentScale.Crop
@@ -94,6 +89,11 @@ fun BookmarkCard(
                         .fillMaxSize()
                         .clip(borderShape)
                         .background(color = cardColor)
+                        .border(
+                            width = 2.dp,
+                            color = primaryColor,
+                            shape = borderShape
+                        )
                 ) {
                     Text(
                         text = bookmark.meta.title,
@@ -135,7 +135,7 @@ fun BookmarkCard(
                 Text(
                     text = bookmark.meta.siteName,
                     style = TextStyle(
-                        color = Color.Cyan,
+                        color = primaryColor,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         textDecoration = TextDecoration.Underline
