@@ -46,7 +46,7 @@ fun Chip(
                 fontSize = 10.sp
             ),
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
                 .align(Alignment.Center)
         )
     }
@@ -70,8 +70,9 @@ fun IconChip(
         AsyncImage(
             model = resourceId,
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-                .size(16.dp),
+                .padding(horizontal = 8.dp, vertical = 8.dp)
+                .size(16.dp)
+                .align(Alignment.Center),
             contentScale = ContentScale.FillBounds,
             contentDescription = ""
         )

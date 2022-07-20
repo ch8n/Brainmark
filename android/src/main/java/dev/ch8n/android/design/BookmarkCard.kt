@@ -119,7 +119,7 @@ fun BookmarkCard(
                         .size(48.dp)
                         .clip(RoundedCornerShape(48.dp))
                         .border(4.dp, primaryColor, RoundedCornerShape(48.dp))
-                        .align(Alignment.BottomEnd),
+                        .align(Alignment.TopEnd),
                     model = bookmark.meta.image,
                     contentDescription = null,
                     contentScale = ContentScale.Crop
@@ -176,7 +176,7 @@ fun BookmarkCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     if (primaryTag != null) {
                         Chip(
@@ -196,7 +196,7 @@ fun BookmarkCard(
                 }
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     IconChip(
                         modifier = Modifier,
@@ -207,6 +207,12 @@ fun BookmarkCard(
                     IconChip(
                         modifier = Modifier,
                         resourceId = drawable.edit,
+                        borderColor = primaryColor
+                    )
+
+                    IconChip(
+                        modifier = Modifier,
+                        resourceId = drawable.archive,
                         borderColor = primaryColor
                     )
                 }

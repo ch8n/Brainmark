@@ -13,9 +13,22 @@ KMM Bookmark Manager
 7. Sync bookmarks between devices
 
 # Design System
+
 [Figma link](https://www.figma.com/file/mexiothtFvdlsQ5G8Pnfx1/BrainMark?node-id=0%3A1)
 
+<table>
+  <tr> <h3>Mobile Wireframes - Android & IOS</h3>  </tr>
+  <tr><img src="./preview/preview_1.jpeg" height=400px/></tr>
+  <tr><img src="./preview/preview_2.jpeg" height=400px/></tr>
+  <tr><img src="./preview/preview_3.jpeg" height=400px/></tr>
+</table>
+
+# Engagement?
+
+1. Streak of reading daily
+
 # Application TechStack
+
 1. Kotlin Multiplatform : TODO links
     1. Target Platform
         1. Android
