@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -91,7 +92,7 @@ fun BookmarkCard(
                         .padding(24.dp)
                         .fillMaxSize()
                         .clip(borderShape)
-                        .background(color = cardColor)
+                        .background(color = MaterialTheme.colors.surface)
                         .border(
                             width = 2.dp,
                             color = primaryColor,
@@ -100,11 +101,7 @@ fun BookmarkCard(
                 ) {
                     Text(
                         text = bookmark.meta.title,
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        ),
+                        style = MaterialTheme.typography.h1,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
