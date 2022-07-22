@@ -5,7 +5,6 @@ plugins {
     id("kotlin-parcelize")
 }
 
-
 object Android {
     object Versions {
         //https://github.com/arkivanov/Essenty#lifecyle

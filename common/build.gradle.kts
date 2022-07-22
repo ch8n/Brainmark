@@ -2,12 +2,20 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.*
 import org.jetbrains.compose.compose
 
 object Common {
+
+    object Application {
+        const val packageName = "dev.ch8n.brainmark"
+        const val sharedResource = "SharedRes"
+        const val sharedConfig = "SharedConfig"
+    }
+
     object SqlDelight {
         const val databaseName = "BrainmarkDB"
         const val packageName = "dev.ch8n.sqlDB"
     }
 
     object Versions {
+
         const val kotlinVersion = "1.6.10"
         const val coroutinesVersion = "1.6.3"
         const val serializationVersion = "1.3.3"
@@ -32,6 +40,8 @@ object Common {
 
         //https://ktor.io/docs/getting-started-ktor-client-multiplatform-mobile.html
         const val ktorVersion = "2.0.3"
+
+        const val mokoResource = "0.20.1"
     }
 
     object Dependencies {
@@ -44,8 +54,10 @@ object Common {
         const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
         const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
         const val essentyLifecycle = "com.arkivanov.essenty:lifecycle:${Versions.essentyLifecycleVersion}"
-        const val essentyBackPressDispatcher = "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
+        const val essentyBackPressDispatcher =
+            "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
         const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
+        const val mokoResource = "dev.icerock.moko:resources:${Versions.mokoResource}"
     }
 }
 
@@ -55,10 +67,12 @@ object Desktop {
 
     object Versions {
         const val sqlDelightVersion = Common.Versions.sqlDelightVersion
+        const val mokoResource = "0.20.1"
     }
 
     object Dependencies {
         const val sqlDelightDesktop = "com.squareup.sqldelight:sqlite-driver:${Versions.sqlDelightVersion}"
+        const val mokoResource = "dev.icerock.moko:resources-compose:${Versions.mokoResource}"
     }
 }
 
@@ -72,6 +86,7 @@ object Android {
         const val ktorVersion = Common.Versions.ktorVersion
         const val coroutineVersion = Common.Versions.coroutinesVersion
         const val sqlDelightVersion = Common.Versions.sqlDelightVersion
+        const val mokoResource = "0.20.1"
     }
 
     object Dependencies {
@@ -80,6 +95,7 @@ object Android {
         const val ktorAndroid = "io.ktor:ktor-client-okhttp:${Versions.ktorVersion}"
         const val coroutineAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.coroutineVersion}"
         const val sqlDelightAndroid = "com.squareup.sqldelight:android-driver:${Versions.sqlDelightVersion}"
+        const val mokoResource = "dev.icerock.moko:resources-compose:${Versions.mokoResource}"
     }
 }
 
@@ -92,6 +108,7 @@ plugins {
     id("com.squareup.sqldelight")
     id("com.codingfeline.buildkonfig")
     id("kotlin-parcelize")
+    id("dev.icerock.mobile.multiplatform-resources")
 }
 
 sqldelight {
@@ -101,8 +118,8 @@ sqldelight {
 }
 
 buildkonfig {
-    packageName = "dev.ch8n.brainmark"
-    objectName = "SharedConfig"
+    packageName = Common.Application.packageName
+    objectName = Common.Application.sharedConfig
 
     defaultConfigs {
         buildConfigField(Type.STRING, "SqlDelightDbName", "${Common.SqlDelight.databaseName}.db")
@@ -136,6 +153,7 @@ kotlin {
                 implementation(Common.Dependencies.essentyLifecycle)
                 implementation(Common.Dependencies.essentyBackPressDispatcher)
                 implementation(Common.Dependencies.essentyParcelable)
+                implementation(Common.Dependencies.mokoResource)
             }
         }
         val commonTest by getting {
@@ -149,6 +167,7 @@ kotlin {
                 api(Android.Dependencies.coreKtx)
                 api(Android.Dependencies.ktorAndroid)
                 api(Android.Dependencies.sqlDelightAndroid)
+                implementation(Common.Dependencies.mokoResource)
             }
         }
         val androidTest by getting {
@@ -160,6 +179,7 @@ kotlin {
             dependencies {
                 api(compose.preview)
                 api(Desktop.Dependencies.sqlDelightDesktop)
+                implementation(Common.Dependencies.mokoResource)
             }
         }
         val desktopTest by getting
@@ -177,4 +197,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = Common.Application.packageName
+    multiplatformResourcesClassName = Common.Application.sharedResource
+    disableStaticFrameworkWarning = true
 }
