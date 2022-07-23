@@ -44,12 +44,11 @@ private val Shapes = Shapes(
  */
 private val Scorpion = Color(0xff575757)
 private val WildSand = Color(0xffF5F5F5)
-private val Alto = Color(0xffF8F8F8)
+val Alto = Color(0xffF8F8F8)
 private val Gallery = Color(0xffEFEFEF)
 private val CodGray = Color(0xff181818)
 private val MineShaft = Color(0xff373333)
-private val Black = Color(0xff000000)
-private val BlackAlpha25 = Black.copy(alpha = 0.25f)
+val Black = Color(0xff000000)
 
 /**
  * Typography
@@ -96,16 +95,16 @@ private val typography: Typography
 private val LightColors = lightColors(
     surface = WildSand,
     onSurface = Scorpion,
-    background = BlackAlpha25,
+    background = Black,
     onBackground = Alto,
     secondary = Gallery,
-    onSecondary = MineShaft
+    onSecondary = CodGray
 )
 
 private val DarkColors = darkColors(
     surface = CodGray,
     onSurface = Gallery,
-    background = BlackAlpha25,
+    background = Black,
     onBackground = Alto,
     secondary = MineShaft,
     onSecondary = Gallery

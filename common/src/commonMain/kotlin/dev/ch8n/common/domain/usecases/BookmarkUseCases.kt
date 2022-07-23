@@ -61,18 +61,20 @@ class CreateBookmarkUseCase(
         notes: String
     ) = flow {
         val id = bookmarksDataSource.createBookmark(
-            bookmark = Bookmark(
-                id = uuid4().toString(),
-                url = url,
-                createdAt = createdAt,
-                remindAt = remindAt,
-                isReviewed = isReviewed,
-                notes = notes,
-                //TODO fix
-                meta = Meta.default,
-                primaryTagId = "",
-                secondaryTagIds = tagIds,
-            )
+            bookmark =  Bookmark.SAMPLE
+
+//            Bookmark(
+//                id = uuid4().toString(),
+//                url = url,
+//                createdAt = createdAt,
+//                remindAt = remindAt,
+//                isArchived = isReviewed,
+//                notes = notes,
+//                //TODO fix
+//                meta = Meta.default,
+//                primaryTagId = "",
+//                secondaryTagIds = tagIds,
+//            )
         )
         emit(id)
     }

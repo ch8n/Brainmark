@@ -9,12 +9,3 @@ fun String.parseColor(): Color {
     return Color(toColorInt())
 }
 
-@Composable
-fun Preview(
-    isDark: Boolean = false,
-    content: @Composable () -> Unit
-) {
-    BrainMarkTheme(isDark) {
-        content.invoke()
-    }
-}

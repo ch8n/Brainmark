@@ -1,5 +1,6 @@
 package dev.ch8n.common.data.model
 
+import androidx.compose.runtime.Immutable
 import com.benasher44.uuid.uuid4
 
 
@@ -27,42 +28,36 @@ data class Meta(
     }
 }
 
+@Immutable
 data class Bookmark(
     val id: String,
-    val url: String,
-    val primaryTagId: String,
-    val secondaryTagIds: List<String>,
+    val tagIds: List<String>,
     val createdAt: Long,
     val remindAt: Long,
-    val isReviewed: Boolean,
-    val notes: String,
-    val meta: Meta
+    val isArchived: Boolean,
+    val title: String,
+    val mainImage: String,
+    val description: String,
+    val siteName: String,
+    val favIcon: String,
+    val bookmarkUrl: String,
+    val flashCardIds: List<String>,
 ) {
     companion object {
-        val EMPTY: Bookmark
-            get() = Bookmark(
-                id = uuid4().toString(),
-                url = "",
-                primaryTagId = "",
-                secondaryTagIds = listOf(),
-                createdAt = 0L,
-                remindAt = 0L,
-                isReviewed = false,
-                notes = "",
-                meta = Meta.default
-            )
-
         val SAMPLE: Bookmark
             get() = Bookmark(
                 id = uuid4().toString(),
-                url = "https://www.lipsum.com/",
-                primaryTagId = "",
-                secondaryTagIds = listOf(),
+                tagIds = emptyList(),
                 createdAt = 0L,
                 remindAt = 0L,
-                isReviewed = false,
-                notes = "",
-                meta = Meta.default
+                title = "What is LoreIpsome?",
+                isArchived = false,
+                mainImage = "https://samplelib.com/lib/preview/png/sample-boat-400x300.png",
+                description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                siteName = "https://www.lipsum.com/",
+                favIcon = "https://www.lipsum.com/favicon.ico",
+                bookmarkUrl = "https://www.lipsum.com/",
+                flashCardIds = emptyList()
             )
     }
 }

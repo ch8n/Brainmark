@@ -1,6 +1,10 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.*
 import org.jetbrains.compose.compose
 
+
+/**
+ * Common dependencies
+ */
 object Common {
 
     object Application {
@@ -42,6 +46,7 @@ object Common {
         const val ktorVersion = "2.0.3"
 
         const val mokoResource = "0.20.1"
+        const val kotlinXDateTime = "0.4.0"
     }
 
     object Dependencies {
@@ -58,9 +63,13 @@ object Common {
             "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
         const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
         const val mokoResource = "dev.icerock.moko:resources:${Versions.mokoResource}"
+        const val kotlinXDateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinXDateTime}"
     }
 }
 
+/**
+ * Desktop dependencies
+ */
 object Desktop {
     const val name = "desktop"
     const val jvmTarget = "11"
@@ -76,6 +85,9 @@ object Desktop {
     }
 }
 
+/**
+ * Android dependencies
+ */
 object Android {
 
     const val sqlDelightDatabaseName = Common.SqlDelight.databaseName
@@ -154,6 +166,7 @@ kotlin {
                 implementation(Common.Dependencies.essentyBackPressDispatcher)
                 implementation(Common.Dependencies.essentyParcelable)
                 implementation(Common.Dependencies.mokoResource)
+                implementation(Common.Dependencies.kotlinXDateTime)
             }
         }
         val commonTest by getting {
@@ -167,7 +180,6 @@ kotlin {
                 api(Android.Dependencies.coreKtx)
                 api(Android.Dependencies.ktorAndroid)
                 api(Android.Dependencies.sqlDelightAndroid)
-                implementation(Common.Dependencies.mokoResource)
             }
         }
         val androidTest by getting {
@@ -179,7 +191,6 @@ kotlin {
             dependencies {
                 api(compose.preview)
                 api(Desktop.Dependencies.sqlDelightDesktop)
-                implementation(Common.Dependencies.mokoResource)
             }
         }
         val desktopTest by getting

@@ -21,7 +21,7 @@ class HomeScreenController(
         changeState {
             this.map {
                 if (it.id == bookmark.id) {
-                    it.copy(isReviewed = isReviewed)
+                    it.copy(isArchived = isReviewed)
                 } else {
                     it
                 }

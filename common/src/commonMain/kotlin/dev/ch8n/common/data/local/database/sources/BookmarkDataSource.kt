@@ -18,18 +18,18 @@ interface BookmarkDataSource {
     suspend fun updateBookmark(bookmark: Bookmark): String
 }
 
-fun BookmarkEntity.toBookmark() = Bookmark(
-    id = id,
-    url = url,
-    createdAt = createdAt,
-    remindAt = remindAt,
-    isReviewed = isReviewed,
-    notes = notes,
-    // TODO fix
-    meta = Meta.default,
-    primaryTagId = "",
-    secondaryTagIds = tags
-)
+//fun BookmarkEntity.toBookmark() = Bookmark(
+//    id = id,
+//    url = url,
+//    createdAt = createdAt,
+//    remindAt = remindAt,
+//    isArchived = isReviewed,
+//    notes = notes,
+//    // TODO fix
+//    meta = Meta.default,
+//    primaryTagId = "",
+//    secondaryTagIds = tags
+//)
 
 class BookmarkDataSourceImpl constructor(
     private val database: BrainmarkDB,
@@ -42,10 +42,17 @@ class BookmarkDataSourceImpl constructor(
         .asFlow()
         .distinctUntilChanged()
         .mapToList(dispatcher)
-        .map { entities -> entities.map { it.toBookmark() } }
+        .map { entities ->
+            entities.map {
+                //TODO fix it.toBookmark()
+                Bookmark.SAMPLE
+            }
+        }
 
     override suspend fun getBookmarkById(id: String): Bookmark? = withContext(dispatcher) {
-        queries.getBookmarksById(id).executeAsOneOrNull()?.toBookmark()
+        //queries.getBookmarksById(id).executeAsOneOrNull()?.toBookmark()
+        //TODO fix
+        null
     }
 
     override suspend fun getBookmarksByIds(ids: List<String>): List<Bookmark> = withContext(dispatcher) {
@@ -61,16 +68,16 @@ class BookmarkDataSourceImpl constructor(
     }
 
     override suspend fun createBookmark(bookmark: Bookmark): String = withContext(dispatcher) {
-        queries.upsertBookmark(
-            id = bookmark.id,
-            url = bookmark.url,
-            createdAt = bookmark.createdAt,
-            remindAt = bookmark.remindAt,
-            notes = bookmark.notes,
-            // TODO fix tags
-            tags = bookmark.secondaryTagIds,
-            isReviewed = bookmark.isReviewed
-        )
+        //   TODO fix tags
+//        queries.upsertBookmark(
+//            id = bookmark.id,
+//            url = bookmark.url,
+//            createdAt = bookmark.createdAt,
+//            remindAt = bookmark.remindAt,
+//            notes = bookmark.notes,
+//            tags = bookmark.secondaryTagIds,
+//            isReviewed = bookmark.isArchived
+//        )
         return@withContext bookmark.id
     }
 
