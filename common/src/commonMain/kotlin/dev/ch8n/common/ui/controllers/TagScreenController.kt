@@ -19,7 +19,7 @@ class TagScreenController(
     private val updateTagUseCase = DomainInjector.tagUseCase.updateTagUseCase
     private val createTagUseCase = DomainInjector.tagUseCase.createTagUseCase
 
-    private val _tag = MutableStateFlow(Tags.EMPTY)
+    private val _tag = MutableStateFlow(Tags.TAG_KOTLIN)
     val tag: StateFlow<Tags> = _tag.asStateFlow()
 
     fun onTagTextChange(tag: String) {

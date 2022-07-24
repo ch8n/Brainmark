@@ -1,9 +1,7 @@
 package dev.ch8n.common.domain.usecases
 
-import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.local.database.sources.BookmarkDataSource
 import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.data.model.Meta
 import kotlinx.coroutines.flow.flow
 
 class BookmarkUseCases(

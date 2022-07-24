@@ -22,28 +22,28 @@ import dev.ch8n.common.utils.DevelopmentPreview
 
 
 @Composable
-fun PreviewContinueBookmarkCard() {
+fun PreviewReadingRecommendCard() {
     DevelopmentPreview { isDark ->
-        ContinueBookmarkCard(
+        ReadingRecommendCard(
             bookmark = Bookmark.SAMPLE,
             modifier = Modifier
                 .padding(24.dp)
-                .fillMaxWidth()
-                .height(176.dp)
+                .width(216.dp)
+                .height(240.dp)
         )
     }
 }
 
-
 @Composable
-fun ContinueBookmarkCard(
+fun ReadingRecommendCard(
     modifier: Modifier,
     bookmark: Bookmark
 ) {
-
-    Box(modifier = Modifier) {
+    Box(
+        modifier = modifier
+    ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .offset((-2).dp, 2.dp)
                 .background(
@@ -77,12 +77,23 @@ fun ContinueBookmarkCard(
                 modifier = Modifier
                     .padding(16.dp)
                     .size(36.dp)
-                    .align(Alignment.TopEnd)
+                    .align(Alignment.TopStart)
                     .clip(CircleShape)
                     .background(white2),
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
             )
+
+            AsyncImage(
+                model = dev.ch8n.android.R.drawable.menu,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .size(24.dp)
+                    .align(Alignment.TopEnd),
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+            )
+
 
             Column(
                 modifier = Modifier
@@ -90,17 +101,12 @@ fun ContinueBookmarkCard(
                     .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
                     .fillMaxWidth(),
             ) {
-                Text(
-                    text = "Continue :",
-                    style = MaterialTheme.typography.h4,
-                    color = white2
-                )
 
                 Text(
                     text = bookmark.title,
                     style = MaterialTheme.typography.h3,
                     color = white2,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
 
@@ -110,11 +116,10 @@ fun ContinueBookmarkCard(
                     text = bookmark.description,
                     style = MaterialTheme.typography.body1,
                     color = white2,
-                    maxLines = 2,
+                    maxLines = 4,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
     }
-
 }

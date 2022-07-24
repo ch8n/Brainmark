@@ -2,12 +2,12 @@ package dev.ch8n.common.data.local.database.sources
 
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
-import dev.ch8n.common.BookmarkEntity
 import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.data.model.Meta
 import dev.ch8n.sqlDB.BrainmarkDB
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 interface BookmarkDataSource {
     fun getAllBookmarks(): Flow<List<Bookmark>>

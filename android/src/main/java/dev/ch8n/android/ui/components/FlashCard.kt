@@ -2,7 +2,8 @@ package dev.ch8n.android.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,20 +13,22 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import dev.ch8n.common.data.model.Bookmark
+import dev.ch8n.common.data.model.FlashCard
 import dev.ch8n.common.ui.theme.white2
 import dev.ch8n.common.ui.theme.black1
 import dev.ch8n.common.utils.DevelopmentPreview
 
-
 @Composable
-fun PreviewContinueBookmarkCard() {
+fun PreviewFlashCard() {
     DevelopmentPreview { isDark ->
-        ContinueBookmarkCard(
-            bookmark = Bookmark.SAMPLE,
+        FlashCard(
+            flashCard = FlashCard.SAMPLE,
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxWidth()
@@ -34,16 +37,16 @@ fun PreviewContinueBookmarkCard() {
     }
 }
 
-
 @Composable
-fun ContinueBookmarkCard(
+fun FlashCard(
     modifier: Modifier,
-    bookmark: Bookmark
+    flashCard: FlashCard
 ) {
-
-    Box(modifier = Modifier) {
+    Box(
+        modifier = modifier
+    ) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .offset((-2).dp, 2.dp)
                 .background(
@@ -58,6 +61,8 @@ fun ContinueBookmarkCard(
                 .clip(MaterialTheme.shapes.medium)
                 .shadow(4.dp, MaterialTheme.shapes.medium)
         ) {
+
+            // background
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -65,56 +70,55 @@ fun ContinueBookmarkCard(
                     .alpha(0.4f)
             ) {
                 AsyncImage(
-                    model = bookmark.mainImage,
+                    model = flashCard.mainImage,
                     modifier = Modifier.fillMaxSize(),
                     contentDescription = "",
                     contentScale = ContentScale.Crop
                 )
             }
 
-            AsyncImage(
-                model = bookmark.favIcon,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .size(36.dp)
-                    .align(Alignment.TopEnd)
-                    .clip(CircleShape)
-                    .background(white2),
-                contentDescription = "",
-                contentScale = ContentScale.Fit,
-            )
-
+            // content
             Column(
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(start = 24.dp, end = 24.dp, bottom = 16.dp)
-                    .fillMaxWidth(),
+                    .align(Alignment.Center)
+                    .padding(24.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Continue :",
-                    style = MaterialTheme.typography.h4,
-                    color = white2
-                )
-
-                Text(
-                    text = bookmark.title,
+                    text = flashCard.question,
                     style = MaterialTheme.typography.h3,
                     color = white2,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
                 )
+            }
 
-                Spacer(Modifier.size(4.dp))
+            Row(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 Text(
-                    text = bookmark.description,
-                    style = MaterialTheme.typography.body1,
-                    color = white2,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    text = "Next",
+                    style = MaterialTheme.typography.body1.copy(
+                        color = white2,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                )
+
+                AsyncImage(
+                    model = dev.ch8n.android.R.drawable.next,
+                    modifier = Modifier.size(24.dp),
+                    contentDescription = "",
+                    contentScale = ContentScale.Fit,
                 )
             }
         }
     }
-
 }

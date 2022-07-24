@@ -40,17 +40,6 @@ private val Shapes = Shapes(
 
 
 /**
- * Colors
- */
-private val Scorpion = Color(0xff575757)
-private val WildSand = Color(0xffF5F5F5)
-val Alto = Color(0xffF8F8F8)
-private val Gallery = Color(0xffEFEFEF)
-private val CodGray = Color(0xff181818)
-private val MineShaft = Color(0xff373333)
-val Black = Color(0xff000000)
-
-/**
  * Typography
  */
 expect val PoppinsFontFamily: FontFamily
@@ -89,23 +78,37 @@ private val typography: Typography
         ),
     )
 
-/***
+/**
+ * Colors
+ */
+
+private val white1 = Color(0xffF5F5F5)
+val white2 = Color(0xffF8F8F8)
+private val white3 = Color(0xffEFEFEF)
+val black1 = Color(0xff000000)
+private val black2 = Color(0xff181818)
+private val gray1 = Color(0xff575757)
+private val gray2 = Color(0xff373333)
+
+/**
  * Color palettes
  */
 private val LightColors = lightColors(
-    surface = WildSand,
-    onSurface = Scorpion,
-    background = Black,
-    onBackground = Alto,
-    secondary = Gallery,
-    onSecondary = CodGray
+    surface = white1,
+    onSurface = gray1,
+    background = black1,
+    onBackground = white2,
+    secondary = white3,
+    onSecondary = black2,
+    secondaryVariant = black2
 )
 
 private val DarkColors = darkColors(
-    surface = CodGray,
-    onSurface = Gallery,
-    background = Black,
-    onBackground = Alto,
-    secondary = MineShaft,
-    onSecondary = Gallery
+    surface = black2,
+    onSurface = white3,
+    background = black1,
+    onBackground = white2,
+    secondary = gray2,
+    onSecondary = white3,
+    secondaryVariant = white3
 )
