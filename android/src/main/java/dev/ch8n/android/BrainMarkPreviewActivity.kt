@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.arkivanov.decompose.defaultComponentContext
+import dev.ch8n.android.ui.components.PreviewFlashCard
 import dev.ch8n.android.ui.home.PreviewHomeScreen
 import dev.ch8n.common.utils.PlatformDependencies
 
@@ -16,7 +17,8 @@ class BrainMarkPreviewActivity : AppCompatActivity() {
     fun brainMarkApp() {
         PlatformDependencies.setApplicationContext(applicationContext)
         setContent {
-            PreviewHomeScreen(defaultComponentContext())
+            //PreviewHomeScreen(defaultComponentContext())
+            PreviewFlashCard()
         }
     }
 }

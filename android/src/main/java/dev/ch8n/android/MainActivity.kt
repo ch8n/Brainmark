@@ -7,7 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
@@ -33,17 +34,23 @@ class MainActivity : AppCompatActivity() {
         PlatformDependencies.setApplicationContext(applicationContext)
         val navigation = NavHostComponent(defaultComponentContext())
         setContent {
-            BrainMarkTheme() {
+            val (isDarkTheme, setDarkTheme) = remember { mutableStateOf(true) }
+            BrainMarkTheme(isDark = isDarkTheme) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colors.background)
+                        .background(MaterialTheme.colors.surface)
                 ) {
                     Children(routerState = navigation.rootRouterState) { child ->
                         when (val controller = child.instance) {
                             is BookmarkScreenController -> BookmarkScreen(controller)
                             is TagScreenController -> TagScreen(controller)
-                            is HomeScreenController -> HomeScreen(controller)
+                            is HomeScreenController -> HomeScreen(
+                                controller = controller,
+                                onSettingsClicked = {
+                                    setDarkTheme.invoke(!isDarkTheme)
+                                }
+                            )
                             else -> throw IllegalStateException("Unhandled controller and ui at navigation")
                         }
                     }

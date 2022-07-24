@@ -42,6 +42,7 @@ fun BottomNavbar(
                 .align(Alignment.Center)
                 .fillMaxWidth()
                 .clip(MaterialTheme.shapes.large)
+                .background(MaterialTheme.colors.surface)
                 .border(
                     width = 2.dp,
                     color = MaterialTheme.colors.secondaryVariant,
@@ -74,7 +75,7 @@ fun BottomNavbar(
                 .align(Alignment.Center)
                 .offset(x = (-8).dp)
                 .clip(CircleShape)
-                .background(color = MaterialTheme.colors.surface)
+                .background(color = MaterialTheme.colors.onSurface)
                 .border(
                     width = 2.dp,
                     shape = CircleShape,
@@ -90,7 +91,7 @@ fun BottomNavbar(
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(
-                    color = MaterialTheme.colors.secondaryVariant
+                    color = MaterialTheme.colors.surface
                 )
             )
         }

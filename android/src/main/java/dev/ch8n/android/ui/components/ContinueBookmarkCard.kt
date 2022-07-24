@@ -41,9 +41,9 @@ fun ContinueBookmarkCard(
     bookmark: Bookmark
 ) {
 
-    Box(modifier = Modifier) {
+    Box(modifier = modifier) {
         Box(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxSize()
                 .offset((-2).dp, 2.dp)
                 .background(

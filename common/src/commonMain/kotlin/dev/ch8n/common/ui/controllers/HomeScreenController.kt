@@ -1,7 +1,9 @@
 package dev.ch8n.common.ui.controllers
 
+import androidx.compose.runtime.remember
 import com.arkivanov.decompose.ComponentContext
 import dev.ch8n.common.data.model.Bookmark
+import dev.ch8n.common.data.model.FlashCard
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,22 @@ class HomeScreenController(
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
-    private val _bookmarks = MutableStateFlow(listOf(Bookmark.SAMPLE))
+    private val bookmarkSample = listOf(
+        Bookmark.SAMPLE,
+        Bookmark.SAMPLE,
+        Bookmark.SAMPLE,
+        Bookmark.SAMPLE,
+        Bookmark.SAMPLE,
+    )
+
+    // TODO create UI model
+    val flashCardSample = listOf(
+        FlashCard.SAMPLE,
+        FlashCard.SAMPLE,
+        FlashCard.SAMPLE
+    )
+
+    private val _bookmarks = MutableStateFlow(bookmarkSample)
     val bookmarks: StateFlow<List<Bookmark>> = _bookmarks.asStateFlow()
 
     fun setBookmarkReviewed(bookmark: Bookmark, isReviewed: Boolean) {

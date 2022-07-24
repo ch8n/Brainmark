@@ -1,6 +1,7 @@
 package dev.ch8n.android.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -29,7 +30,10 @@ fun PreviewReadingRecommendCard() {
             modifier = Modifier
                 .padding(24.dp)
                 .width(216.dp)
-                .height(240.dp)
+                .height(240.dp),
+            onMenuClicked = {
+
+            }
         )
     }
 }
@@ -37,7 +41,8 @@ fun PreviewReadingRecommendCard() {
 @Composable
 fun ReadingRecommendCard(
     modifier: Modifier,
-    bookmark: Bookmark
+    bookmark: Bookmark,
+    onMenuClicked: (bookmark: Bookmark) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -89,7 +94,10 @@ fun ReadingRecommendCard(
                 modifier = Modifier
                     .padding(16.dp)
                     .size(24.dp)
-                    .align(Alignment.TopEnd),
+                    .align(Alignment.TopEnd)
+                    .clickable {
+                        onMenuClicked.invoke(bookmark)
+                    },
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
             )

@@ -45,6 +45,7 @@ fun FlashCard(
     Box(
         modifier = modifier
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -55,70 +56,65 @@ fun FlashCard(
                 )
         )
 
+
+        // background
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.medium)
-                .shadow(4.dp, MaterialTheme.shapes.medium)
+                .background(black1)
+                .alpha(0.4f)
+        ) {
+            AsyncImage(
+                model = flashCard.mainImage,
+                modifier = Modifier.fillMaxSize(),
+                contentDescription = "",
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        // content
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .padding(24.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = flashCard.question,
+                style = MaterialTheme.typography.h3,
+                color = white2,
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // next action
+        Row(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // background
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(black1)
-                    .alpha(0.4f)
-            ) {
-                AsyncImage(
-                    model = flashCard.mainImage,
-                    modifier = Modifier.fillMaxSize(),
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            // content
-            Column(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(24.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = flashCard.question,
-                    style = MaterialTheme.typography.h3,
+            Text(
+                text = "Next",
+                style = MaterialTheme.typography.body1.copy(
                     color = white2,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
-                )
-            }
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold
+                ),
+            )
 
-            Row(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Text(
-                    text = "Next",
-                    style = MaterialTheme.typography.body1.copy(
-                        color = white2,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                )
-
-                AsyncImage(
-                    model = dev.ch8n.android.R.drawable.next,
-                    modifier = Modifier.size(24.dp),
-                    contentDescription = "",
-                    contentScale = ContentScale.Fit,
-                )
-            }
+            AsyncImage(
+                model = dev.ch8n.android.R.drawable.next,
+                modifier = Modifier.size(24.dp),
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+            )
         }
     }
 }
