@@ -1,30 +1,53 @@
 package dev.ch8n.android.ui.home
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.MaterialTheme
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import dev.ch8n.android.ui.components.*
-import dev.ch8n.common.data.model.Bookmark
+import coil.compose.AsyncImage
+import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.utils.DevelopmentPreview
+
+
+@Composable
+fun PreviewHomeScreen(
+    componentContext: DefaultComponentContext
+) {
+    val controller = remember {
+        HomeScreenController(
+            componentContext = componentContext,
+            navigateTo = {},
+            onBack = {}
+        )
+    }
+    DevelopmentPreview { isDark ->
+        HomeScreen(controller)
+    }
+}
+
 
 @Composable
 fun HomeScreen(
     controller: HomeScreenController
 ) {
 
-    DevelopmentPreview { isDark ->
-        BottomNavbar(
-            modifier = Modifier
-                .padding(24.dp)
-                .width(240.dp)
-        )
-    }
+    ToolbarHome()
+}
 
+@Composable
+fun ToolbarHome(
+    modifier: Modifier = Modifier
+) {
+    AsyncImage(
+        model = dev.ch8n.android.R.drawable.brain,
+        modifier = Modifier
+            .padding(16.dp)
+            .size(36.dp),
+        contentDescription = "",
+        contentScale = ContentScale.Fit,
+    )
 }
