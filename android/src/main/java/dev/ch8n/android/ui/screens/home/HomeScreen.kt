@@ -1,4 +1,4 @@
-package dev.ch8n.android.ui.home
+package dev.ch8n.android.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -26,6 +26,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.android.R
 import dev.ch8n.android.ui.components.*
 import dev.ch8n.common.ui.controllers.HomeScreenController
+import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DevelopmentPreview
 
 
@@ -59,7 +60,7 @@ fun HomeScreen(
 
         ToolbarHome(
             modifier = Modifier
-                .padding(top = 36.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
+                .padding(top = 36.dp, start = 16.dp, end = 16.dp)
                 .fillMaxWidth(),
             onSettingsClicked = {
                 onSettingsClicked.invoke()
@@ -69,7 +70,7 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 80.dp)
+                .padding(top = 100.dp)
                 .verticalScroll(rememberScrollState())
         ) {
 
@@ -88,7 +89,6 @@ fun HomeScreen(
             )
 
             Title("Reading Recommendation")
-
 
             Row(
                 modifier = Modifier
@@ -134,7 +134,14 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomCenter)
-                .width(240.dp)
+                .width(240.dp),
+            onTagClicked = {
+                controller.navigateTo(Destinations.Tag)
+            },
+            onBookmarkClicked = {
+                controller.navigateTo(Destinations.Bookmark)
+            },
+            onNewBookmarkClicked = {}
         )
     }
 

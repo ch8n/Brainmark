@@ -14,8 +14,8 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import dev.ch8n.android.ui.bookmark.BookmarkScreen
-import dev.ch8n.android.ui.home.HomeScreen
-import dev.ch8n.android.ui.tag.TagScreen
+import dev.ch8n.android.ui.screens.home.HomeScreen
+import dev.ch8n.android.ui.screens.tagManager.TagScreenManager
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.controllers.TagScreenController
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                     Children(routerState = navigation.rootRouterState) { child ->
                         when (val controller = child.instance) {
                             is BookmarkScreenController -> BookmarkScreen(controller)
-                            is TagScreenController -> TagScreen(controller)
+                            is TagScreenController -> TagScreenManager(controller)
                             is HomeScreenController -> HomeScreen(
                                 controller = controller,
                                 onSettingsClicked = {

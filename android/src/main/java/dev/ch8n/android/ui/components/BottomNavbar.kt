@@ -24,7 +24,10 @@ fun PreviewBottomNav() {
         BottomNavbar(
             modifier = Modifier
                 .padding(24.dp)
-                .width(240.dp)
+                .width(240.dp),
+            onBookmarkClicked = {},
+            onNewBookmarkClicked = {},
+            onTagClicked = {}
         )
     }
 }
@@ -32,6 +35,9 @@ fun PreviewBottomNav() {
 @Composable
 fun BottomNavbar(
     modifier: Modifier,
+    onTagClicked: () -> Unit,
+    onBookmarkClicked: () -> Unit,
+    onNewBookmarkClicked: () -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -54,18 +60,14 @@ fun BottomNavbar(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 title = "Tags",
                 iconResId = R.drawable.tag,
-                onClick = {
-
-                }
+                onClick = onTagClicked
             )
 
             NavItem(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 title = "Bookmarks",
                 iconResId = R.drawable.bookmark,
-                onClick = {
-
-                }
+                onClick = onBookmarkClicked
             )
         }
 
@@ -81,9 +83,9 @@ fun BottomNavbar(
                     shape = CircleShape,
                     color = MaterialTheme.colors.secondaryVariant
                 )
-                .clickable {
-
-                }
+                .clickable(
+                    onClick = onNewBookmarkClicked
+                )
         ) {
             AsyncImage(
                 model = dev.ch8n.android.R.drawable.add_bookmark,

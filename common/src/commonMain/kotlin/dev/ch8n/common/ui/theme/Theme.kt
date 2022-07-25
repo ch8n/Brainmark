@@ -76,6 +76,11 @@ private val typography: Typography
             fontWeight = FontWeight.SemiBold,
             fontSize = 8.sp
         ),
+        subtitle1 = TextStyle(
+            fontFamily = PoppinsFontFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp
+        )
     )
 
 /**

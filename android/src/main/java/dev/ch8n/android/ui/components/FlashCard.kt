@@ -102,11 +102,7 @@ fun FlashCard(
 
             Text(
                 text = "Next",
-                style = MaterialTheme.typography.body1.copy(
-                    color = white2,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold
-                ),
+                style = MaterialTheme.typography.subtitle1.copy(color = white2),
             )
 
             AsyncImage(

@@ -8,6 +8,14 @@ data class Tags(
     val color: String,
 ) {
     companion object {
+
+        val New: Tags
+            get() = Tags(
+                id = uuid4().toString(),
+                name = "",
+                color = "#49D643"
+            )
+
         val TAG_KOTLIN: Tags
             get() = Tags(
                 id = uuid4().toString(),

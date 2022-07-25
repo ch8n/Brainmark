@@ -3,7 +3,6 @@ package dev.ch8n.common.ui.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.*
 import com.arkivanov.decompose.value.Value
-import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.controllers.TagScreenController
@@ -35,7 +34,7 @@ class NavHostComponent(
         is Destinations.Tag -> TagScreenController(
             componentContext = context,
             navigateTo = ::navigateTo,
-            navigateBack = ::navigateBack,
+            onBack = ::navigateBack,
         )
     }
 
