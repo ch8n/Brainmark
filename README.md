@@ -18,9 +18,9 @@ KMM Bookmark Manager
 
 <table>
   <tr> <h3>Mobile Wireframes - Android & IOS</h3>  </tr>
-  <tr><img src="./preview/preview_1.jpeg" height=580px/></tr>
-  <tr><img src="./preview/preview_2.jpeg" height=580px/></tr>
-  <tr><img src="./preview/preview_3.jpeg" height=580px/></tr>
+  <tr><img src="./asset/asset1.jpeg" height=580px/></tr>
+  <tr><img src="./asset/asset2.jpeg" height=580px/></tr>
+  <tr><img src="./asset/asset3.jpeg" height=580px/></tr>
 </table>
 
 # Engagement?
