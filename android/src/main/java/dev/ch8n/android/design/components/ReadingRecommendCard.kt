@@ -17,8 +17,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.ui.theme.white2
 import dev.ch8n.common.ui.theme.black1
+import dev.ch8n.common.ui.theme.white2
 import dev.ch8n.common.utils.DevelopmentPreview
 
 
