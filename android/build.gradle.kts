@@ -21,6 +21,13 @@ object Android {
 
         // https://coil-kt.github.io/coil/compose/
         const val coilVersion = "2.1.0"
+
+        /**
+         * https://google.github.io/accompanist/flowlayout/
+         * https://github.com/google/accompanist/releases/tag/v0.22.0-rc
+         */
+        const val accompanistFlowLayout = "0.22.0-rc"
+
     }
 
     object Dependencies {
@@ -31,6 +38,8 @@ object Android {
             "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
         const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
         const val coil = "io.coil-kt:coil-compose:${Versions.coilVersion}"
+        const val accompanistFlowLayout =
+            "com.google.accompanist:accompanist-flowlayout:${Versions.accompanistFlowLayout}"
     }
 }
 
@@ -39,7 +48,8 @@ group = "dev.ch8n"
 version = "1.0"
 
 repositories {
-    jcenter()
+    google()
+    mavenCentral()
 }
 
 dependencies {
@@ -48,6 +58,7 @@ dependencies {
     implementation(Android.Dependencies.decompose)
     implementation(Android.Dependencies.decomposeKXT)
     implementation(Android.Dependencies.coil)
+    implementation(Android.Dependencies.accompanistFlowLayout)
 }
 
 android {

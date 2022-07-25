@@ -1,7 +1,8 @@
 package dev.ch8n.android.ui.components
 
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -10,125 +11,67 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import dev.ch8n.android.R
+import dev.ch8n.android.utils.parseColor
+import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.utils.DevelopmentPreview
 
 
 @Composable
-fun PreviewBottomNav() {
+fun PreviewTagChip() {
     DevelopmentPreview { isDark ->
-        BottomNavbar(
+        TagChip(
+            tag = Tags.TAG_KOTLIN,
             modifier = Modifier
                 .padding(24.dp)
-                .width(240.dp),
-            onBookmarkClicked = {},
-            onNewBookmarkClicked = {},
-            onTagClicked = {}
+                .wrapContentWidth()
+                .height(35.dp),
+            onTagClicked = {
+
+            }
         )
     }
 }
 
 @Composable
-fun BottomNavbar(
+fun TagChip(
     modifier: Modifier,
-    onTagClicked: () -> Unit,
-    onBookmarkClicked: () -> Unit,
-    onNewBookmarkClicked: () -> Unit,
+    tag: Tags,
+    onTagClicked: (tag: Tags) -> Unit,
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier.clickable {
+            onTagClicked.invoke(tag)
+        }
     ) {
 
         Row(
             modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
                 .clip(MaterialTheme.shapes.large)
                 .background(MaterialTheme.colors.surface)
                 .border(
                     width = 2.dp,
                     color = MaterialTheme.colors.secondaryVariant,
                     shape = MaterialTheme.shapes.large
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween
+                )
+                .padding(vertical = 8.dp, horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            NavItem(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                title = "Tags",
-                iconResId = R.drawable.tag,
-                onClick = onTagClicked
+            Text(
+                text = "${tag.name}  |",
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.colors.onSurface
             )
 
-            NavItem(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                title = "Bookmarks",
-                iconResId = R.drawable.bookmark,
-                onClick = onBookmarkClicked
-            )
-        }
-
-        Box(
-            modifier = Modifier
-                .size(64.dp)
-                .align(Alignment.Center)
-                .offset(x = (-8).dp)
-                .clip(CircleShape)
-                .background(color = MaterialTheme.colors.onSurface)
-                .border(
-                    width = 2.dp,
-                    shape = CircleShape,
-                    color = MaterialTheme.colors.secondaryVariant
-                )
-                .clickable(
-                    onClick = onNewBookmarkClicked
-                )
-        ) {
-            AsyncImage(
-                model = dev.ch8n.android.R.drawable.add_bookmark,
-                modifier = Modifier.size(32.dp).align(Alignment.Center),
-                contentDescription = "",
-                contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(
-                    color = MaterialTheme.colors.surface
-                )
+            Box(
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .size(12.dp)
+                    .offset(y = (-1).dp)
+                    .background(tag.color.parseColor(), CircleShape)
+                    .border(1.5.dp, MaterialTheme.colors.onSurface, CircleShape)
             )
         }
     }
 
-}
-
-@Composable
-fun NavItem(
-    modifier: Modifier,
-    title: String,
-    @DrawableRes iconResId: Int,
-    onClick: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .padding(8.dp)
-            .clickable { onClick.invoke() },
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AsyncImage(
-            model = iconResId,
-            contentDescription = "",
-            modifier = Modifier.size(16.dp),
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(
-                color = MaterialTheme.colors.secondaryVariant
-            )
-        )
-
-        Text(
-            text = title,
-            style = MaterialTheme.typography.body1,
-            color = MaterialTheme.colors.secondaryVariant
-        )
-    }
 }
