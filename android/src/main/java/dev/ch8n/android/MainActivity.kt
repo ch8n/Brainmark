@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import dev.ch8n.android.ui.bookmark.BookmarkScreen
 import dev.ch8n.android.ui.screens.home.HomeScreen
 import dev.ch8n.android.ui.screens.tagManager.TagScreenManager
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
@@ -57,6 +56,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun BookmarkScreen(controller: BookmarkScreenController) {
+        //TODO fix
     }
 }
 
