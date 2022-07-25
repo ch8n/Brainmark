@@ -1,4 +1,4 @@
-package dev.ch8n.android.ui.components
+package dev.ch8n.android.design.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
@@ -78,20 +78,21 @@ fun BottomNavbar(
                 .size(64.dp)
                 .align(Alignment.Center)
                 .offset(x = (-8).dp)
-                .clip(CircleShape)
-                .background(color = MaterialTheme.colors.onSurface)
+                .background(color = MaterialTheme.colors.secondaryVariant, CircleShape)
                 .border(
-                    width = 2.dp,
+                    width = 4.dp,
                     shape = CircleShape,
-                    color = MaterialTheme.colors.secondaryVariant
+                    color = MaterialTheme.colors.surface
                 )
                 .clickable(
                     onClick = onNewBookmarkClicked
                 )
         ) {
             AsyncImage(
-                model = dev.ch8n.android.R.drawable.add_bookmark,
-                modifier = Modifier.size(32.dp).align(Alignment.Center),
+                model = R.drawable.add_bookmark,
+                modifier = Modifier
+                    .size(32.dp)
+                    .align(Alignment.Center),
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(

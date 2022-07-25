@@ -1,4 +1,4 @@
-package dev.ch8n.android.ui.components
+package dev.ch8n.android.design.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

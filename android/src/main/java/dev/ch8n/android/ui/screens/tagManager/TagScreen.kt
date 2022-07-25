@@ -15,8 +15,8 @@ import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
 import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
-import dev.ch8n.android.ui.components.BottomNavbar
-import dev.ch8n.android.ui.components.TagChip
+import dev.ch8n.android.design.components.BottomNavbar
+import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.TagScreenController
 import dev.ch8n.common.ui.navigation.Destinations
@@ -31,9 +31,7 @@ fun PreviewTagManagerScreen(
         TagScreenController(
             componentContext = componentContext,
             navigateTo = {},
-            onBack = {
-
-            }
+            onBack = {}
         )
     }
     DevelopmentPreview { isDark ->
