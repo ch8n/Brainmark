@@ -15,27 +15,37 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.arkivanov.decompose.DefaultComponentContext
 import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BookmarkCard
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
+import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.utils.DevelopmentPreview
 
 @Composable
-fun PreviewCreateBookmark() {
+fun PreviewCreateBookmark(
+    componentContext: DefaultComponentContext
+) {
+    val controller = remember {
+        CreateBookmarkController(
+            componentContext = componentContext,
+            navigateTo = {},
+            onBack = {}
+        )
+    }
     DevelopmentPreview { isDark ->
         CreateBookmarkContent(
-            modifier = Modifier
-                .fillMaxSize()
+            controller = controller
         )
     }
 }
 
 @Composable
 fun CreateBookmarkContent(
-    modifier: Modifier
+    controller: CreateBookmarkController,
 ) {
 
     val (bookmarkUrl, setBookmarkUrl) = remember {
@@ -58,7 +68,7 @@ fun CreateBookmarkContent(
         mutableStateOf(System.currentTimeMillis().toString())
     }
 
-    Box(modifier = modifier) {
+    Box(modifier = Modifier.fillMaxSize()) {
 
         ToolbarCreateBookmark(
             modifier = Modifier
@@ -66,7 +76,7 @@ fun CreateBookmarkContent(
                 .fillMaxWidth()
                 .align(Alignment.TopCenter),
             onClose = {
-
+                controller.onBack()
             }
         )
 

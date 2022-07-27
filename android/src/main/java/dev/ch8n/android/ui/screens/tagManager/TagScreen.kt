@@ -139,7 +139,7 @@ fun TagScreenManager(
                 // do nothing...
             },
             onBookmarkClicked = {
-                controller.navigateTo(Destinations.Bookmark)
+                controller.navigateTo(Destinations.BookmarkBrowser)
             },
             onNewBookmarkClicked = {}
         )

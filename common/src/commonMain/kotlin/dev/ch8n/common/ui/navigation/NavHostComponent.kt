@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.*
 import com.arkivanov.decompose.value.Value
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
+import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.controllers.TagScreenController
 import dev.ch8n.common.utils.DecomposeController
@@ -17,11 +18,12 @@ class NavHostComponent(
         childFactory = ::createComponents,
         handleBackButton = true
     )
+
     private fun createComponents(
         destinations: Destinations,
         context: ComponentContext
     ): DecomposeController = when (destinations) {
-        is Destinations.Bookmark -> BookmarkScreenController(
+        is Destinations.BookmarkBrowser -> BookmarkScreenController(
             componentContext = context,
             navigateTo = ::navigateTo,
             navigateBack = ::navigateBack,
@@ -31,7 +33,12 @@ class NavHostComponent(
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
-        is Destinations.Tag -> TagScreenController(
+        is Destinations.TagManager -> TagScreenController(
+            componentContext = context,
+            navigateTo = ::navigateTo,
+            onBack = ::navigateBack,
+        )
+        is Destinations.CreateBookmark -> CreateBookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
@@ -39,6 +46,7 @@ class NavHostComponent(
     }
 
     val rootRouterState: Value<RouterState<Destinations, DecomposeController>> = router.state
+
     fun navigateTo(destinations: Destinations) {
         router.push(destinations)
     }

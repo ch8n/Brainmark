@@ -8,8 +8,11 @@ sealed class Destinations : Parcelable {
     object Home : Destinations()
 
     @Parcelize
-    object Bookmark : Destinations()
+    object BookmarkBrowser : Destinations()
 
     @Parcelize
-    object Tag : Destinations()
+    object TagManager : Destinations()
+
+    @Parcelize
+    object CreateBookmark : Destinations()
 }

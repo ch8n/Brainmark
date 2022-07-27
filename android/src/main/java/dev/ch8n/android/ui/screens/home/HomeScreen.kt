@@ -139,12 +139,14 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .width(240.dp),
             onTagClicked = {
-                controller.navigateTo(Destinations.Tag)
+                controller.navigateTo(Destinations.TagManager)
             },
             onBookmarkClicked = {
-                controller.navigateTo(Destinations.Bookmark)
+                controller.navigateTo(Destinations.BookmarkBrowser)
             },
-            onNewBookmarkClicked = {}
+            onNewBookmarkClicked = {
+                controller.navigateTo(Destinations.CreateBookmark)
+            }
         )
     }
 
