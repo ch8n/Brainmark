@@ -15,4 +15,7 @@ sealed class Destinations : Parcelable {
 
     @Parcelize
     object CreateBookmark : Destinations()
+
+    @Parcelize
+    object PreviewScreen : Destinations()
 }

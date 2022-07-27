@@ -3,10 +3,7 @@ package dev.ch8n.common.ui.navigation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.*
 import com.arkivanov.decompose.value.Value
-import dev.ch8n.common.ui.controllers.BookmarkScreenController
-import dev.ch8n.common.ui.controllers.CreateBookmarkController
-import dev.ch8n.common.ui.controllers.HomeScreenController
-import dev.ch8n.common.ui.controllers.TagScreenController
+import dev.ch8n.common.ui.controllers.*
 import dev.ch8n.common.utils.DecomposeController
 
 class NavHostComponent(
@@ -39,6 +36,11 @@ class NavHostComponent(
             onBack = ::navigateBack,
         )
         is Destinations.CreateBookmark -> CreateBookmarkController(
+            componentContext = context,
+            navigateTo = ::navigateTo,
+            onBack = ::navigateBack,
+        )
+        is Destinations.PreviewScreen -> BrowserController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,

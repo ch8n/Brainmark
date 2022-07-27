@@ -14,13 +14,11 @@ import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import dev.ch8n.android.ui.screens.bookmarks.BookmarkScreen
+import dev.ch8n.android.ui.screens.browser.BrowserScreen
 import dev.ch8n.android.ui.screens.createBookmark.CreateBookmarkContent
 import dev.ch8n.android.ui.screens.home.HomeScreen
 import dev.ch8n.android.ui.screens.tagManager.TagScreenManager
-import dev.ch8n.common.ui.controllers.BookmarkScreenController
-import dev.ch8n.common.ui.controllers.CreateBookmarkController
-import dev.ch8n.common.ui.controllers.HomeScreenController
-import dev.ch8n.common.ui.controllers.TagScreenController
+import dev.ch8n.common.ui.controllers.*
 import dev.ch8n.common.ui.navigation.NavHostComponent
 import dev.ch8n.common.ui.theme.BrainMarkTheme
 import dev.ch8n.common.utils.PlatformDependencies
@@ -65,6 +63,12 @@ class MainActivity : AppCompatActivity() {
                             )
                             is CreateBookmarkController -> CreateBookmarkContent(
                                 controller = controller
+                            )
+                            is BrowserController -> BrowserScreen(
+                                controller = controller,
+                                onSettingsClicked = {
+                                    setDarkTheme.invoke(!isDarkTheme)
+                                }
                             )
                             else -> throw IllegalStateException("Unhandled controller and ui at navigation")
                         }
