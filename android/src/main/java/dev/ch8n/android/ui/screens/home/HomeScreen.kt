@@ -27,7 +27,7 @@ import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.ContinueBookmarkCard
 import dev.ch8n.android.design.components.FlashCard
-import dev.ch8n.android.design.components.ReadingRecommendCard
+import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DevelopmentPreview
@@ -99,7 +99,7 @@ fun HomeScreen(
                     .horizontalScroll(rememberScrollState())
             ) {
                 bookmarks.forEach { bookmark ->
-                    ReadingRecommendCard(
+                    RecommendedReadCard(
                         bookmark = bookmark,
                         modifier = Modifier
                             .padding(start = 24.dp)

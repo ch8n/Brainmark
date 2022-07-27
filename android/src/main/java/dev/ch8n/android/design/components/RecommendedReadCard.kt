@@ -23,9 +23,9 @@ import dev.ch8n.common.utils.DevelopmentPreview
 
 
 @Composable
-fun PreviewReadingRecommendCard() {
+fun PreviewRecommendedReadCard() {
     DevelopmentPreview { isDark ->
-        ReadingRecommendCard(
+        RecommendedReadCard(
             bookmark = Bookmark.SAMPLE,
             modifier = Modifier
                 .padding(24.dp)
@@ -39,7 +39,7 @@ fun PreviewReadingRecommendCard() {
 }
 
 @Composable
-fun ReadingRecommendCard(
+fun RecommendedReadCard(
     modifier: Modifier,
     bookmark: Bookmark,
     onMenuClicked: (bookmark: Bookmark) -> Unit
