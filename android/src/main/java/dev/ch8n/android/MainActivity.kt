@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
+import dev.ch8n.android.ui.screens.bookmarks.BookmarkScreen
 import dev.ch8n.android.ui.screens.createBookmark.CreateBookmarkContent
 import dev.ch8n.android.ui.screens.home.HomeScreen
 import dev.ch8n.android.ui.screens.tagManager.TagScreenManager
@@ -44,8 +45,18 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     Children(routerState = navigation.rootRouterState) { child ->
                         when (val controller = child.instance) {
-                            is BookmarkScreenController -> BookmarkScreen(controller)
-                            is TagScreenController -> TagScreenManager(controller)
+                            is BookmarkScreenController -> BookmarkScreen(
+                                controller = controller,
+                                onSettingsClicked = {
+                                    setDarkTheme.invoke(!isDarkTheme)
+                                }
+                            )
+                            is TagScreenController -> TagScreenManager(
+                                controller = controller,
+                                onSettingsClicked = {
+                                    setDarkTheme.invoke(!isDarkTheme)
+                                }
+                            )
                             is HomeScreenController -> HomeScreen(
                                 controller = controller,
                                 onSettingsClicked = {
@@ -61,9 +72,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun BookmarkScreen(controller: BookmarkScreenController) {
-        //TODO fix
     }
 }

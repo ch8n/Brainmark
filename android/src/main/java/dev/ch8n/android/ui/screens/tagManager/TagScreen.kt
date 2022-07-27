@@ -35,14 +35,15 @@ fun PreviewTagManagerScreen(
         )
     }
     DevelopmentPreview { isDark ->
-        TagScreenManager(controller)
+        TagScreenManager(controller, {})
     }
 }
 
 
 @Composable
 fun TagScreenManager(
-    controller: TagScreenController
+    controller: TagScreenController,
+    onSettingsClicked: () -> Unit
 ) {
 
     val tags by controller.tags.collectAsState()
@@ -56,9 +57,7 @@ fun TagScreenManager(
                 .padding(top = 36.dp, start = 16.dp, end = 16.dp)
                 .fillMaxWidth()
                 .align(Alignment.TopCenter),
-            onSettingsClicked = {
-
-            }
+            onSettingsClicked = onSettingsClicked
         )
 
         Column(
