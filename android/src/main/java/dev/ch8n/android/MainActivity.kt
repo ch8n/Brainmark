@@ -66,9 +66,6 @@ class MainActivity : AppCompatActivity() {
                             )
                             is BrowserController -> BrowserScreen(
                                 controller = controller,
-                                onSettingsClicked = {
-                                    setDarkTheme.invoke(!isDarkTheme)
-                                }
                             )
                             else -> throw IllegalStateException("Unhandled controller and ui at navigation")
                         }
