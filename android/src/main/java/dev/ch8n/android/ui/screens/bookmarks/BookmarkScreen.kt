@@ -159,7 +159,10 @@ fun BookmarkScreen(
                         modifier = Modifier
                             .padding(vertical = 8.dp)
                             .fillMaxWidth()
-                            .height(176.dp)
+                            .height(176.dp),
+                        onClick = {
+                            controller.navigateTo(Destinations.PreviewScreen)
+                        }
                     )
                 }
 

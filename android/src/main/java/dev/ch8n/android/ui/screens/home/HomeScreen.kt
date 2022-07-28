@@ -88,7 +88,10 @@ fun HomeScreen(
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth()
-                    .height(176.dp)
+                    .height(176.dp),
+                onClicked = {
+                    controller.navigateTo(Destinations.PreviewScreen)
+                }
             )
 
             Title("Reading Recommendation")
@@ -107,6 +110,9 @@ fun HomeScreen(
                             .height(240.dp),
                         onMenuClicked = {
 
+                        },
+                        onClicked = {
+                            controller.navigateTo(Destinations.PreviewScreen)
                         }
                     )
                 }
@@ -125,7 +131,13 @@ fun HomeScreen(
                         modifier = Modifier
                             .padding(start = 24.dp)
                             .width(320.dp)
-                            .height(176.dp)
+                            .height(176.dp),
+                        onClick = {
+                            controller.navigateTo(Destinations.PreviewScreen)
+                        },
+                        onNext = {
+
+                        }
                     )
                 }
             }

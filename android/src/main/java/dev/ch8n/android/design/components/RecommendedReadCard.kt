@@ -33,6 +33,9 @@ fun PreviewRecommendedReadCard() {
                 .height(240.dp),
             onMenuClicked = {
 
+            },
+            onClicked = {
+
             }
         )
     }
@@ -42,6 +45,7 @@ fun PreviewRecommendedReadCard() {
 fun RecommendedReadCard(
     modifier: Modifier,
     bookmark: Bookmark,
+    onClicked: (bookmark: Bookmark) -> Unit,
     onMenuClicked: (bookmark: Bookmark) -> Unit
 ) {
     Box(
@@ -62,6 +66,9 @@ fun RecommendedReadCard(
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.medium)
                 .shadow(4.dp, MaterialTheme.shapes.medium)
+                .clickable {
+                    onClicked.invoke(bookmark)
+                }
         ) {
             Box(
                 modifier = Modifier

@@ -203,6 +203,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp),
+                onClick = {}
             )
 
             Spacer(Modifier.size(120.dp))

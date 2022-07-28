@@ -1,6 +1,7 @@
 package dev.ch8n.android.design.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -29,7 +30,13 @@ fun PreviewFlashCard() {
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxWidth()
-                .height(176.dp)
+                .height(176.dp),
+            onClick = {
+
+            },
+            onNext = {
+
+            }
         )
     }
 }
@@ -37,7 +44,9 @@ fun PreviewFlashCard() {
 @Composable
 fun FlashCard(
     modifier: Modifier,
-    flashCard: FlashCard
+    flashCard: FlashCard,
+    onClick: (FlashCard) -> Unit,
+    onNext: () -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -76,6 +85,9 @@ fun FlashCard(
                 .align(Alignment.Center)
                 .padding(24.dp)
                 .fillMaxSize()
+                .clickable {
+                    onClick.invoke(flashCard)
+                }
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -93,7 +105,10 @@ fun FlashCard(
         Row(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp),
+                .padding(16.dp)
+                .clickable(
+                    onClick = onNext
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
 

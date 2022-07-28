@@ -1,6 +1,7 @@
 package dev.ch8n.android.design.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -29,7 +30,10 @@ fun PreviewBookmarkCard() {
             modifier = Modifier
                 .padding(24.dp)
                 .fillMaxWidth()
-                .height(176.dp)
+                .height(176.dp),
+            onClick = {
+
+            }
         )
     }
 }
@@ -38,7 +42,8 @@ fun PreviewBookmarkCard() {
 @Composable
 fun BookmarkCard(
     modifier: Modifier,
-    bookmark: Bookmark
+    bookmark: Bookmark,
+    onClick: (bookmark: Bookmark) -> Unit
 ) {
 
     Box(modifier = modifier) {
@@ -57,6 +62,9 @@ fun BookmarkCard(
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.medium)
                 .shadow(4.dp, MaterialTheme.shapes.medium)
+                .clickable {
+                    onClick.invoke(bookmark)
+                }
         ) {
             Box(
                 modifier = Modifier
