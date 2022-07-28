@@ -30,7 +30,7 @@ class NavHostComponent(
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
-        is Destinations.TagManager -> TagScreenController(
+        is Destinations.TagManager -> TagManagerController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,

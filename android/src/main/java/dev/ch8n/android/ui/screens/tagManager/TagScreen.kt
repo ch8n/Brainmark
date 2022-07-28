@@ -4,7 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -17,8 +20,8 @@ import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.TagChip
-import dev.ch8n.common.data.model.Tags
-import dev.ch8n.common.ui.controllers.TagScreenController
+import dev.ch8n.android.utils.parseColor
+import dev.ch8n.common.ui.controllers.TagManagerController
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DevelopmentPreview
 
@@ -28,7 +31,7 @@ fun PreviewTagManagerScreen(
     componentContext: DefaultComponentContext
 ) {
     val controller = remember {
-        TagScreenController(
+        TagManagerController(
             componentContext = componentContext,
             navigateTo = {},
             onBack = {}
@@ -42,12 +45,14 @@ fun PreviewTagManagerScreen(
 
 @Composable
 fun TagScreenManager(
-    controller: TagScreenController,
+    controller: TagManagerController,
     onSettingsClicked: () -> Unit
 ) {
 
-    val tags by controller.tags.collectAsState()
-    val (selectedTag, setSelectedTag) = remember { mutableStateOf(Tags.New) }
+    val tags by controller.getAllTags.collectAsState(emptyList())
+    val tagName = controller.tagName.collectAsState()
+    val tagColor = controller.tagColor.collectAsState()
+    val isLoading = controller.isLoading.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -85,19 +90,17 @@ fun TagScreenManager(
 
 
             CreateTag(
-                selectedTag = selectedTag,
+                tagName = tagName.value,
+                tagColor = tagColor.value,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
-                onDeleteTag = {
-                    controller.deleteTag(it)
+                onTagNameUpdated = { name ->
+                    controller.tagName.tryEmit(name)
                 },
-                updatedSelectedTag = { updatedTag ->
-                    setSelectedTag.invoke(updatedTag)
-                },
-                saveTag = {
-                    controller.saveTag(it)
-                }
+                onColorPickerClicked = {},
+                onSaveTagClicked = {},
+                onDeleteTagClicked = {}
             )
 
             Spacer(Modifier.size(40.dp))
@@ -115,7 +118,7 @@ fun TagScreenManager(
                                     .wrapContentWidth()
                                     .height(35.dp),
                                 onTagClicked = {
-                                    setSelectedTag.invoke(it)
+                                    //TODO
                                 }
                             )
                         }
@@ -150,10 +153,12 @@ fun TagScreenManager(
 @Composable
 fun CreateTag(
     modifier: Modifier,
-    selectedTag: Tags,
-    updatedSelectedTag: (updatedTag: Tags) -> Unit,
-    saveTag: (updatedTag: Tags) -> Unit,
-    onDeleteTag: (tag: Tags) -> Unit,
+    tagName: String,
+    tagColor: String,
+    onTagNameUpdated: (name: String) -> Unit,
+    onColorPickerClicked: () -> Unit,
+    onSaveTagClicked: () -> Unit,
+    onDeleteTagClicked: () -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -163,10 +168,8 @@ fun CreateTag(
 
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(0.6f),
-            value = selectedTag.name,
-            onValueChange = {
-                updatedSelectedTag.invoke(selectedTag.copy(name = it))
-            },
+            value = tagName,
+            onValueChange = onTagNameUpdated,
             shape = MaterialTheme.shapes.large,
             singleLine = true,
             label = {
@@ -189,12 +192,9 @@ fun CreateTag(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable(
-                        onClick = {
-                            // TODO update color
-                            updatedSelectedTag.invoke(selectedTag)
-                        }
+                        onClick = onColorPickerClicked
                     ),
-                tint = MaterialTheme.colors.onSurface,
+                tint = tagColor.parseColor(),
             )
 
             Icon(
@@ -203,9 +203,7 @@ fun CreateTag(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable(
-                        onClick = {
-                            onDeleteTag.invoke(selectedTag)
-                        }
+                        onClick = onDeleteTagClicked
                     ),
                 tint = MaterialTheme.colors.onSurface,
             )
@@ -216,9 +214,7 @@ fun CreateTag(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable(
-                        onClick = {
-                            saveTag.invoke(selectedTag)
-                        }
+                        onClick = onSaveTagClicked
                     ),
                 tint = MaterialTheme.colors.onSurface,
             )

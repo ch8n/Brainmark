@@ -4,7 +4,8 @@ import kotlin.collections.List;
 
 CREATE TABLE TagEntity(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
-    name TEXT NOT NULL
+    name TEXT NOT NULL,
+    color Text NOT NULL
 );
 
 
@@ -16,8 +17,8 @@ SELECT * FROM TagEntity
 WHERE id = :id;
 
 upsertTag:
-INSERT OR REPLACE INTO TagEntity(id, name)
-VALUES(?,?);
+INSERT OR REPLACE INTO TagEntity(id, name, color)
+VALUES(?,?,?);
 
 deleteTag:
 DELETE FROM TagEntity

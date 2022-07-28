@@ -1,11 +1,16 @@
 package dev.ch8n.android.utils
 
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
-import dev.ch8n.common.ui.theme.BrainMarkTheme
 
+@Composable
 fun String.parseColor(): Color {
-    return Color(toColorInt())
+    return if (isEmpty()) {
+        MaterialTheme.colors.onSurface
+    } else {
+        Color(toColorInt())
+    }
 }
 

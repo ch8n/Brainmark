@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                                     setDarkTheme.invoke(!isDarkTheme)
                                 }
                             )
-                            is TagScreenController -> TagScreenManager(
+                            is TagManagerController -> TagScreenManager(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)

@@ -6,7 +6,9 @@ import dev.ch8n.common.TagEntity
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.sqlDB.BrainmarkDB
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 
 interface TagsDataSource {
     fun getAllTags(): Flow<List<Tags>>
@@ -20,7 +22,7 @@ interface TagsDataSource {
 fun TagEntity.toTags() = Tags(
     id = id,
     name = name,
-    color = ""
+    color = color
 )
 
 class TagsDataSourceImpl constructor(
@@ -46,7 +48,7 @@ class TagsDataSourceImpl constructor(
     }
 
     override suspend fun createTag(tag: Tags): String = withContext(dispatcher) {
-        queries.upsertTag(tag.id, tag.name)
+        queries.upsertTag(tag.id, tag.name, tag.color)
         return@withContext tag.id
     }
 
