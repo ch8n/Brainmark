@@ -12,9 +12,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import dev.ch8n.android.utils.parseColor
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.utils.DevelopmentPreview
+import dev.ch8n.common.utils.toColor
 
 
 @Composable
@@ -68,7 +68,7 @@ fun TagChip(
                     .padding(start = 8.dp)
                     .size(12.dp)
                     .offset(y = (-1).dp)
-                    .background(tag.color.parseColor(), CircleShape)
+                    .background(tag.color.toColor(), CircleShape)
                     .border(1.5.dp, MaterialTheme.colors.onSurface, CircleShape)
             )
         }

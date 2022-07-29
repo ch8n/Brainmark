@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -13,13 +14,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
 import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.TagChip
-import dev.ch8n.android.utils.parseColor
+import dev.ch8n.android.ui.screens.colorPicker.ColorPicker
 import dev.ch8n.common.ui.controllers.TagManagerController
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DevelopmentPreview
@@ -43,6 +46,7 @@ fun PreviewTagManagerScreen(
 }
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TagScreenManager(
     controller: TagManagerController,
@@ -52,10 +56,14 @@ fun TagScreenManager(
     val tags by controller.getAllTags.collectAsState(emptyList())
     val viewState by controller.state.collectAsState()
     val scope = rememberCoroutineScope()
+    val (isColorPickerShown, setColorPickerShown) = remember {
+        mutableStateOf(false)
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+
         ToolbarTagManager(
             modifier = Modifier
                 .padding(top = 36.dp, start = 16.dp, end = 16.dp)
@@ -96,7 +104,9 @@ fun TagScreenManager(
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
                 onTagNameUpdated = controller::updateTagName,
-                onColorPickerClicked = {},
+                onColorPickerClicked = {
+                    setColorPickerShown.invoke(true)
+                },
                 onSaveTagClicked = {
                     scope.launch {
                         controller.saveTag()
@@ -135,7 +145,6 @@ fun TagScreenManager(
             }
         }
 
-
         BottomNavbar(
             modifier = Modifier
                 .padding(16.dp)
@@ -149,6 +158,34 @@ fun TagScreenManager(
             },
             onNewBookmarkClicked = {}
         )
+
+        if (isColorPickerShown) {
+
+            Dialog(
+                onDismissRequest = {
+                    setColorPickerShown.invoke(false)
+                },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true,
+                    usePlatformDefaultWidth = false,
+                )
+            ) {
+                ColorPicker(
+                    modifier = Modifier.fillMaxSize(0.8f),
+                    onClose = {
+                        setColorPickerShown.invoke(false)
+                    },
+                    onColorSelected = {
+                        controller.updateTagColor(it)
+                        setColorPickerShown.invoke(false)
+                    }
+                )
+
+            }
+
+
+        }
     }
 
 }
@@ -158,7 +195,7 @@ fun TagScreenManager(
 fun CreateTag(
     modifier: Modifier,
     tagName: String,
-    tagColor: String,
+    tagColor: Color,
     isLoading: Boolean,
     error: String,
     onTagNameUpdated: (name: String) -> Unit,
@@ -225,7 +262,7 @@ fun CreateTag(
                     .clickable(
                         onClick = onColorPickerClicked
                     ),
-                tint = tagColor.parseColor(),
+                tint = tagColor,
             )
 
             Icon(

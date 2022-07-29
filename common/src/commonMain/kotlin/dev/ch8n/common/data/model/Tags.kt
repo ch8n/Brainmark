@@ -13,42 +13,42 @@ data class Tags(
             get() = Tags(
                 id = uuid4().toString(),
                 name = "",
-                color = "#49D643"
+                color = "49|D6|43"
             )
 
         val TAG_KOTLIN: Tags
             get() = Tags(
                 id = uuid4().toString(),
                 name = "Kotlin",
-                color = "#49D643"
+                color = "49|D6|43"
             )
 
         val TAG_JAVA: Tags
             get() = Tags(
                 id = uuid4().toString(),
                 name = "Java",
-                color = "#F53900"
+                color = "49|D6|43"
             )
 
         val TAG_WEB_DEV: Tags
             get() = Tags(
                 id = uuid4().toString(),
                 name = "WebDev",
-                color = "#562765"
+                color = "56|27|65"
             )
 
         val TAG_KMM: Tags
             get() = Tags(
                 id = uuid4().toString(),
                 name = "Kotlin Multiplatform",
-                color = "#171717"
+                color = "17|17|17"
             )
 
         val TAG_KMP: Tags
             get() = Tags(
                 id = uuid4().toString(),
                 name = "Kotlin Multiplatform Mobile",
-                color = "#2865F0"
+                color = "28|65|F0"
             )
     }
 }

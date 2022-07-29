@@ -1,6 +1,7 @@
 package dev.ch8n.common.ui.controllers
 
 import androidx.compose.runtime.Immutable
+import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.ComponentContext
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
@@ -8,6 +9,8 @@ import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
 import dev.ch8n.common.utils.Result
+import dev.ch8n.common.utils.toColor
+import dev.ch8n.common.utils.toDbString
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 
@@ -21,7 +24,7 @@ class TagManagerController(
     data class ViewState(
         val selectedId: String,
         val tagName: String,
-        val tagColor: String,
+        val tagColor: Color,
         val errorMsg: String,
         val isLoading: Boolean
     ) {
@@ -29,7 +32,7 @@ class TagManagerController(
             val Initial = ViewState(
                 selectedId = "",
                 tagName = "",
-                tagColor = "",
+                tagColor = Color.White,
                 errorMsg = "",
                 isLoading = false
             )
@@ -72,7 +75,7 @@ class TagManagerController(
 
             // save or update tag db
             val result = Result.build {
-                createTag.invoke(id, name, color).first()
+                createTag.invoke(id, name, color.toDbString()).first()
             }
 
             // collect result
@@ -84,13 +87,7 @@ class TagManagerController(
                     )
                 }
                 is Result.Success -> {
-                    copy(
-                        selectedId = "",
-                        tagName = "",
-                        tagColor = "",
-                        isLoading = false,
-                        errorMsg = ""
-                    )
+                    ViewState.Initial
                 }
             }
         }
@@ -111,13 +108,7 @@ class TagManagerController(
             val id = selectedId
             if (id.isEmpty()) {
                 // a new tag
-                return@changeState copy(
-                    selectedId = "",
-                    tagName = "",
-                    tagColor = "",
-                    errorMsg = "",
-                    isLoading = false
-                )
+                return@changeState ViewState.Initial
             }
 
             // delete tag in db
@@ -132,13 +123,7 @@ class TagManagerController(
                     )
                 }
                 is Result.Success -> {
-                    copy(
-                        selectedId = "",
-                        tagName = "",
-                        tagColor = "",
-                        errorMsg = "",
-                        isLoading = false
-                    )
+                    ViewState.Initial
                 }
             }
         }
@@ -149,7 +134,7 @@ class TagManagerController(
             copy(
                 selectedId = tag.id,
                 tagName = tag.name,
-                tagColor = tag.color
+                tagColor = tag.color.toColor()
             )
         }
     }
@@ -158,6 +143,14 @@ class TagManagerController(
         val updatedState = state.value.reducer()
         state.value = updatedState
         return updatedState
+    }
+
+    fun updateTagColor(color: Color) {
+        changeState {
+            copy(
+                tagColor = color
+            )
+        }
     }
 }
 
