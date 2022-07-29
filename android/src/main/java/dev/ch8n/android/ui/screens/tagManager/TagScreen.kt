@@ -116,6 +116,9 @@ fun TagScreenManager(
                     scope.launch {
                         controller.deleteTag()
                     }
+                },
+                onResetSelectedTag = {
+                    controller.clearSelectedTag()
                 }
             )
 
@@ -202,6 +205,7 @@ fun CreateTag(
     onColorPickerClicked: () -> Unit,
     onSaveTagClicked: () -> Unit,
     onDeleteTagClicked: () -> Unit,
+    onResetSelectedTag: () -> Unit,
 ) {
     Row(
         modifier = modifier,
@@ -229,6 +233,17 @@ fun CreateTag(
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp)
                         )
+                    } else {
+                        if (tagName.isNotEmpty()) {
+                            Icon(
+                                painter = painterResource(R.drawable.close),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable(onClick = onResetSelectedTag),
+                                tint = MaterialTheme.colors.onSurface,
+                            )
+                        }
                     }
                 },
                 enabled = !isLoading,
@@ -240,14 +255,12 @@ fun CreateTag(
                     text = error,
                     style = MaterialTheme.typography.body1,
                     color = Color.Red,
-                    modifier = Modifier.padding(start = 24.dp, top = 4.dp),
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             }
         }
-
-
 
         Row(
             modifier = Modifier.width(240.dp),
@@ -260,7 +273,8 @@ fun CreateTag(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable(
-                        onClick = onColorPickerClicked
+                        onClick = onColorPickerClicked,
+                        enabled = !isLoading
                     ),
                 tint = tagColor,
             )
@@ -271,7 +285,8 @@ fun CreateTag(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable(
-                        onClick = onDeleteTagClicked
+                        onClick = onDeleteTagClicked,
+                        enabled = !isLoading
                     ),
                 tint = MaterialTheme.colors.onSurface,
             )
@@ -282,7 +297,8 @@ fun CreateTag(
                 modifier = Modifier
                     .size(20.dp)
                     .clickable(
-                        onClick = onSaveTagClicked
+                        onClick = onSaveTagClicked,
+                        enabled = !isLoading
                     ),
                 tint = MaterialTheme.colors.onSurface,
             )

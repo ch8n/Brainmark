@@ -65,7 +65,7 @@ class TagManagerController(
             // check tag name
             val name = tagName
             if (name.length < 3) {
-                return@changeState copy(
+                return@changeState ViewState.Initial.copy(
                     errorMsg = "Name should be more than 2 characters"
                 )
             }
@@ -150,6 +150,12 @@ class TagManagerController(
             copy(
                 tagColor = color
             )
+        }
+    }
+
+    fun clearSelectedTag() {
+        changeState {
+            ViewState.Initial
         }
     }
 }
