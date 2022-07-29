@@ -23,7 +23,10 @@ fun Color.toDbString(): String {
 
 
 object ColorsUtils {
-    fun getColors(): List<List<Pair<String, Color>>> {
+
+    val colors by lazy { getCoolColors() }
+
+    private fun getCoolColors(): List<List<Pair<String, Color>>> {
         val finalList = mutableListOf<List<Pair<String, Color>>>()
 
         val listFirst = mutableListOf<Pair<String, Color>>()

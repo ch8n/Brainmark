@@ -48,7 +48,8 @@ fun ColorPicker(
     onClose: () -> Unit,
     onColorSelected: (color: Color) -> Unit
 ) {
-    val colors = remember { ColorsUtils.getColors() }
+    val colors = remember { ColorsUtils.colors }
+
     Column(
         modifier = modifier.background(MaterialTheme.colors.surface)
     ) {

@@ -1,6 +1,8 @@
 package dev.ch8n.android.ui.screens.tagManager
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -25,6 +27,7 @@ import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.screens.colorPicker.ColorPicker
 import dev.ch8n.common.ui.controllers.TagManagerController
 import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.utils.ColorsUtils
 import dev.ch8n.common.utils.DevelopmentPreview
 import kotlinx.coroutines.launch
 
@@ -119,6 +122,11 @@ fun TagScreenManager(
                 },
                 onResetSelectedTag = {
                     controller.clearSelectedTag()
+                },
+                onRandomColorPicked = {
+                    val randomColorGroup = ColorsUtils.colors.shuffled().first()
+                    val (name, color) = randomColorGroup.shuffled().first()
+                    controller.updateTagColor(color)
                 }
             )
 
@@ -194,6 +202,7 @@ fun TagScreenManager(
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CreateTag(
     modifier: Modifier,
@@ -203,6 +212,7 @@ fun CreateTag(
     error: String,
     onTagNameUpdated: (name: String) -> Unit,
     onColorPickerClicked: () -> Unit,
+    onRandomColorPicked: () -> Unit,
     onSaveTagClicked: () -> Unit,
     onDeleteTagClicked: () -> Unit,
     onResetSelectedTag: () -> Unit,
@@ -272,8 +282,9 @@ fun CreateTag(
                 contentDescription = "",
                 modifier = Modifier
                     .size(20.dp)
-                    .clickable(
-                        onClick = onColorPickerClicked,
+                    .combinedClickable(
+                        onClick = onRandomColorPicked,
+                        onLongClick = onColorPickerClicked,
                         enabled = !isLoading
                     ),
                 tint = tagColor,

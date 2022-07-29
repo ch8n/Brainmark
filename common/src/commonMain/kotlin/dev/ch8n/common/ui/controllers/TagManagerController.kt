@@ -134,7 +134,8 @@ class TagManagerController(
             copy(
                 selectedId = tag.id,
                 tagName = tag.name,
-                tagColor = tag.color.toColor()
+                tagColor = tag.color.toColor(),
+                errorMsg = ""
             )
         }
     }
