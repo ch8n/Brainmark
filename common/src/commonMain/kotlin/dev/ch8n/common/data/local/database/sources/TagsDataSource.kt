@@ -7,7 +7,6 @@ import dev.ch8n.common.data.model.Tags
 import dev.ch8n.sqlDB.BrainmarkDB
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 interface TagsDataSource {
@@ -35,7 +34,6 @@ class TagsDataSourceImpl constructor(
     override fun getAllTags(): Flow<List<Tags>> = queries
         .getAllTags()
         .asFlow()
-        .distinctUntilChanged()
         .mapToList(dispatcher)
         .map { entities -> entities.map { it.toTags() } }
 

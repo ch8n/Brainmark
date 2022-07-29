@@ -4,15 +4,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
@@ -24,6 +23,7 @@ import dev.ch8n.android.utils.parseColor
 import dev.ch8n.common.ui.controllers.TagManagerController
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DevelopmentPreview
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -50,9 +50,8 @@ fun TagScreenManager(
 ) {
 
     val tags by controller.getAllTags.collectAsState(emptyList())
-    val tagName = controller.tagName.collectAsState()
-    val tagColor = controller.tagColor.collectAsState()
-    val isLoading = controller.isLoading.collectAsState()
+    val viewState by controller.state.collectAsState()
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -88,19 +87,26 @@ fun TagScreenManager(
 
             Spacer(Modifier.size(18.dp))
 
-
             CreateTag(
-                tagName = tagName.value,
-                tagColor = tagColor.value,
+                tagName = viewState.tagName,
+                tagColor = viewState.tagColor,
+                isLoading = viewState.isLoading,
+                error = viewState.errorMsg,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
-                onTagNameUpdated = { name ->
-                    controller.tagName.tryEmit(name)
-                },
+                onTagNameUpdated = controller::updateTagName,
                 onColorPickerClicked = {},
-                onSaveTagClicked = {},
-                onDeleteTagClicked = {}
+                onSaveTagClicked = {
+                    scope.launch {
+                        controller.saveTag()
+                    }
+                },
+                onDeleteTagClicked = {
+                    scope.launch {
+                        controller.deleteTag()
+                    }
+                }
             )
 
             Spacer(Modifier.size(40.dp))
@@ -117,9 +123,7 @@ fun TagScreenManager(
                                     .padding(8.dp)
                                     .wrapContentWidth()
                                     .height(35.dp),
-                                onTagClicked = {
-                                    //TODO
-                                }
+                                onTagClicked = controller::selectTag
                             )
                         }
                     }
@@ -155,6 +159,8 @@ fun CreateTag(
     modifier: Modifier,
     tagName: String,
     tagColor: String,
+    isLoading: Boolean,
+    error: String,
     onTagNameUpdated: (name: String) -> Unit,
     onColorPickerClicked: () -> Unit,
     onSaveTagClicked: () -> Unit,
@@ -166,20 +172,45 @@ fun CreateTag(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(0.6f),
-            value = tagName,
-            onValueChange = onTagNameUpdated,
-            shape = MaterialTheme.shapes.large,
-            singleLine = true,
-            label = {
-                Text("Tag Name")
-            },
-            textStyle = MaterialTheme.typography.subtitle1,
-            colors = TextFieldDefaults.textFieldColors(
-                textColor = MaterialTheme.colors.onSurface
+        Column {
+
+            OutlinedTextField(
+                modifier = Modifier.fillMaxWidth(0.6f),
+                value = tagName,
+                onValueChange = onTagNameUpdated,
+                shape = MaterialTheme.shapes.large,
+                singleLine = true,
+                label = {
+                    Text("Tag Name")
+                },
+                textStyle = MaterialTheme.typography.subtitle1,
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface
+                ),
+                trailingIcon = {
+                    if (isLoading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                },
+                enabled = !isLoading,
+                isError = error.isNotEmpty(),
             )
-        )
+
+            if (error.isNotEmpty()) {
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.body1,
+                    color = Color.Red,
+                    modifier = Modifier.padding(start = 24.dp, top = 4.dp),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+
+
 
         Row(
             modifier = Modifier.width(240.dp),

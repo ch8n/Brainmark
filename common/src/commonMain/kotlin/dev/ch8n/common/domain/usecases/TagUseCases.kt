@@ -1,6 +1,5 @@
 package dev.ch8n.common.domain.usecases
 
-import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.local.database.sources.TagsDataSource
 import dev.ch8n.common.data.model.Tags
 import kotlinx.coroutines.flow.flow
@@ -53,15 +52,15 @@ class UpdateTagUseCase(
 class CreateTagUseCase(
     private val tagsDataSource: TagsDataSource
 ) {
-    operator fun invoke(name: String, color: String) = flow {
-        val id = tagsDataSource.createTag(
+    operator fun invoke(id: String, name: String, color: String) = flow {
+        val newId = tagsDataSource.createTag(
             tag = Tags(
-                id = uuid4().toString(),
+                id = id,
                 name = name,
                 color = color
             )
         )
-        emit(id)
+        emit(newId)
     }
 }
 
