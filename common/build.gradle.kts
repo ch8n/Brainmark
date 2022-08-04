@@ -1,4 +1,4 @@
-import com.codingfeline.buildkonfig.compiler.FieldSpec.*
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type
 import org.jetbrains.compose.compose
 
 
@@ -59,8 +59,7 @@ object Common {
         const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
         const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
         const val essentyLifecycle = "com.arkivanov.essenty:lifecycle:${Versions.essentyLifecycleVersion}"
-        const val essentyBackPressDispatcher =
-            "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
+        const val essentyBackPressDispatcher = "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
         const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
         const val mokoResource = "dev.icerock.moko:resources:${Versions.mokoResource}"
         const val kotlinXDateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinXDateTime}"
@@ -76,12 +75,17 @@ object Desktop {
 
     object Versions {
         const val sqlDelightVersion = Common.Versions.sqlDelightVersion
-        const val mokoResource = "0.20.1"
+        const val mokoResource = Common.Versions.mokoResource
+        const val decomposeVersion = Common.Versions.decomposeVersion
+        const val coroutinesVersion = Common.Versions.coroutinesVersion
     }
 
     object Dependencies {
         const val sqlDelightDesktop = "com.squareup.sqldelight:sqlite-driver:${Versions.sqlDelightVersion}"
         const val mokoResource = "dev.icerock.moko:resources-compose:${Versions.mokoResource}"
+        const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
+        const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
+        const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutinesVersion}"
     }
 }
 
@@ -191,6 +195,10 @@ kotlin {
             dependencies {
                 api(compose.preview)
                 api(Desktop.Dependencies.sqlDelightDesktop)
+                api(Desktop.Dependencies.mokoResource)
+                api(Desktop.Dependencies.decompose)
+                api(Desktop.Dependencies.decomposeKXT)
+                api(Desktop.Dependencies.coroutines)
             }
         }
         val desktopTest by getting
