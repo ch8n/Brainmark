@@ -1,60 +1,12 @@
 plugins {
-    id("org.jetbrains.compose") version "1.1.0"
-    id("com.android.application")
+    id(Android.Plugin.compose) version Android.Versions.compose
+    id(Android.Plugin.application)
     kotlin("android")
-    id("kotlin-parcelize")
+    id(Android.Plugin.kotlinxParcelize)
 }
 
-object Android {
-    object Versions {
-        //https://github.com/arkivanov/Essenty#lifecyle
-        const val essentyLifecycleVersion = "0.4.1"
-
-        //https://github.com/arkivanov/Essenty#backpresseddispatcher
-        const val essentyBackPressDispatcher = "0.4.1"
-
-        //https://github.com/arkivanov/Essenty#parcelable-and-parcelize
-        const val essentyParcelable = "0.4.1"
-
-        //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
-        const val decomposeVersion = "0.7.0"
-
-        // https://coil-kt.github.io/coil/compose/
-        const val coilVersion = "2.1.0"
-
-        /**
-         * https://github.com/google/accompanist/releases/tag/v0.22.0-rc
-         */
-        const val accompanistCommonVersion = "0.22.0-rc"
-    }
-
-    object Dependencies {
-        const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
-        const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
-        const val essentyLifecycle = "com.arkivanov.essenty:lifecycle:${Versions.essentyLifecycleVersion}"
-        const val essentyBackPressDispatcher =
-            "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
-        const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
-        const val coil = "io.coil-kt:coil-compose:${Versions.coilVersion}"
-
-        object Accompanist {
-            /**
-             * https://google.github.io/accompanist/flowlayout/
-             */
-            const val FlowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanistCommonVersion}"
-
-            /**
-             * https://google.github.io/accompanist/placeholder/
-             */
-            const val PlaceHolder =
-                "com.google.accompanist:accompanist-placeholder:${Versions.accompanistCommonVersion}"
-        }
-    }
-}
-
-
-group = "dev.ch8n"
-version = "1.0"
+group = Android.Platform.appId
+version = Android.Platform.versionName
 
 repositories {
     google()
@@ -63,30 +15,44 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.5.0")
-    implementation(Android.Dependencies.decompose)
-    implementation(Android.Dependencies.decomposeKXT)
-    implementation(Android.Dependencies.coil)
-    implementation(Android.Dependencies.Accompanist.FlowLayout)
-    implementation(Android.Dependencies.Accompanist.PlaceHolder)
+    androidX()
+    decompose()
+    accompanist()
+    implementation(Android.Dependencies.Coil)
 }
 
 android {
-    compileSdkVersion(31)
+    compileSdkVersion(Android.Platform.complieSDK)
     defaultConfig {
-        applicationId = "dev.ch8n.android"
-        minSdkVersion(24)
-        targetSdkVersion(31)
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = Android.Platform.appId
+        minSdkVersion(Android.Platform.minSDK)
+        targetSdkVersion(Android.Platform.targetSDK)
+        versionCode = Android.Platform.versionCode
+        versionName = Android.Platform.versionName
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
         }
     }
+}
+
+
+
+fun DependencyHandlerScope.androidX() {
+    implementation(Android.Dependencies.AndroidX.composeActivity)
+}
+
+fun DependencyHandlerScope.decompose() {
+    implementation(Android.Dependencies.Decompose.core)
+    implementation(Android.Dependencies.Decompose.ktx)
+}
+
+fun DependencyHandlerScope.accompanist() {
+    implementation(Android.Dependencies.Accompanist.flowLayout)
+    implementation(Android.Dependencies.Accompanist.placeHolder)
 }
