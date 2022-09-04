@@ -10,6 +10,7 @@ import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -52,6 +53,7 @@ class TagManagerController(
     val getAllTags = DomainInjector
         .tagUseCase
         .getAllTagsUseCase()
+        .map { it.sortedBy { it.name } }
 
     fun saveTag() {
         state.update { it.copy(isLoading = true, errorMsg = "") }
@@ -59,7 +61,8 @@ class TagManagerController(
             state.update {
                 // check and update id
                 var id = it.selectedId
-                if (id.isEmpty()) {
+                val isNewTag = id.isEmpty()
+                if (isNewTag) {
                     id = uuid4().toString()
                 }
                 // check tag name
@@ -70,19 +73,30 @@ class TagManagerController(
                     )
                 }
 
-                // check if exist
-                val isAlreadyPresent = getAllTags.first()
-                    .stream()
-                    .anyMatch { it.name.characterAreSame(name) }
+                // check tag color
+                val color = it.tagColor
 
-                if (isAlreadyPresent) {
+                // check match
+                val match: Tags? = getAllTags.first().find {
+                    it.name.characterAreSame(name)
+                }
+
+                val alreadyExists = isNewTag && match != null
+                if (alreadyExists) {
                     return@update ViewState.Initial.copy(
                         errorMsg = "Already Exist!"
                     )
                 }
 
-                // check tag color
-                val color = it.tagColor
+                if (match != null) {
+                    val isColorChanged = match.color != color.toDbString()
+                    val isNameChanged = match.name != name
+                    if (!isColorChanged && !isNameChanged) {
+                        return@update ViewState.Initial.copy(
+                            errorMsg = "Already Exist!"
+                        )
+                    }
+                }
 
                 // save or update tag db
                 val result = Result.build {
