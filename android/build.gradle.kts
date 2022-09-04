@@ -42,7 +42,7 @@ android {
 }
 
 
-
+// Dependency groups
 fun DependencyHandlerScope.androidX() {
     implementation(Android.Dependencies.AndroidX.composeActivity)
 }
