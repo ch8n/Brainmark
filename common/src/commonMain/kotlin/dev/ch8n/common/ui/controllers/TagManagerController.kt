@@ -7,12 +7,11 @@ import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.navigation.Destinations
-import dev.ch8n.common.utils.DecomposeController
-import dev.ch8n.common.utils.Result
-import dev.ch8n.common.utils.toColor
-import dev.ch8n.common.utils.toDbString
+import dev.ch8n.common.utils.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class TagManagerController(
     componentContext: ComponentContext,
@@ -32,7 +31,7 @@ class TagManagerController(
             val Initial = ViewState(
                 selectedId = "",
                 tagName = "",
-                tagColor = Color.White,
+                tagColor = ColorsUtils.randomColor,
                 errorMsg = "",
                 isLoading = false
             )
@@ -53,85 +52,88 @@ class TagManagerController(
         .tagUseCase
         .getAllTagsUseCase()
 
-    suspend fun saveTag() {
-        changeState { copy(isLoading = true, errorMsg = "") }
-        changeState {
-            // check and update id
-            var id = state.value.selectedId
-            if (id.isEmpty()) {
-                id = uuid4().toString()
-            }
-
-            // check tag name
-            val name = tagName
-            if (name.length < 3) {
-                return@changeState ViewState.Initial.copy(
-                    errorMsg = "Name should be more than 2 characters"
-                )
-            }
-
-            // check tag color
-            val color = tagColor
-
-            // save or update tag db
-            val result = Result.build {
-                createTag.invoke(id, name, color.toDbString()).first()
-            }
-
-            // collect result
-            return@changeState when (result) {
-                is Result.Error -> {
-                    copy(
-                        errorMsg = result.error.message ?: "Something went wrong!",
-                        isLoading = false
+    fun saveTag() {
+        state.update { it.copy(isLoading = true, errorMsg = "") }
+        launch {
+            state.update {
+                // check and update id
+                var id = it.selectedId
+                if (id.isEmpty()) {
+                    id = uuid4().toString()
+                }
+                // check tag name
+                val name = it.tagName
+                if (name.length < 3) {
+                    return@update ViewState.Initial.copy(
+                        errorMsg = "Name should be more than 2 characters"
                     )
                 }
-                is Result.Success -> {
-                    ViewState.Initial
+
+                // check tag color
+                val color = it.tagColor
+
+                // save or update tag db
+                val result = Result.build {
+                    createTag.invoke(id, name, color.toDbString()).first()
+                }
+
+                // collect result
+                return@update when (result) {
+                    is Result.Error -> {
+                        it.copy(
+                            errorMsg = result.error.message ?: "Something went wrong!",
+                            isLoading = false
+                        )
+                    }
+
+                    is Result.Success -> {
+                        ViewState.Initial
+                    }
                 }
             }
         }
     }
 
     fun updateTagName(name: String) {
-        changeState {
-            copy(
-                tagName = name
-            )
+        state.update {
+            it.copy(tagName = name)
         }
     }
 
-    suspend fun deleteTag() {
-        changeState { copy(isLoading = true, errorMsg = "") }
-        changeState {
-            // get id
-            val id = selectedId
-            if (id.isEmpty()) {
-                // a new tag
-                return@changeState ViewState.Initial
-            }
-
-            // delete tag in db
-            val result = Result.build { deleteTag.invoke(id).first() }
-
-            // collect result
-            when (result) {
-                is Result.Error -> {
-                    copy(
-                        errorMsg = result.error.message ?: "Something went wrong!",
-                        isLoading = false
-                    )
+    fun deleteTag() {
+        state.update { it.copy(isLoading = true, errorMsg = "") }
+        launch {
+            state.update {
+                // get id
+                val id = it.selectedId
+                if (id.isEmpty()) {
+                    // a new tag
+                    return@update ViewState.Initial
                 }
-                is Result.Success -> {
-                    ViewState.Initial
+
+                // delete tag in db
+                val result = Result.build { deleteTag.invoke(id).first() }
+
+                // collect result
+                when (result) {
+                    is Result.Error -> {
+                        it.copy(
+                            errorMsg = result.error.message ?: "Something went wrong!",
+                            isLoading = false
+                        )
+                    }
+
+                    is Result.Success -> {
+                        ViewState.Initial
+                    }
                 }
             }
         }
     }
 
     fun selectTag(tag: Tags) {
-        changeState {
-            copy(
+        state.update {
+            it.copy(
                 selectedId = tag.id,
                 tagName = tag.name,
                 tagColor = tag.color.toColor(),
@@ -140,22 +142,17 @@ class TagManagerController(
         }
     }
 
-    private inline fun changeState(reducer: ViewState.() -> ViewState): ViewState {
-        val updatedState = state.value.reducer()
-        state.value = updatedState
-        return updatedState
-    }
 
     fun updateTagColor(color: Color) {
-        changeState {
-            copy(
+        state.update {
+            it.copy(
                 tagColor = color
             )
         }
     }
 
     fun clearSelectedTag() {
-        changeState {
+        state.update {
             ViewState.Initial
         }
     }

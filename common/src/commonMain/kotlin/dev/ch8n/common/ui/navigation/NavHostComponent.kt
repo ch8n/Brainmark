@@ -25,21 +25,25 @@ class NavHostComponent(
             navigateTo = ::navigateTo,
             navigateBack = ::navigateBack,
         )
+
         is Destinations.Home -> HomeScreenController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
+
         is Destinations.TagManager -> TagManagerController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
+
         is Destinations.CreateBookmark -> CreateBookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
+
         is Destinations.PreviewScreen -> BrowserController(
             componentContext = context,
             navigateTo = ::navigateTo,
@@ -49,11 +53,11 @@ class NavHostComponent(
 
     val rootRouterState: Value<RouterState<Destinations, DecomposeController>> = router.state
 
-    fun navigateTo(destinations: Destinations) {
+    private fun navigateTo(destinations: Destinations) {
         router.push(destinations)
     }
 
-    fun navigateBack() {
+    private fun navigateBack() {
         router.pop()
     }
 

@@ -1,10 +1,7 @@
 package dev.ch8n.common.utils
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +16,41 @@ fun Preview(
 ) {
     BrainMarkTheme(isDark) {
         content.invoke()
+    }
+}
+
+
+@Composable
+fun AndroidPreview(
+    isSplitView: Boolean = true,
+    isDark: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Preview(isDark = isDark) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(2.dp, Color.Red)
+            ) {
+                content.invoke()
+            }
+        }
+        if (isSplitView) {
+            Preview(isDark = !isDark) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .border(2.dp, Color.Blue)
+                ) {
+                    content.invoke()
+                }
+            }
+        }
     }
 }
 

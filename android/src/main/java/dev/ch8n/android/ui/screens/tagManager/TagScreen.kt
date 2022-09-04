@@ -1,15 +1,13 @@
 package dev.ch8n.android.ui.screens.tagManager
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -25,11 +23,12 @@ import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.screens.colorPicker.ColorPicker
+import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.common.ui.controllers.TagManagerController
 import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.theme.StringRes
+import dev.ch8n.common.utils.AndroidPreview
 import dev.ch8n.common.utils.ColorsUtils
-import dev.ch8n.common.utils.DevelopmentPreview
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -43,8 +42,10 @@ fun PreviewTagManagerScreen(
             onBack = {}
         )
     }
-    DevelopmentPreview { isDark ->
-        TagScreenManager(controller, {})
+    AndroidPreview(
+        isSplitView = false
+    ) {
+        TagScreenManager(controller, onSettingsClicked = {})
     }
 }
 
@@ -56,15 +57,15 @@ fun TagScreenManager(
     onSettingsClicked: () -> Unit
 ) {
 
-    val tags by controller.getAllTags.collectAsState(emptyList())
     val viewState by controller.state.collectAsState()
-    val scope = rememberCoroutineScope()
     val (isColorPickerShown, setColorPickerShown) = remember {
         mutableStateOf(false)
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.surface)
     ) {
 
         ToolbarTagManager(
@@ -83,14 +84,14 @@ fun TagScreenManager(
             Spacer(Modifier.size(24.dp))
 
             Text(
-                text = "Manage your tags",
+                text = StringRes.TagManagerScreen.title_manage_your_tags,
                 color = MaterialTheme.colors.onSurface,
                 modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.h3
             )
 
             Text(
-                text = "Create, update and delete your tags. Use color picker to apply unique color to your tags.",
+                text = StringRes.TagManagerScreen.subtitle_manage_tags,
                 color = MaterialTheme.colors.onSurface,
                 modifier = Modifier.padding(horizontal = 24.dp),
                 style = MaterialTheme.typography.subtitle1,
@@ -110,49 +111,55 @@ fun TagScreenManager(
                 onColorPickerClicked = {
                     setColorPickerShown.invoke(true)
                 },
-                onSaveTagClicked = {
-                    scope.launch {
-                        controller.saveTag()
-                    }
-                },
-                onDeleteTagClicked = {
-                    scope.launch {
-                        controller.deleteTag()
-                    }
-                },
-                onResetSelectedTag = {
-                    controller.clearSelectedTag()
-                },
+                onSaveTagClicked = controller::saveTag,
+                onDeleteTagClicked = controller::deleteTag,
+                onResetSelectedTag = controller::clearSelectedTag,
                 onRandomColorPicked = {
-                    val randomColorGroup = ColorsUtils.colors.shuffled().first()
-                    val (name, color) = randomColorGroup.shuffled().first()
-                    controller.updateTagColor(color)
+                    controller.updateTagColor(ColorsUtils.randomColor)
                 }
             )
 
-            Spacer(Modifier.size(40.dp))
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(16.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            0.8f to MaterialTheme.colors.surface,
+                            0.5f to Color.White.copy(alpha = 0.5f),
+                            1.0f to Color.Transparent,
+                        )
+                    )
+            )
 
-            LazyColumn {
-                item {
-                    FlowRow(
-                        modifier = Modifier.padding(start = 24.dp, end = 24.dp)
-                    ) {
-                        tags.forEach { tag ->
-                            TagChip(
-                                tag = tag,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .wrapContentWidth()
-                                    .height(35.dp),
-                                onTagClicked = controller::selectTag
-                            )
-                        }
+            val tags by controller.getAllTags.collectAsState(emptyList())
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                FlowRow(
+                    modifier = Modifier
+                        .padding(start = 24.dp, end = 24.dp)
+                        .fillMaxWidth()
+                ) {
+                    tags.forEach { tag ->
+                        TagChip(
+                            tag = tag,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .height(35.dp),
+                            onTagClicked = controller::selectTag
+                        )
                     }
                 }
 
-                item {
-                    Spacer(Modifier.size(100.dp))
-                }
+                Spacer(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                )
             }
         }
 
@@ -224,15 +231,16 @@ fun CreateTag(
     ) {
 
         Column {
-
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(0.6f),
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .clearFocusOnKeyboardDismiss(),
                 value = tagName,
                 onValueChange = onTagNameUpdated,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
-                    Text("Tag Name")
+                    Text(StringRes.TagManagerScreen.edit_tag_name)
                 },
                 textStyle = MaterialTheme.typography.subtitle1,
                 colors = TextFieldDefaults.textFieldColors(
@@ -344,7 +352,7 @@ private fun ToolbarTagManager(
             )
 
             Text(
-                text = "Tag Manager",
+                text = StringRes.TagManagerScreen.toolbar_tag_manager,
                 style = MaterialTheme.typography.h1,
                 color = MaterialTheme.colors.onSurface
             )

@@ -26,6 +26,13 @@ object ColorsUtils {
 
     val colors by lazy { getCoolColors() }
 
+    val randomColor: Color
+        get() {
+            val randomColorGroup = colors.shuffled().first()
+            val (_, color) = randomColorGroup.shuffled().first()
+            return color
+        }
+
     private fun getCoolColors(): List<List<Pair<String, Color>>> {
         val finalList = mutableListOf<List<Pair<String, Color>>>()
 

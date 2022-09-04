@@ -3,7 +3,8 @@ package dev.ch8n.android
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import dev.ch8n.android.ui.screens.colorPicker.PreviewColorPicker
+import com.arkivanov.decompose.defaultComponentContext
+import dev.ch8n.android.ui.screens.tagManager.PreviewTagManagerScreen
 import dev.ch8n.common.utils.PlatformDependencies
 
 class BrainMarkPreviewActivity : AppCompatActivity() {
@@ -16,7 +17,9 @@ class BrainMarkPreviewActivity : AppCompatActivity() {
         PlatformDependencies.setApplicationContext(applicationContext)
         setContent {
             //PreviewBrowserScreen(defaultComponentContext())
-            PreviewColorPicker()
+            PreviewTagManagerScreen(
+                defaultComponentContext()
+            )
         }
     }
 }
