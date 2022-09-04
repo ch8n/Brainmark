@@ -65,7 +65,18 @@ class TagManagerController(
                 val name = it.tagName
                 if (name.length < 3) {
                     return@update ViewState.Initial.copy(
-                        errorMsg = "Name should be more than 2 characters"
+                        errorMsg = "Name > 2 characters"
+                    )
+                }
+
+                // check if exist
+                val isAlreadyPresent = getAllTags.first()
+                    .stream()
+                    .anyMatch { it.name.characterAreSame(name) }
+
+                if (isAlreadyPresent) {
+                    return@update ViewState.Initial.copy(
+                        errorMsg = "Already Exist!"
                     )
                 }
 

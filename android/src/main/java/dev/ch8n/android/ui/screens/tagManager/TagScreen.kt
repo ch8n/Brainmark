@@ -271,12 +271,16 @@ fun CreateTag(
             if (error.isNotEmpty()) {
                 Text(
                     text = error,
-                    style = MaterialTheme.typography.body1,
+                    style = MaterialTheme.typography.subtitle1,
                     color = Color.Red,
-                    modifier = Modifier.padding(start = 8.dp, top = 4.dp),
+                    modifier = Modifier
+                        .padding(start = 8.dp, top = 4.dp)
+                        .fillMaxWidth(0.5f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
+            } else {
+                Spacer(Modifier.size(16.dp))
             }
         }
 
