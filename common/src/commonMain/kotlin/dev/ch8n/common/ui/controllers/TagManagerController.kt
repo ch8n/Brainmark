@@ -28,13 +28,14 @@ class TagManagerController(
         val isLoading: Boolean
     ) {
         companion object {
-            val Initial = ViewState(
-                selectedId = "",
-                tagName = "",
-                tagColor = ColorsUtils.randomColor,
-                errorMsg = "",
-                isLoading = false
-            )
+            val Initial
+                get() = ViewState(
+                    selectedId = "",
+                    tagName = "",
+                    tagColor = ColorsUtils.randomColor,
+                    errorMsg = "",
+                    isLoading = false
+                )
         }
     }
 
