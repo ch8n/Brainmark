@@ -21,12 +21,10 @@ import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
 import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
-import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.screens.colorPicker.ColorPicker
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.common.ui.controllers.TagManagerController
-import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.ui.theme.StringRes
 import dev.ch8n.common.utils.AndroidPreview
 import dev.ch8n.common.utils.ColorsUtils
@@ -44,7 +42,7 @@ fun PreviewTagManagerScreen(
         )
     }
     AndroidPreview(
-        isSplitView = false
+        isSplitView = false,
     ) {
         TagScreenManager(controller, onSettingsClicked = {})
     }
@@ -163,20 +161,6 @@ fun TagScreenManager(
             }
         }
 
-        BottomNavbar(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomCenter)
-                .width(240.dp),
-            onTagClicked = {
-                // do nothing...
-            },
-            onBookmarkClicked = {
-                controller.navigateTo(Destinations.BookmarkBrowser)
-            },
-            onNewBookmarkClicked = {}
-        )
-
         if (isColorPickerShown) {
 
             Dialog(
@@ -201,7 +185,6 @@ fun TagScreenManager(
                 )
 
             }
-
 
         }
     }
@@ -272,7 +255,7 @@ fun CreateTag(
                 keyboardActions = KeyboardActions(
                     onDone = { onSaveTagClicked.invoke() },
 
-                )
+                    )
             )
 
             Text(
