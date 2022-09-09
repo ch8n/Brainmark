@@ -1,25 +1,6 @@
 package dev.ch8n.common.utils
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.colorspace.ColorSpaces
-
-
-fun String.toColor(): Color {
-    val (r, g, b, a) = this.split("|")
-    return Color(
-        red = r.toFloat(),
-        green = g.toFloat(),
-        blue = b.toFloat(),
-        alpha = a.toFloat(),
-        colorSpace = ColorSpaces.Srgb
-    )
-}
-
-
-fun Color.toDbString(): String {
-    toString()
-    return "$red|$green|$blue|$alpha"
-}
 
 
 object ColorsUtils {

@@ -52,7 +52,7 @@ class UpdateTagUseCase(
 class CreateTagUseCase(
     private val tagsDataSource: TagsDataSource
 ) {
-    operator fun invoke(id: String, name: String, color: String) = flow {
+    operator fun invoke(id: String, name: String, color: Int) = flow {
         val newId = tagsDataSource.createTag(
             tag = Tags(
                 id = id,

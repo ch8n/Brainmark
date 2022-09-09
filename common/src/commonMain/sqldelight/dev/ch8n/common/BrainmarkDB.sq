@@ -5,7 +5,7 @@ import kotlin.collections.List;
 CREATE TABLE TagEntity(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
     name TEXT NOT NULL,
-    color Text NOT NULL
+    color INTEGER AS Int NOT NULL
 );
 
 

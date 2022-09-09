@@ -19,7 +19,6 @@ class BrowserController(
             Tags.TAG_JAVA,
             Tags.TAG_KMM,
             Tags.TAG_KOTLIN,
-            Tags.TAG_KMP,
             Tags.TAG_WEB_DEV,
         )
     )

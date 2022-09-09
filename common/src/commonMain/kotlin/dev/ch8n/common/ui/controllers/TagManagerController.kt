@@ -2,12 +2,16 @@ package dev.ch8n.common.ui.controllers
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import com.arkivanov.decompose.ComponentContext
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.navigation.Destinations
-import dev.ch8n.common.utils.*
+import dev.ch8n.common.utils.ColorsUtils
+import dev.ch8n.common.utils.DecomposeController
+import dev.ch8n.common.utils.Result
+import dev.ch8n.common.utils.characterAreSame
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -74,7 +78,7 @@ class TagManagerController(
                 }
 
                 // check tag color
-                val color = it.tagColor
+                val color = it.tagColor.toArgb()
 
                 // check match
                 val match: Tags? = getAllTags.first().find {
@@ -89,7 +93,7 @@ class TagManagerController(
                 }
 
                 if (match != null) {
-                    val isColorChanged = match.color != color.toDbString()
+                    val isColorChanged = match.color != color
                     val isNameChanged = match.name != name
                     if (!isColorChanged && !isNameChanged) {
                         return@update ViewState.Initial.copy(
@@ -100,7 +104,7 @@ class TagManagerController(
 
                 // save or update tag db
                 val result = Result.build {
-                    createTag.invoke(id, name, color.toDbString()).first()
+                    createTag.invoke(id, name, color).first()
                 }
 
                 // collect result
@@ -162,7 +166,7 @@ class TagManagerController(
             it.copy(
                 selectedId = tag.id,
                 tagName = tag.name,
-                tagColor = tag.color.toColor(),
+                tagColor = Color(tag.color),
                 errorMsg = ""
             )
         }

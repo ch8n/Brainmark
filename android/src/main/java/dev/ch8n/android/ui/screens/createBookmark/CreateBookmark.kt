@@ -23,7 +23,7 @@ import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
-import dev.ch8n.common.utils.DevelopmentPreview
+import dev.ch8n.common.utils.AndroidPreview
 
 @Composable
 fun PreviewCreateBookmark(
@@ -36,7 +36,9 @@ fun PreviewCreateBookmark(
             onBack = {}
         )
     }
-    DevelopmentPreview { isDark ->
+    AndroidPreview(
+        isSplitView = false,
+    ) {
         CreateBookmarkContent(
             controller = controller
         )
@@ -56,7 +58,6 @@ fun CreateBookmarkContent(
         mutableStateOf(
             listOf(
                 Tags.TAG_KOTLIN,
-                Tags.TAG_KMP,
                 Tags.TAG_KMM,
                 Tags.TAG_JAVA,
                 Tags.TAG_WEB_DEV,
