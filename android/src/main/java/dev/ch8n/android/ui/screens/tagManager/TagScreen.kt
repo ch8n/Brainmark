@@ -2,12 +2,13 @@ package dev.ch8n.android.ui.screens.tagManager
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -120,15 +121,13 @@ fun TagScreenManager(
             )
 
             Spacer(
-                Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .height(16.dp)
+                    .padding(top = 8.dp)
+                    .height(1.dp)
                     .background(
-                        brush = Brush.verticalGradient(
-                            0.8f to MaterialTheme.colors.surface,
-                            0.5f to Color.White.copy(alpha = 0.5f),
-                            1.0f to Color.Transparent,
-                        )
+                        shape = RoundedCornerShape(24.dp),
+                        color = MaterialTheme.colors.onSurface
                     )
             )
 
@@ -137,8 +136,9 @@ fun TagScreenManager(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
+                Spacer(modifier = Modifier.size(16.dp))
                 FlowRow(
                     modifier = Modifier
                         .padding(start = 24.dp, end = 24.dp)
@@ -230,15 +230,18 @@ fun CreateTag(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Column {
+        Column(
+            modifier = Modifier.fillMaxWidth(0.6f)
+        ) {
             OutlinedTextField(
                 modifier = Modifier
-                    .fillMaxWidth(0.6f)
+                    .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 value = tagName,
                 onValueChange = onTagNameUpdated,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
+                maxLines = 1,
                 label = {
                     Text(StringRes.TagManagerScreen.edit_tag_name)
                 },
@@ -266,26 +269,26 @@ fun CreateTag(
                 },
                 enabled = !isLoading,
                 isError = error.isNotEmpty(),
+                keyboardActions = KeyboardActions(
+                    onDone = { onSaveTagClicked.invoke() },
+
+                )
             )
 
-            if (error.isNotEmpty()) {
-                Text(
-                    text = error,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = Color.Red,
-                    modifier = Modifier
-                        .padding(start = 8.dp, top = 4.dp)
-                        .fillMaxWidth(0.5f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            } else {
-                Spacer(Modifier.size(16.dp))
-            }
+            Text(
+                text = error,
+                style = MaterialTheme.typography.subtitle1,
+                color = Color.Red,
+                modifier = Modifier
+                    .padding(start = 8.dp, top = 4.dp)
+                    .fillMaxWidth(),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
 
         Row(
-            modifier = Modifier.width(240.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
@@ -334,7 +337,6 @@ private fun ToolbarTagManager(
     modifier: Modifier = Modifier,
     onSettingsClicked: () -> Unit
 ) {
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
