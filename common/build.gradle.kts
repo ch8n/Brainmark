@@ -5,7 +5,7 @@ import org.jetbrains.compose.compose
 /**
  * Common dependencies
  */
-object Common {
+object Common2 {
 
     object Application {
         const val packageName = "dev.ch8n.brainmark"
@@ -59,7 +59,8 @@ object Common {
         const val decompose = "com.arkivanov.decompose:decompose:${Versions.decomposeVersion}"
         const val decomposeKXT = "com.arkivanov.decompose:extensions-compose-jetbrains:${Versions.decomposeVersion}"
         const val essentyLifecycle = "com.arkivanov.essenty:lifecycle:${Versions.essentyLifecycleVersion}"
-        const val essentyBackPressDispatcher = "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
+        const val essentyBackPressDispatcher =
+            "com.arkivanov.essenty:back-pressed:${Versions.essentyBackPressDispatcher}"
         const val essentyParcelable = "com.arkivanov.essenty:parcelable:${Versions.essentyParcelable}"
         const val mokoResource = "dev.icerock.moko:resources:${Versions.mokoResource}"
         const val kotlinXDateTime = "org.jetbrains.kotlinx:kotlinx-datetime:${Versions.kotlinXDateTime}"
@@ -74,10 +75,10 @@ object Desktop {
     const val jvmTarget = "11"
 
     object Versions {
-        const val sqlDelightVersion = Common.Versions.sqlDelightVersion
-        const val mokoResource = Common.Versions.mokoResource
-        const val decomposeVersion = Common.Versions.decomposeVersion
-        const val coroutinesVersion = Common.Versions.coroutinesVersion
+        const val sqlDelightVersion = Common2.Versions.sqlDelightVersion
+        const val mokoResource = Common2.Versions.mokoResource
+        const val decomposeVersion = Common2.Versions.decomposeVersion
+        const val coroutinesVersion = Common2.Versions.coroutinesVersion
     }
 
     object Dependencies {
@@ -92,16 +93,16 @@ object Desktop {
 /**
  * Android dependencies
  */
-object Android {
+object Android2 {
 
-    const val sqlDelightDatabaseName = Common.SqlDelight.databaseName
+    const val sqlDelightDatabaseName = Common2.SqlDelight.databaseName
 
     object Versions {
         const val appCompat = "1.4.2"
         const val coreKtx = "1.8.0"
-        const val ktorVersion = Common.Versions.ktorVersion
-        const val coroutineVersion = Common.Versions.coroutinesVersion
-        const val sqlDelightVersion = Common.Versions.sqlDelightVersion
+        const val ktorVersion = Common2.Versions.ktorVersion
+        const val coroutineVersion = Common2.Versions.coroutinesVersion
+        const val sqlDelightVersion = Common2.Versions.sqlDelightVersion
         const val mokoResource = "0.20.1"
     }
 
@@ -128,17 +129,17 @@ plugins {
 }
 
 sqldelight {
-    database(Common.SqlDelight.databaseName) {
-        packageName = Common.SqlDelight.packageName
+    database(Common2.SqlDelight.databaseName) {
+        packageName = Common2.SqlDelight.packageName
     }
 }
 
 buildkonfig {
-    packageName = Common.Application.packageName
-    objectName = Common.Application.sharedConfig
+    packageName = Common2.Application.packageName
+    objectName = Common2.Application.sharedConfig
 
     defaultConfigs {
-        buildConfigField(Type.STRING, "SqlDelightDbName", "${Common.SqlDelight.databaseName}.db")
+        buildConfigField(Type.STRING, "SqlDelightDbName", "${Common2.SqlDelight.databaseName}.db")
     }
 }
 
@@ -158,19 +159,20 @@ kotlin {
                 api(compose.runtime)
                 api(compose.foundation)
                 api(compose.material)
-                implementation(Common.Dependencies.coroutines)
-                implementation(Common.Dependencies.serializationKTX)
-                implementation(Common.Dependencies.ktorClient)
-                implementation(Common.Dependencies.sqlDelight)
-                implementation(Common.Dependencies.sqlDelightCoroutineKTX)
-                implementation(Common.Dependencies.uuid)
-                implementation(Common.Dependencies.decompose)
-                implementation(Common.Dependencies.decomposeKXT)
-                implementation(Common.Dependencies.essentyLifecycle)
-                implementation(Common.Dependencies.essentyBackPressDispatcher)
-                implementation(Common.Dependencies.essentyParcelable)
-                implementation(Common.Dependencies.mokoResource)
-                implementation(Common.Dependencies.kotlinXDateTime)
+                implementation(Common2.Dependencies.coroutines)
+                implementation(Common2.Dependencies.serializationKTX)
+                implementation(Common2.Dependencies.ktorClient)
+                implementation(Common2.Dependencies.sqlDelight)
+                implementation(Common2.Dependencies.sqlDelightCoroutineKTX)
+                implementation(Common2.Dependencies.uuid)
+                implementation(Common2.Dependencies.decompose)
+                implementation(Common2.Dependencies.decomposeKXT)
+                implementation(Common2.Dependencies.essentyLifecycle)
+                implementation(Common2.Dependencies.essentyBackPressDispatcher)
+                implementation(Common2.Dependencies.essentyParcelable)
+                implementation(Common2.Dependencies.mokoResource)
+                implementation(Common2.Dependencies.kotlinXDateTime)
+                implementation(Common.Dependencies.Ktor.core)
             }
         }
         val commonTest by getting {
@@ -180,10 +182,11 @@ kotlin {
         }
         val androidMain by getting {
             dependencies {
-                api(Android.Dependencies.appCompat)
-                api(Android.Dependencies.coreKtx)
-                api(Android.Dependencies.ktorAndroid)
-                api(Android.Dependencies.sqlDelightAndroid)
+                api(Android2.Dependencies.appCompat)
+                api(Android2.Dependencies.coreKtx)
+                api(Android2.Dependencies.ktorAndroid)
+                api(Android2.Dependencies.sqlDelightAndroid)
+                api(Android.Dependencies.Ktor.android)
             }
         }
         val androidTest by getting {
@@ -219,7 +222,7 @@ android {
 }
 
 multiplatformResources {
-    multiplatformResourcesPackage = Common.Application.packageName
-    multiplatformResourcesClassName = Common.Application.sharedResource
+    multiplatformResourcesPackage = Common2.Application.packageName
+    multiplatformResourcesClassName = Common2.Application.sharedResource
     disableStaticFrameworkWarning = true
 }

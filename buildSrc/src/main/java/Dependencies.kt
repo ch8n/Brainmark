@@ -2,7 +2,19 @@ import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 
 
-object Common
+object Common {
+
+    object Versions {
+        // https://ktor.io/docs/getting-started-ktor-client.html#add-dependencies
+        const val ktorVersion = "2.1.1"
+    }
+
+    object Dependencies {
+        object Ktor {
+            val core: String = "io.ktor:ktor-client-core:${Versions.ktorVersion}"
+        }
+    }
+}
 
 object Desktop {
 
@@ -54,6 +66,8 @@ object Android {
             //https://google.github.io/accompanist/placeholder/
             const val placeholder = baseVersion
         }
+
+        const val ktorVersion = Common.Versions.ktorVersion
     }
 
     object Plugin {
@@ -94,6 +108,10 @@ object Android {
         object Accompanist {
             val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist.flowLayout}"
             val placeHolder = "com.google.accompanist:accompanist-placeholder:${Versions.accompanist.placeholder}"
+        }
+
+        object Ktor {
+            val android = "io.ktor:ktor-client-okhttp:${Versions.ktorVersion}"
         }
 
     }
