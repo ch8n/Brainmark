@@ -4,6 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
+import kotlinx.coroutines.flow.map
 
 class CreateBookmarkController(
     componentContext: ComponentContext,
@@ -11,7 +12,14 @@ class CreateBookmarkController(
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
-    private val createBookmarkUseCase = DomainInjector.bookmarkUseCase.createBookmarkUseCase
+    private val createBookmarkUseCase = DomainInjector
+        .bookmarkUseCase
+        .createBookmarkUseCase
+
+    val getAllTags = DomainInjector
+        .tagUseCase
+        .getAllTagsUseCase()
+        .map { it.sortedBy { it.name } }
 
 //    private val _bookmark = MutableStateFlow(Bookmark.SAMPLE)
 //    val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()

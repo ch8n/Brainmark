@@ -1,18 +1,15 @@
 package dev.ch8n.android.ui.screens.createBookmark
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
@@ -20,6 +17,8 @@ import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BookmarkCard
 import dev.ch8n.android.design.components.TagChip
+import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
+import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
@@ -29,11 +28,16 @@ import dev.ch8n.common.utils.AndroidPreview
 fun PreviewCreateBookmark(
     componentContext: DefaultComponentContext
 ) {
+    val context = LocalContext.current
     val controller = remember {
         CreateBookmarkController(
             componentContext = componentContext,
-            navigateTo = {},
-            onBack = {}
+            navigateTo = {
+                "On navigate to ${it::class.simpleName}".toast(context)
+            },
+            onBack = {
+                "On Back".toast(context)
+            }
         )
     }
     AndroidPreview(
@@ -45,31 +49,22 @@ fun PreviewCreateBookmark(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CreateBookmarkContent(
     controller: CreateBookmarkController,
 ) {
 
-    val (bookmarkUrl, setBookmarkUrl) = remember {
-        mutableStateOf("")
-    }
+    val (bookmarkUrl, setBookmarkUrl) = remember { mutableStateOf("") }
+    val (selectedTags, setSelectedTags) = remember { mutableStateOf(listOf<Tags>()) }
 
-    val (selectedTags, setSelectedTag) = remember {
-        mutableStateOf(
-            listOf(
-                Tags.TAG_KOTLIN,
-                Tags.TAG_KMM,
-                Tags.TAG_JAVA,
-                Tags.TAG_WEB_DEV,
-            )
-        )
-    }
+    val tags by controller.getAllTags.collectAsState(emptyList())
 
-    val (deadLine, setDeadLine) = remember {
-        mutableStateOf(System.currentTimeMillis().toString())
-    }
-
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.surface)
+    ) {
 
         ToolbarCreateBookmark(
             modifier = Modifier
@@ -89,7 +84,9 @@ fun CreateBookmarkContent(
         ) {
 
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 value = bookmarkUrl,
                 onValueChange = setBookmarkUrl,
                 shape = MaterialTheme.shapes.large,
@@ -103,50 +100,67 @@ fun CreateBookmarkContent(
                 )
             )
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .padding(vertical = 24.dp)
-                    .fillMaxWidth(),
-                value = "Select from Drop Down",
-                onValueChange = {},
-                shape = MaterialTheme.shapes.large,
-                singleLine = true,
-                label = {
-                    Text("Select Tags")
-                },
-                textStyle = MaterialTheme.typography.subtitle1,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colors.onSurface
-                ),
-                readOnly = true,
-                trailingIcon = {
-                    AsyncImage(
-                        model = R.drawable.drop_down,
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .size(16.dp),
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        colorFilter = ColorFilter.tint(
-                            color = MaterialTheme.colors.onSurface
+            val (isDropDownShow, setDropDownShown) = remember { mutableStateOf(false) }
+
+            ExposedDropdownMenuBox(
+                expanded = isDropDownShow,
+                onExpandedChange = setDropDownShown,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                Row(
+                    modifier = Modifier
+                        .padding(start = 8.dp, bottom = 8.dp, top = 24.dp)
+                        .clickable { setDropDownShown.invoke(true) }
+                        .border(
+                            width = 2.dp,
+                            color = MaterialTheme.colors.onSurface,
+                            shape = RoundedCornerShape(32.dp)
                         )
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "+ Add tags",
+                        color = MaterialTheme.colors.onSurface,
+                        style = MaterialTheme.typography.subtitle1
                     )
                 }
-            )
 
-            Text(
-                text = "Remove Tags",
-                style = MaterialTheme.typography.h4,
-                modifier = Modifier.padding(start = 8.dp, bottom = 20.dp),
-                color = MaterialTheme.colors.onSurface
-            )
+                ExposedDropdownMenu(
+                    expanded = isDropDownShow,
+                    onDismissRequest = {
+                        setDropDownShown.invoke(false)
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    tags.forEach { tag ->
+                        DropdownMenuItem(
+                            onClick = {
+                                val updated = (selectedTags + tag).toSet()
+                                setSelectedTags.invoke(updated.toList())
+                                setDropDownShown.invoke(false)
+                            }
+                        ) {
+                            Text(text = tag.name)
+                        }
+                    }
+                }
+            }
+
+            if (selectedTags.isNotEmpty()) {
+                Text(
+                    text = "Click on tags to remove",
+                    style = MaterialTheme.typography.subtitle1,
+                    color = MaterialTheme.colors.onSurface,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
 
             FlowRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(128.dp)
-                    .verticalScroll(rememberScrollState())
+                modifier = Modifier.fillMaxWidth()
             ) {
+
                 selectedTags.forEach { tag ->
                     TagChip(
                         tag = tag,
@@ -154,47 +168,19 @@ fun CreateBookmarkContent(
                             .padding(8.dp)
                             .wrapContentWidth()
                             .height(35.dp),
-                        onTagClicked = {
-
+                        onTagClicked = { removeTag ->
+                            val updated = selectedTags.filter { it.id != removeTag.id }
+                            setSelectedTags.invoke(updated)
                         }
                     )
                 }
             }
 
-            OutlinedTextField(
-                modifier = Modifier
-                    .padding(vertical = 24.dp)
-                    .fillMaxWidth(),
-                value = deadLine,
-                onValueChange = { /*TODO fix date format*/ },
-                shape = MaterialTheme.shapes.large,
-                singleLine = true,
-                label = {
-                    Text("Deadline")
-                },
-                textStyle = MaterialTheme.typography.subtitle1,
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = MaterialTheme.colors.onSurface
-                ),
-                readOnly = true,
-                trailingIcon = {
-                    AsyncImage(
-                        model = R.drawable.calender,
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .size(16.dp),
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        colorFilter = ColorFilter.tint(
-                            color = MaterialTheme.colors.onSurface
-                        )
-                    )
-                }
-            )
+            Spacer(Modifier.size(24.dp))
 
             Text(
                 text = "Preview",
-                style = MaterialTheme.typography.h4,
+                style = MaterialTheme.typography.h3,
                 modifier = Modifier.padding(start = 8.dp, bottom = 20.dp),
                 color = MaterialTheme.colors.onSurface
             )
@@ -207,7 +193,7 @@ fun CreateBookmarkContent(
                 onClick = {}
             )
 
-            Spacer(Modifier.size(120.dp))
+            Spacer(Modifier.size(200.dp))
 
         }
 

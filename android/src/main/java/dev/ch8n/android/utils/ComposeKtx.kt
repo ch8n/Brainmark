@@ -1,14 +1,21 @@
 package dev.ch8n.android.utils
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
+
+
+fun String.toast(context: Context) {
+    Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
+}
 
 fun View.isKeyboardOpen(): Boolean {
     val rect = Rect()
@@ -25,7 +32,7 @@ fun rememberIsKeyboardOpen(): State<Boolean> {
         val viewTreeObserver = view.viewTreeObserver
         val listener = ViewTreeObserver.OnGlobalLayoutListener { value = view.isKeyboardOpen() }
         viewTreeObserver.addOnGlobalLayoutListener(listener)
-        awaitDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener)  }
+        awaitDispose { viewTreeObserver.removeOnGlobalLayoutListener(listener) }
     }
 }
 
