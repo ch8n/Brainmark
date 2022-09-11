@@ -50,30 +50,8 @@ class UpdateBookmarkUseCase(
 class CreateBookmarkUseCase(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
-    operator fun invoke(
-        url: String,
-        tagIds: List<String>,
-        createdAt: Long,
-        remindAt: Long,
-        isReviewed: Boolean,
-        notes: String
-    ) = flow {
-        val id = bookmarksDataSource.createBookmark(
-            bookmark =  Bookmark.SAMPLE
-
-//            Bookmark(
-//                id = uuid4().toString(),
-//                url = url,
-//                createdAt = createdAt,
-//                remindAt = remindAt,
-//                isArchived = isReviewed,
-//                notes = notes,
-//                //TODO fix
-//                meta = Meta.default,
-//                primaryTagId = "",
-//                secondaryTagIds = tagIds,
-//            )
-        )
+    operator fun invoke(bookmark: Bookmark) = flow {
+        val id = bookmarksDataSource.createBookmark(bookmark)
         emit(id)
     }
 }

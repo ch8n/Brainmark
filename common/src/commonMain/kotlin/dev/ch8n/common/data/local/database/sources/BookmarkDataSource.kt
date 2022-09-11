@@ -68,16 +68,15 @@ class BookmarkDataSourceImpl constructor(
     }
 
     override suspend fun createBookmark(bookmark: Bookmark): String = withContext(dispatcher) {
-        //   TODO fix tags
-//        queries.upsertBookmark(
-//            id = bookmark.id,
-//            url = bookmark.url,
-//            createdAt = bookmark.createdAt,
-//            remindAt = bookmark.remindAt,
-//            notes = bookmark.notes,
-//            tags = bookmark.secondaryTagIds,
-//            isReviewed = bookmark.isArchived
-//        )
+        // TODO add more fields
+        queries.upsertBookmark(
+            id = bookmark.id,
+            url = bookmark.bookmarkUrl,
+            createdAt = bookmark.createdAt,
+            isReviewed = false,
+            notes = "",
+            tags = bookmark.tagIds
+        )
         return@withContext bookmark.id
     }
 

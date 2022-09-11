@@ -19,12 +19,8 @@ import dev.ch8n.android.design.components.BookmarkCard
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.toast
-import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.utils.AndroidPreview
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun PreviewCreateBookmark(
@@ -58,30 +54,8 @@ fun CreateBookmarkContent(
 ) {
 
     val scope = rememberCoroutineScope()
-
-    val (bookmarkUrl, setBookmarkUrl) = remember { mutableStateOf("https://chetangupta.net") }
-    val (bookmark, setBookmark) = remember { mutableStateOf(Bookmark.new) }
-
-    LaunchedEffect(bookmarkUrl) {
-        scope.coroutineContext.cancelChildren()
-        scope.launch {
-            delay(500)
-            val htmlParser = controller.htmlService
-            val html = htmlParser.getHtml(bookmarkUrl)
-            val meta = htmlParser.parseMeta(bookmarkUrl, html)
-            setBookmark(
-                bookmark.copy(
-                    title = meta.title,
-                    description = meta.description,
-                    siteName = meta.authorOrSite,
-                    favIcon = meta.favIcon,
-                    mainImage = meta.mainImage,
-                    bookmarkUrl = meta.url
-                )
-            )
-        }
-    }
-
+    val bookmark by controller.bookmark.collectAsState()
+    val bookmarkUrl by controller.url.collectAsState()
     val tags by controller.getAllTags.collectAsState(emptyList())
 
     Box(
@@ -113,7 +87,7 @@ fun CreateBookmarkContent(
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 value = bookmarkUrl,
-                onValueChange = setBookmarkUrl,
+                onValueChange = controller::onChangeBookmarkUrl,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -130,10 +104,7 @@ fun CreateBookmarkContent(
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 value = bookmark.title,
-                onValueChange = {
-                    val updated = bookmark.copy(title = it)
-                    setBookmark.invoke(updated)
-                },
+                onValueChange = controller::onTitleChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -150,10 +121,7 @@ fun CreateBookmarkContent(
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 value = bookmark.description,
-                onValueChange = {
-                    val updated = bookmark.copy(description = it)
-                    setBookmark.invoke(updated)
-                },
+                onValueChange = controller::onDescriptionChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -170,10 +138,7 @@ fun CreateBookmarkContent(
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
                 value = bookmark.siteName,
-                onValueChange = {
-                    val updated = bookmark.copy(siteName = it)
-                    setBookmark.invoke(updated)
-                },
+                onValueChange = controller::onAuthorChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -184,7 +149,6 @@ fun CreateBookmarkContent(
                     textColor = MaterialTheme.colors.onSurface
                 )
             )
-
 
             val (isDropDownShow, setDropDownShown) = remember { mutableStateOf(false) }
 
@@ -222,9 +186,7 @@ fun CreateBookmarkContent(
                     tags.forEach { tag ->
                         DropdownMenuItem(
                             onClick = {
-                                val updatedBookmarks = (bookmark.tagIds + tag.id).toSet().toList()
-                                val updated = bookmark.copy(tagIds = updatedBookmarks)
-                                setBookmark.invoke(updated)
+                                controller.onTagAdded(tag)
                                 setDropDownShown.invoke(false)
                             }
                         ) {
@@ -248,21 +210,17 @@ fun CreateBookmarkContent(
                     .padding(start = 4.dp)
                     .fillMaxWidth()
             ) {
-                bookmark.tagIds.forEach { tagId ->
-                    val tag = tags.find { it.id == tagId }
-                    if (tag != null) {
-                        TagChip(
-                            tag = tag,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .height(35.dp),
-                            onTagClicked = { removeTagId ->
-                                val updatedTagIds = bookmark.tagIds.filter { it != removeTagId.id }
-                                val updated = bookmark.copy(tagIds = updatedTagIds)
-                                setBookmark.invoke(updated)
-                            }
-                        )
-                    }
+                val selectedTags by controller.selectedTags.collectAsState(emptyList())
+                selectedTags.forEach { tag ->
+                    TagChip(
+                        tag = tag,
+                        modifier = Modifier
+                            .padding(end = 8.dp, top = 8.dp, bottom = 8.dp)
+                            .height(35.dp),
+                        onTagClicked = { removeTag ->
+                            controller.onTagRemoved(removeTag)
+                        }
+                    )
                 }
             }
 
@@ -280,14 +238,21 @@ fun CreateBookmarkContent(
                 onClick = {}
             )
 
-            Spacer(Modifier.size(200.dp))
+            Spacer(Modifier.size(120.dp))
 
         }
 
-
+        val context = LocalContext.current
         OutlinedButton(
             onClick = {
-
+                controller.onClickCreateBookmark(
+                    onError = {
+                        "Something went wrong!".toast(context)
+                    },
+                    onSuccess = {
+                        "Bookmark created!".toast(context)
+                    }
+                )
             },
             modifier = Modifier
                 .padding(24.dp)
