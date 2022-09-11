@@ -1,5 +1,6 @@
 package dev.ch8n.android.ui.screens.bookmarks
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,7 +26,7 @@ import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
 import dev.ch8n.common.ui.navigation.Destinations
-import dev.ch8n.common.utils.DevelopmentPreview
+import dev.ch8n.common.utils.AndroidPreview
 
 
 @Composable
@@ -37,7 +38,10 @@ fun PreviewBookmarkScreen(
         navigateTo = {},
         navigateBack = {}
     )
-    DevelopmentPreview { isDark ->
+    AndroidPreview(
+        isSplitView = false,
+        isDark = true
+    ) {
         BookmarkScreen(controller, {})
     }
 }
@@ -68,7 +72,11 @@ fun BookmarkScreen(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                MaterialTheme.colors.surface
+            )
     ) {
 
         val (searchQuery, setSearchQuery) = remember {

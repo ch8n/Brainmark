@@ -1,10 +1,7 @@
 package dev.ch8n.android.ui.screens.home
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -28,24 +26,35 @@ import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.ContinueBookmarkCard
 import dev.ch8n.android.design.components.FlashCard
 import dev.ch8n.android.design.components.RecommendedReadCard
+import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.HomeScreenController
 import dev.ch8n.common.ui.navigation.Destinations
-import dev.ch8n.common.utils.DevelopmentPreview
+import dev.ch8n.common.utils.AndroidPreview
 
 
 @Composable
 fun PreviewHomeScreen(
     componentContext: DefaultComponentContext
 ) {
+    val context = LocalContext.current
     val controller = remember {
         HomeScreenController(
             componentContext = componentContext,
-            navigateTo = {},
-            onBack = {}
+            navigateTo = {
+                "On navigate to ${it::class.simpleName}".toast(context)
+            },
+            onBack = {
+                "On back".toast(context)
+            }
         )
     }
-    DevelopmentPreview { isDark ->
-        HomeScreen(controller, onSettingsClicked = {})
+    AndroidPreview(
+        isSplitView = false,
+        isDark = true
+    ) {
+        HomeScreen(controller, onSettingsClicked = {
+            "onSettingsClicked".toast(context)
+        })
     }
 }
 
@@ -56,7 +65,9 @@ fun HomeScreen(
     onSettingsClicked: () -> Unit
 ) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colors.surface)
     ) {
 
         val bookmarks by controller.bookmarks.collectAsState()

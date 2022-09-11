@@ -40,7 +40,6 @@ class CreateBookmarkController(
         val isLoading: Boolean,
     )
 
-
     private val _bookmarkState = MutableStateFlow<BookmarkState>(
         BookmarkState(
             bookmark = Bookmark.new,
