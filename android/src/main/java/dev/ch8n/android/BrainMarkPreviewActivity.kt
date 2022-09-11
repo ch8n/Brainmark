@@ -5,12 +5,16 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
+import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.ch8n.common.data.remote.services.htmlParser.HtmlParserService
 import dev.ch8n.common.utils.PlatformDependencies
 import io.ktor.client.*
@@ -35,25 +39,28 @@ class BrainMarkPreviewActivity : AppCompatActivity() {
 //            )
 
             Column(
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                Modifier.fillMaxSize().verticalScroll(rememberScrollState())
             ) {
 
                 val scope = rememberCoroutineScope()
                 var result by remember { mutableStateOf("") }
+                var meta by remember { mutableStateOf("") }
                 Button(onClick = {
                     scope.launch(Dispatchers.IO) {
                         val parser = HtmlParserService(HttpClient())
-                        val html = parser.getHtml("https://stackoverflow.com/")
+                        val html =
+                            parser.getHtml("https://medium.com/mobilepeople/writing-your-own-coroutinecontext-element-f02c4407ac25")
+                        val metaData = parser.parseMeta(html)
+                        meta = metaData.toString()
                         result = html
                     }
                 }) {
                     Text("Parse")
                 }
 
-                Text(result)
-
+                Text(meta, fontSize = 16.sp)
+                Divider(Modifier.fillMaxWidth(), thickness = 10.dp)
+                Text(result, fontSize = 16.sp)
             }
 
         }
