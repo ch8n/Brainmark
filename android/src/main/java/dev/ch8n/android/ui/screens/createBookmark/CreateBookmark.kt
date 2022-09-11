@@ -42,6 +42,7 @@ fun PreviewCreateBookmark(
     }
     AndroidPreview(
         isSplitView = false,
+        isDark = false
     ) {
         CreateBookmarkContent(
             controller = controller
@@ -60,6 +61,7 @@ fun CreateBookmarkContent(
     val tags by controller.getAllTags.collectAsState(emptyList())
     val isParsingHtml by controller.isParsingHtml.collectAsState()
     val isDuplicateError by controller.isDuplicateError.collectAsState()
+    val isSavingBookmark by controller.isSavingBookmark.collectAsState()
 
     Box(
         modifier = Modifier
@@ -294,6 +296,7 @@ fun CreateBookmarkContent(
 
         val context = LocalContext.current
         OutlinedButton(
+            enabled = !isSavingBookmark,
             onClick = {
                 controller.onClickCreateBookmark(
                     onError = {

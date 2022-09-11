@@ -32,7 +32,10 @@ class CreateBookmarkController(
 
     private val htmlService = DomainInjector.htmlParserService
 
-    private val _url = MutableStateFlow("")
+    private val _bookmark = MutableStateFlow(Bookmark.new)
+    val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()
+
+    private val _url = MutableStateFlow(bookmark.value.bookmarkUrl)
     val url: StateFlow<String> = _url.asStateFlow()
 
     private val _isParsingHtml = MutableStateFlow(false)
@@ -41,8 +44,8 @@ class CreateBookmarkController(
     private val _isDuplicateError = MutableStateFlow(false)
     val isDuplicateError = _isDuplicateError.asStateFlow()
 
-    private val _bookmark = MutableStateFlow(Bookmark.new)
-    val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()
+    private val _isSavingBookmark = MutableStateFlow(false)
+    val isSavingBookmark = _isSavingBookmark.asStateFlow()
 
     val selectedTags = getAllTags.combine(_bookmark) { tags, bookmark ->
         return@combine bookmark.tagIds.mapNotNull { id -> tags.find { it.id == id } }
@@ -59,10 +62,15 @@ class CreateBookmarkController(
         }
     }
 
+    private suspend fun isAlreadyExistingBookmark(url: String): Boolean {
+        val existingBookmark = getBookmarkByUrl.invoke(url).firstOrNull()
+        val isAlreadyExist = existingBookmark != null
+        return isAlreadyExist
+    }
+
     private suspend fun updateBookmarkMeta(url: String) {
         try {
-            val existingBookmark = getBookmarkByUrl.invoke(url).firstOrNull()
-            val isAlreadyExist = existingBookmark != null
+            val isAlreadyExist = isAlreadyExistingBookmark(url)
             _isDuplicateError.update { isAlreadyExist }
             if (isAlreadyExist) {
                 _isParsingHtml.update { false }
@@ -119,11 +127,29 @@ class CreateBookmarkController(
         onSuccess: (value: String) -> Unit,
         onError: (err: String) -> Unit
     ) {
-        val current = _bookmark.value
-        createBookmarkUseCase.invoke(current)
-            .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
-            .onEach { onSuccess.invoke(it) }
-            .launchIn(this)
+        _isSavingBookmark.update { true }
+        launch {
+            val current = _bookmark.value
+            if (current.bookmarkUrl.isEmpty()) {
+                _isSavingBookmark.update { false }
+                return@launch onError.invoke("Url isn't added!")
+            }
+
+            val isAlreadyExist = isAlreadyExistingBookmark(current.bookmarkUrl)
+            if (isAlreadyExist) {
+                _isDuplicateError.update { true }
+                _isSavingBookmark.update { false }
+                return@launch onError.invoke("bookmark already exist!")
+            }
+
+            createBookmarkUseCase.invoke(current)
+                .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
+                .onEach { onSuccess.invoke(it) }
+                .onCompletion {
+                    _isSavingBookmark.update { false }
+                }
+                .launchIn(this)
+        }
     }
 
     fun clearBookmarkUrl() {
