@@ -107,14 +107,6 @@ class CreateBookmarkController(
         }
     }
 
-    fun getTag(tagId: String) {
-        val current = _bookmark.value
-        val updatedTagIds = current.tagIds.filter { it != tagId }
-        _bookmark.update {
-            it.copy(tagIds = updatedTagIds)
-        }
-    }
-
     fun onTagRemoved(tag: Tags) {
         val current = _bookmark.value
         val updatedBookmarks = (current.tagIds + tag.id).toSet().toList()
@@ -127,13 +119,11 @@ class CreateBookmarkController(
         onSuccess: (value: String) -> Unit,
         onError: (err: String) -> Unit
     ) {
-        launch {
-            val current = _bookmark.value
-            createBookmarkUseCase.invoke(current)
-                .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
-                .onEach { onSuccess.invoke(it) }
-                .launchIn(this)
-        }
+        val current = _bookmark.value
+        createBookmarkUseCase.invoke(current)
+            .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
+            .onEach { onSuccess.invoke(it) }
+            .launchIn(this)
     }
 
     fun clearBookmarkUrl() {
