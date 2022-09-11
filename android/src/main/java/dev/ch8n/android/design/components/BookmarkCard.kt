@@ -1,6 +1,7 @@
 package dev.ch8n.android.design.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -50,7 +51,7 @@ fun BookmarkCard(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .offset((-2).dp, 2.dp)
+                .offset((-4).dp, 4.dp)
                 .background(
                     color = MaterialTheme.colors.onSecondary,
                     shape = MaterialTheme.shapes.medium
@@ -61,6 +62,11 @@ fun BookmarkCard(
             modifier = Modifier
                 .fillMaxSize()
                 .clip(MaterialTheme.shapes.medium)
+                .border(
+                    width = 1.dp,
+                    shape = MaterialTheme.shapes.medium,
+                    color = MaterialTheme.colors.onSecondary
+                )
                 .shadow(4.dp, MaterialTheme.shapes.medium)
                 .clickable {
                     onClick.invoke(bookmark)

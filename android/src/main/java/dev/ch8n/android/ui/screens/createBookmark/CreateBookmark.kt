@@ -23,6 +23,9 @@ import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.utils.AndroidPreview
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun PreviewCreateBookmark(
@@ -55,8 +58,37 @@ fun CreateBookmarkContent(
     controller: CreateBookmarkController,
 ) {
 
-    val (bookmarkUrl, setBookmarkUrl) = remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+
+    val (bookmarkUrl, setBookmarkUrl) = remember { mutableStateOf("https://chetangupta.net") }
+    val (title, setTitle) = remember { mutableStateOf("") }
+    val (description, setDescription) = remember { mutableStateOf("") }
+    val (author, setAuthor) = remember { mutableStateOf("") }
     val (selectedTags, setSelectedTags) = remember { mutableStateOf(listOf<Tags>()) }
+    val (bookmark, setBookmark) = remember { mutableStateOf<Bookmark>(Bookmark.new) }
+
+    LaunchedEffect(bookmarkUrl) {
+        scope.coroutineContext.cancelChildren()
+        scope.launch {
+            delay(500)
+            val htmlParser = controller.htmlService
+            val html = htmlParser.getHtml(bookmarkUrl)
+            val meta = htmlParser.parseMeta(bookmarkUrl, html)
+            setTitle(meta.title)
+            setDescription(meta.description)
+            setAuthor(meta.authorOrSite)
+            setBookmark(
+                bookmark.copy(
+                    title = meta.title,
+                    description = meta.description,
+                    siteName = meta.authorOrSite,
+                    favIcon = meta.favIcon,
+                    mainImage = meta.mainImage,
+                    bookmarkUrl = meta.url
+                )
+            )
+        }
+    }
 
     val tags by controller.getAllTags.collectAsState(emptyList())
 
@@ -80,7 +112,8 @@ fun CreateBookmarkContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 24.dp, end = 24.dp, top = 112.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
             OutlinedTextField(
@@ -100,17 +133,70 @@ fun CreateBookmarkContent(
                 )
             )
 
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
+                value = title,
+                onValueChange = setTitle,
+                shape = MaterialTheme.shapes.large,
+                singleLine = true,
+                label = {
+                    Text("Title")
+                },
+                textStyle = MaterialTheme.typography.subtitle1,
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface
+                )
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
+                value = description,
+                onValueChange = setDescription,
+                shape = MaterialTheme.shapes.large,
+                singleLine = true,
+                label = {
+                    Text("Description")
+                },
+                textStyle = MaterialTheme.typography.subtitle1,
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface
+                )
+            )
+
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
+                value = author,
+                onValueChange = setAuthor,
+                shape = MaterialTheme.shapes.large,
+                singleLine = true,
+                label = {
+                    Text("Author")
+                },
+                textStyle = MaterialTheme.typography.subtitle1,
+                colors = TextFieldDefaults.textFieldColors(
+                    textColor = MaterialTheme.colors.onSurface
+                )
+            )
+
+
             val (isDropDownShow, setDropDownShown) = remember { mutableStateOf(false) }
 
             ExposedDropdownMenuBox(
                 expanded = isDropDownShow,
                 onExpandedChange = setDropDownShown,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .padding(top = 8.dp, start = 4.dp)
+                    .fillMaxWidth()
             ) {
 
                 Row(
                     modifier = Modifier
-                        .padding(start = 8.dp, bottom = 8.dp, top = 24.dp)
                         .clickable { setDropDownShown.invoke(true) }
                         .border(
                             width = 2.dp,
@@ -153,21 +239,19 @@ fun CreateBookmarkContent(
                     text = "Click on tags to remove",
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.colors.onSurface,
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(start = 4.dp)
                 )
             }
 
             FlowRow(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .fillMaxWidth()
             ) {
-
                 selectedTags.forEach { tag ->
                     TagChip(
                         tag = tag,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .wrapContentWidth()
-                            .height(35.dp),
+                        modifier = Modifier.height(35.dp),
                         onTagClicked = { removeTag ->
                             val updated = selectedTags.filter { it.id != removeTag.id }
                             setSelectedTags.invoke(updated)
@@ -176,17 +260,14 @@ fun CreateBookmarkContent(
                 }
             }
 
-            Spacer(Modifier.size(24.dp))
-
             Text(
                 text = "Preview",
                 style = MaterialTheme.typography.h3,
-                modifier = Modifier.padding(start = 8.dp, bottom = 20.dp),
                 color = MaterialTheme.colors.onSurface
             )
 
             BookmarkCard(
-                bookmark = Bookmark.SAMPLE,
+                bookmark = bookmark,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp),
@@ -207,7 +288,7 @@ fun CreateBookmarkContent(
                 .align(Alignment.BottomCenter)
                 .size(width = 224.dp, height = 48.dp),
             shape = MaterialTheme.shapes.large,
-            border = BorderStroke(4.dp, MaterialTheme.colors.onSurface)
+            border = BorderStroke(2.dp, MaterialTheme.colors.onSurface)
         ) {
             Text(
                 text = "+ Create Bookmark",

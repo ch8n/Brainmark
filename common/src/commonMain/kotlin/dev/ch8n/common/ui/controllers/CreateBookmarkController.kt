@@ -21,6 +21,9 @@ class CreateBookmarkController(
         .getAllTagsUseCase()
         .map { it.sortedBy { it.name } }
 
+    val htmlService = DomainInjector
+        .htmlParserService
+
 //    private val _bookmark = MutableStateFlow(Bookmark.SAMPLE)
 //    val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()
 //

@@ -42,6 +42,23 @@ data class Bookmark(
     val flashCardIds: List<String>,
 ) {
     companion object {
+
+        // TODO create a func
+        val new: Bookmark
+            get() = Bookmark(
+                id = uuid4().toString(),
+                tagIds = emptyList(),
+                createdAt = 0L,
+                remindAt = 0L,
+                title = "What is LoreIpsome?",
+                isArchived = false,
+                mainImage = "https://samplelib.com/lib/preview/png/sample-boat-400x300.png",
+                description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+                siteName = "https://www.lipsum.com/",
+                favIcon = "https://www.lipsum.com/favicon.ico",
+                bookmarkUrl = "https://www.lipsum.com/",
+                flashCardIds = emptyList()
+            )
         val SAMPLE: Bookmark
             get() = Bookmark(
                 id = uuid4().toString(),
