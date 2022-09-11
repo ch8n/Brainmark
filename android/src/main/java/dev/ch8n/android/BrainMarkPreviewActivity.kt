@@ -48,9 +48,9 @@ class BrainMarkPreviewActivity : AppCompatActivity() {
                 Button(onClick = {
                     scope.launch(Dispatchers.IO) {
                         val parser = HtmlParserService(HttpClient())
-                        val html =
-                            parser.getHtml("https://medium.com/mobilepeople/writing-your-own-coroutinecontext-element-f02c4407ac25")
-                        val metaData = parser.parseMeta(html)
+                        val url = "https://stackoverflow.com/questions/58544781/how-to-check-if-a-sequence-is-empty-in-kotlin"
+                        val html = parser.getHtml(url)
+                        val metaData = parser.parseMeta(url, html)
                         meta = metaData.toString()
                         result = html
                     }

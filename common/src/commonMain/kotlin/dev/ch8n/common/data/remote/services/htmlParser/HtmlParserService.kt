@@ -3,6 +3,7 @@ package dev.ch8n.common.data.remote.services.htmlParser
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,9 +15,10 @@ class HtmlParserService(
         httpClient.get(url).bodyAsText()
     }
 
-    fun parseMeta(html: String): MetaDTO {
+    fun parseMeta(url: String, html: String): MetaDTO {
         val htmlTags = html.splitToSequence("<", "/>")
         val metaTags = htmlTags.filter { it.contains("meta") }
+        val domain = Url(url).host
 
         // title
         val title = metaTags.metaSelectorName("og:title")
@@ -46,6 +48,9 @@ class HtmlParserService(
         // favIcon
         val favIcon = htmlTags.getHref("apple-touch-icon")
             .ifEmpty { htmlTags.getHref("icon") }
+            .ifEmpty { htmlTags.getHref("shortcut icon") }
+            .ifEmpty { htmlTags.getHref("image_src") }
+            .ifEmpty { "https://www.google.com/s2/favicons?domain=$domain" }
 
         // author or site
         val authorOrSite = metaTags.metaSelectorName("author")
@@ -61,7 +66,8 @@ class HtmlParserService(
             mediaType = mediaType,
             mainImage = mainImage,
             favIcon = favIcon,
-            authorOrSite = authorOrSite
+            authorOrSite = authorOrSite,
+            url = url
         )
     }
 

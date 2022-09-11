@@ -7,4 +7,5 @@ data class MetaDTO(
     val mainImage:String,
     val favIcon:String,
     val authorOrSite:String,
+    val url : String
 )
