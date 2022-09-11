@@ -20,7 +20,6 @@ import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.utils.AndroidPreview
 import kotlinx.coroutines.cancelChildren
@@ -61,11 +60,7 @@ fun CreateBookmarkContent(
     val scope = rememberCoroutineScope()
 
     val (bookmarkUrl, setBookmarkUrl) = remember { mutableStateOf("https://chetangupta.net") }
-    val (title, setTitle) = remember { mutableStateOf("") }
-    val (description, setDescription) = remember { mutableStateOf("") }
-    val (author, setAuthor) = remember { mutableStateOf("") }
-    val (selectedTags, setSelectedTags) = remember { mutableStateOf(listOf<Tags>()) }
-    val (bookmark, setBookmark) = remember { mutableStateOf<Bookmark>(Bookmark.new) }
+    val (bookmark, setBookmark) = remember { mutableStateOf(Bookmark.new) }
 
     LaunchedEffect(bookmarkUrl) {
         scope.coroutineContext.cancelChildren()
@@ -74,9 +69,6 @@ fun CreateBookmarkContent(
             val htmlParser = controller.htmlService
             val html = htmlParser.getHtml(bookmarkUrl)
             val meta = htmlParser.parseMeta(bookmarkUrl, html)
-            setTitle(meta.title)
-            setDescription(meta.description)
-            setAuthor(meta.authorOrSite)
             setBookmark(
                 bookmark.copy(
                     title = meta.title,
@@ -137,8 +129,11 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = title,
-                onValueChange = setTitle,
+                value = bookmark.title,
+                onValueChange = {
+                    val updated = bookmark.copy(title = it)
+                    setBookmark.invoke(updated)
+                },
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -154,8 +149,11 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = description,
-                onValueChange = setDescription,
+                value = bookmark.description,
+                onValueChange = {
+                    val updated = bookmark.copy(description = it)
+                    setBookmark.invoke(updated)
+                },
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -171,8 +169,11 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = author,
-                onValueChange = setAuthor,
+                value = bookmark.siteName,
+                onValueChange = {
+                    val updated = bookmark.copy(siteName = it)
+                    setBookmark.invoke(updated)
+                },
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -192,9 +193,7 @@ fun CreateBookmarkContent(
                 onExpandedChange = setDropDownShown,
                 modifier = Modifier
                     .padding(top = 8.dp, start = 4.dp)
-                    .fillMaxWidth()
             ) {
-
                 Row(
                     modifier = Modifier
                         .clickable { setDropDownShown.invoke(true) }
@@ -223,8 +222,9 @@ fun CreateBookmarkContent(
                     tags.forEach { tag ->
                         DropdownMenuItem(
                             onClick = {
-                                val updated = (selectedTags + tag).toSet()
-                                setSelectedTags.invoke(updated.toList())
+                                val updatedBookmarks = (bookmark.tagIds + tag.id).toSet().toList()
+                                val updated = bookmark.copy(tagIds = updatedBookmarks)
+                                setBookmark.invoke(updated)
                                 setDropDownShown.invoke(false)
                             }
                         ) {
@@ -234,7 +234,7 @@ fun CreateBookmarkContent(
                 }
             }
 
-            if (selectedTags.isNotEmpty()) {
+            if (bookmark.tagIds.isNotEmpty()) {
                 Text(
                     text = "Click on tags to remove",
                     style = MaterialTheme.typography.subtitle1,
@@ -248,15 +248,21 @@ fun CreateBookmarkContent(
                     .padding(start = 4.dp)
                     .fillMaxWidth()
             ) {
-                selectedTags.forEach { tag ->
-                    TagChip(
-                        tag = tag,
-                        modifier = Modifier.height(35.dp),
-                        onTagClicked = { removeTag ->
-                            val updated = selectedTags.filter { it.id != removeTag.id }
-                            setSelectedTags.invoke(updated)
-                        }
-                    )
+                bookmark.tagIds.forEach { tagId ->
+                    val tag = tags.find { it.id == tagId }
+                    if (tag != null) {
+                        TagChip(
+                            tag = tag,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .height(35.dp),
+                            onTagClicked = { removeTagId ->
+                                val updatedTagIds = bookmark.tagIds.filter { it != removeTagId.id }
+                                val updated = bookmark.copy(tagIds = updatedTagIds)
+                                setBookmark.invoke(updated)
+                            }
+                        )
+                    }
                 }
             }
 
