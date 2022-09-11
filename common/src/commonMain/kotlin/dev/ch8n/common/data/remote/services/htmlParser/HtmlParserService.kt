@@ -15,7 +15,7 @@ class HtmlParserService(
         httpClient.get(url).bodyAsText()
     }
 
-    fun parseMeta(url: String, html: String): MetaDTO {
+    suspend fun parseMeta(url: String, html: String): MetaDTO = withContext(Dispatchers.IO) {
         val htmlTags = html.splitToSequence("<", "/>")
         val metaTags = htmlTags.filter { it.contains("meta") }
         val domain = Url(url).host
@@ -60,7 +60,7 @@ class HtmlParserService(
             .ifEmpty { metaTags.metaSelectorName("og:url") }
             .ifEmpty { metaTags.metaSelectorProperty("og:url") }
 
-        return MetaDTO(
+        return@withContext MetaDTO(
             title = title.normalize(),
             description = description.normalize(),
             mediaType = mediaType.normalize(),
