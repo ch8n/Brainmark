@@ -2,6 +2,7 @@ package dev.ch8n.common.data.local.database.sources
 
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
+import dev.ch8n.common.BookmarkEntity
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.sqlDB.BrainmarkDB
 import kotlinx.coroutines.*
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.map
 
 interface BookmarkDataSource {
     fun getAllBookmarks(): Flow<List<Bookmark>>
+    suspend fun getBookmarkByUrl(url: String): Bookmark?
     suspend fun getBookmarkById(id: String): Bookmark?
     suspend fun getBookmarksByIds(ids: List<String>): List<Bookmark>
     suspend fun deleteBookmark(id: String)
@@ -18,18 +20,20 @@ interface BookmarkDataSource {
     suspend fun updateBookmark(bookmark: Bookmark): String
 }
 
-//fun BookmarkEntity.toBookmark() = Bookmark(
-//    id = id,
-//    url = url,
-//    createdAt = createdAt,
-//    remindAt = remindAt,
-//    isArchived = isReviewed,
-//    notes = notes,
-//    // TODO fix
-//    meta = Meta.default,
-//    primaryTagId = "",
-//    secondaryTagIds = tags
-//)
+fun BookmarkEntity.toBookmark() = Bookmark(
+    id = id,
+    bookmarkUrl = url,
+    createdAt = createdAt,
+    isArchived = isReviewed,
+    notes = notes,
+    mainImage = mainImage,
+    title = title,
+    description = description,
+    siteName = siteName,
+    favIcon = favIcon,
+    tagIds = tagsIds,
+    flashCardIds = flashCardsIds
+)
 
 class BookmarkDataSourceImpl constructor(
     private val database: BrainmarkDB,
@@ -38,22 +42,21 @@ class BookmarkDataSourceImpl constructor(
 
     private val queries = database.brainmarkDBQueries
 
+    override suspend fun getBookmarkByUrl(url: String): Bookmark? {
+        return queries.getBookmarksByUrl(url).executeAsOneOrNull()?.toBookmark()
+    }
     override fun getAllBookmarks(): Flow<List<Bookmark>> = queries.getBookmarks()
         .asFlow()
         .distinctUntilChanged()
         .mapToList(dispatcher)
         .map { entities ->
-            entities.map {
-                //TODO fix it.toBookmark()
-                Bookmark.SAMPLE
-            }
+            entities.map { it.toBookmark() }
         }
 
     override suspend fun getBookmarkById(id: String): Bookmark? = withContext(dispatcher) {
-        //queries.getBookmarksById(id).executeAsOneOrNull()?.toBookmark()
-        //TODO fix
-        null
+        queries.getBookmarksById(id).executeAsOneOrNull()?.toBookmark()
     }
+
 
     override suspend fun getBookmarksByIds(ids: List<String>): List<Bookmark> = withContext(dispatcher) {
         coroutineScope {
@@ -68,14 +71,19 @@ class BookmarkDataSourceImpl constructor(
     }
 
     override suspend fun createBookmark(bookmark: Bookmark): String = withContext(dispatcher) {
-        // TODO add more fields
         queries.upsertBookmark(
             id = bookmark.id,
             url = bookmark.bookmarkUrl,
             createdAt = bookmark.createdAt,
-            isReviewed = false,
-            notes = "",
-            tags = bookmark.tagIds
+            isReviewed = bookmark.isArchived,
+            notes = bookmark.notes,
+            mainImage = bookmark.mainImage,
+            title = bookmark.title,
+            description = bookmark.description,
+            siteName = bookmark.siteName,
+            favIcon = bookmark.favIcon,
+            tagsIds = bookmark.tagIds,
+            flashCardsIds = bookmark.flashCardIds
         )
         return@withContext bookmark.id
     }

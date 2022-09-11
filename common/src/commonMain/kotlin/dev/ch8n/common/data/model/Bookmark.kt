@@ -32,13 +32,14 @@ data class Bookmark(
     val tagIds: List<String>,
     val createdAt: Long,
     val isArchived: Boolean,
-    val title: String,
     val mainImage: String,
+    val title: String,
     val description: String,
     val siteName: String,
     val favIcon: String,
     val bookmarkUrl: String,
     val flashCardIds: List<String>,
+    val notes: String
 ) {
     companion object {
 
@@ -55,7 +56,8 @@ data class Bookmark(
                 siteName = "https://www.lipsum.com/",
                 favIcon = "https://www.lipsum.com/favicon.ico",
                 bookmarkUrl = "https://www.lipsum.com/",
-                flashCardIds = emptyList()
+                flashCardIds = emptyList(),
+                notes = ""
             )
         val SAMPLE: Bookmark
             get() = Bookmark(
@@ -69,7 +71,8 @@ data class Bookmark(
                 siteName = "https://www.lipsum.com/",
                 favIcon = "https://www.lipsum.com/favicon.ico",
                 bookmarkUrl = "https://www.lipsum.com/",
-                flashCardIds = emptyList()
+                flashCardIds = emptyList(),
+                notes = ""
             )
     }
 }

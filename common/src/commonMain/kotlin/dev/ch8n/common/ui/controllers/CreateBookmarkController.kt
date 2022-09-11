@@ -26,10 +26,20 @@ class CreateBookmarkController(
         .bookmarkUseCase
         .createBookmarkUseCase
 
+    private val getBookmarkByUrl = DomainInjector
+        .bookmarkUseCase
+        .getBookmarkByUrl
+
     private val htmlService = DomainInjector.htmlParserService
 
     private val _url = MutableStateFlow("")
     val url: StateFlow<String> = _url.asStateFlow()
+
+    private val _isParsingHtml = MutableStateFlow(false)
+    val isParsingHtml: StateFlow<Boolean> = _isParsingHtml.asStateFlow()
+
+    private val _isDuplicateError = MutableStateFlow(false)
+    val isDuplicateError = _isDuplicateError.asStateFlow()
 
     private val _bookmark = MutableStateFlow(Bookmark.new)
     val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()
@@ -40,16 +50,24 @@ class CreateBookmarkController(
 
     private var metaParseJob: Job? = null
     fun onChangeBookmarkUrl(url: String) {
+        _isParsingHtml.update { true }
         _url.update { url }
         metaParseJob?.cancel()
         metaParseJob = launch {
-            delay(500)
+            delay(100)
             updateBookmarkMeta(url)
         }
     }
 
     private suspend fun updateBookmarkMeta(url: String) {
         try {
+            val existingBookmark = getBookmarkByUrl.invoke(url).firstOrNull()
+            val isAlreadyExist = existingBookmark != null
+            _isDuplicateError.update { isAlreadyExist }
+            if (isAlreadyExist) {
+                _isParsingHtml.update { false }
+                return
+            }
             val html = htmlService.getHtml(url)
             val meta = htmlService.parseMeta(url, html)
             _bookmark.update {
@@ -64,6 +82,7 @@ class CreateBookmarkController(
             }
         } catch (e: Exception) {
         }
+        _isParsingHtml.update { false }
     }
 
     fun onTitleChanged(title: String) {
@@ -105,17 +124,20 @@ class CreateBookmarkController(
     }
 
     fun onClickCreateBookmark(
-        onSuccess: () -> Unit,
-        onError: () -> Unit
+        onSuccess: (value: String) -> Unit,
+        onError: (err: String) -> Unit
     ) {
         launch {
             val current = _bookmark.value
-            val id = createBookmarkUseCase(current).firstOrNull()
-            if (id == null) {
-                onError.invoke()
-            } else {
-                onSuccess.invoke()
-            }
+            createBookmarkUseCase.invoke(current)
+                .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
+                .onEach { onSuccess.invoke(it) }
+                .launchIn(this)
         }
+    }
+
+    fun clearBookmarkUrl() {
+        _url.update { "" }
+        _isDuplicateError.update { false }
     }
 }

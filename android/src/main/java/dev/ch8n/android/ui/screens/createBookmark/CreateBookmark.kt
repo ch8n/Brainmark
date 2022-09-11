@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -20,6 +21,7 @@ import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
+import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.AndroidPreview
 
 @Composable
@@ -53,10 +55,11 @@ fun CreateBookmarkContent(
     controller: CreateBookmarkController,
 ) {
 
-    val scope = rememberCoroutineScope()
     val bookmark by controller.bookmark.collectAsState()
     val bookmarkUrl by controller.url.collectAsState()
     val tags by controller.getAllTags.collectAsState(emptyList())
+    val isParsingHtml by controller.isParsingHtml.collectAsState()
+    val isDuplicateError by controller.isDuplicateError.collectAsState()
 
     Box(
         modifier = Modifier
@@ -96,8 +99,45 @@ fun CreateBookmarkContent(
                 textStyle = MaterialTheme.typography.subtitle1,
                 colors = TextFieldDefaults.textFieldColors(
                     textColor = MaterialTheme.colors.onSurface
-                )
+                ),
+                trailingIcon = {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        if (isParsingHtml) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+
+                        if (bookmarkUrl.isNotEmpty()) {
+                            AsyncImage(
+                                model = R.drawable.close,
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable { controller.clearBookmarkUrl() },
+                                contentDescription = "",
+                                contentScale = ContentScale.Fit,
+                                colorFilter = ColorFilter.tint(
+                                    color = MaterialTheme.colors.onSurface
+                                )
+                            )
+                        }
+                    }
+                },
+                isError = isDuplicateError,
             )
+
+            if (isDuplicateError) {
+                Text(
+                    "Already exist!",
+                    color = Color.Red,
+                    style = MaterialTheme.typography.subtitle1,
+                    modifier = Modifier.padding(horizontal = 24.dp)
+                )
+            }
 
             OutlinedTextField(
                 modifier = Modifier
@@ -183,6 +223,16 @@ fun CreateBookmarkContent(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
+
+                    DropdownMenuItem(
+                        onClick = {
+                            controller.navigateTo(Destinations.TagManager)
+                            setDropDownShown.invoke(false)
+                        }
+                    ) {
+                        Text(text = "Create a new Tag")
+                    }
+
                     tags.forEach { tag ->
                         DropdownMenuItem(
                             onClick = {
@@ -247,10 +297,10 @@ fun CreateBookmarkContent(
             onClick = {
                 controller.onClickCreateBookmark(
                     onError = {
-                        "Something went wrong!".toast(context)
+                        it.toast(context)
                     },
                     onSuccess = {
-                        "Bookmark created!".toast(context)
+                        "Bookmark created! $it".toast(context)
                     }
                 )
             },

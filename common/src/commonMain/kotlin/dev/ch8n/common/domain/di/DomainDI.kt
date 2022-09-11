@@ -19,7 +19,8 @@ object DomainResolver {
             getBookmarkByIdUseCase = GetBookmarkByIdUseCase(bookmarkDataSource),
             createBookmarkUseCase = CreateBookmarkUseCase(bookmarkDataSource),
             updateBookmarkUseCase = UpdateBookmarkUseCase(bookmarkDataSource),
-            deleteBookmarkUseCase = DeleteBookmarkUseCase(bookmarkDataSource)
+            deleteBookmarkUseCase = DeleteBookmarkUseCase(bookmarkDataSource),
+            getBookmarkByUrl = GetBookmarkByUrlUseCase(bookmarkDataSource)
         )
     }
 

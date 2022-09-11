@@ -5,6 +5,7 @@ import dev.ch8n.common.data.model.Bookmark
 import kotlinx.coroutines.flow.flow
 
 class BookmarkUseCases(
+    val getBookmarkByUrl: GetBookmarkByUrlUseCase,
     val getAllBookmarkUseCase: GetAllBookmarkUseCase,
     val getBookmarkByIdUseCase: GetBookmarkByIdUseCase,
     val createBookmarkUseCase: CreateBookmarkUseCase,
@@ -26,6 +27,15 @@ class GetAllBookmarkUseCase(
     private val bookmarkDataSource: BookmarkDataSource
 ) {
     operator fun invoke() = bookmarkDataSource.getAllBookmarks()
+}
+
+class GetBookmarkByUrlUseCase(
+    private val bookmarkDataSource: BookmarkDataSource
+) {
+    operator fun invoke(url: String) = flow {
+        val bookmark = bookmarkDataSource.getBookmarkByUrl(url)
+        emit(bookmark)
+    }
 }
 
 
