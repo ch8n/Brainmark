@@ -32,29 +32,38 @@ class CreateBookmarkController(
 
     private val htmlService = DomainInjector.htmlParserService
 
-    private val _bookmark = MutableStateFlow(Bookmark.new)
-    val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()
+    data class BookmarkState(
+        val bookmark: Bookmark,
+        val url: String = bookmark.bookmarkUrl,
+        val isError: Boolean,
+        val errorMsg: String,
+        val isLoading: Boolean,
+    )
 
-    private val _url = MutableStateFlow(bookmark.value.bookmarkUrl)
-    val url: StateFlow<String> = _url.asStateFlow()
 
-    private val _isParsingHtml = MutableStateFlow(false)
-    val isParsingHtml: StateFlow<Boolean> = _isParsingHtml.asStateFlow()
+    private val _bookmarkState = MutableStateFlow<BookmarkState>(
+        BookmarkState(
+            bookmark = Bookmark.new,
+            isError = false,
+            errorMsg = "",
+            isLoading = false
+        )
+    )
 
-    private val _isDuplicateError = MutableStateFlow(false)
-    val isDuplicateError = _isDuplicateError.asStateFlow()
+    val bookmarkState = _bookmarkState.asStateFlow()
 
-    private val _isSavingBookmark = MutableStateFlow(false)
-    val isSavingBookmark = _isSavingBookmark.asStateFlow()
-
-    val selectedTags = getAllTags.combine(_bookmark) { tags, bookmark ->
-        return@combine bookmark.tagIds.mapNotNull { id -> tags.find { it.id == id } }
+    val selectedTags = getAllTags.combine(_bookmarkState) { tags, _bookmarkState ->
+        return@combine bookmarkState.value.bookmark.tagIds.mapNotNull { id -> tags.find { it.id == id } }
     }
 
     private var metaParseJob: Job? = null
     fun onChangeBookmarkUrl(url: String) {
-        _isParsingHtml.update { true }
-        _url.update { url }
+        _bookmarkState.update {
+            it.copy(
+                isLoading = true,
+                url = url,
+            )
+        }
         metaParseJob?.cancel()
         metaParseJob = launch {
             delay(100)
@@ -64,62 +73,94 @@ class CreateBookmarkController(
 
     private suspend fun isAlreadyExistingBookmark(url: String): Boolean {
         val existingBookmark = getBookmarkByUrl.invoke(url).firstOrNull()
-        val isAlreadyExist = existingBookmark != null
-        return isAlreadyExist
+        return existingBookmark != null
     }
 
     private suspend fun updateBookmarkMeta(url: String) {
         try {
             val isAlreadyExist = isAlreadyExistingBookmark(url)
-            _isDuplicateError.update { isAlreadyExist }
             if (isAlreadyExist) {
-                _isParsingHtml.update { false }
+                _bookmarkState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMsg = "Bookmark already Exist!",
+                        isError = true
+                    )
+                }
                 return
             }
             val html = htmlService.getHtml(url)
             val meta = htmlService.parseMeta(url, html)
-            _bookmark.update {
+            _bookmarkState.update {
                 it.copy(
-                    title = meta.title,
-                    description = meta.description,
-                    siteName = meta.authorOrSite,
-                    favIcon = meta.favIcon,
-                    mainImage = meta.mainImage,
-                    bookmarkUrl = meta.url
+                    isLoading = false,
+                    isError = false,
+                    errorMsg = "",
+                    bookmark = it.bookmark.copy(
+                        title = meta.title,
+                        description = meta.description,
+                        siteName = meta.authorOrSite,
+                        favIcon = meta.favIcon,
+                        mainImage = meta.mainImage,
+                        bookmarkUrl = meta.url
+                    )
                 )
             }
         } catch (e: Exception) {
         }
-        _isParsingHtml.update { false }
     }
 
     fun onTitleChanged(title: String) {
-        _bookmark.update {
-            it.copy(title = title)
+        _bookmarkState.update {
+            it.copy(
+                bookmark = it.bookmark.copy(
+                    title = title
+                )
+            )
         }
     }
 
     fun onDescriptionChanged(description: String) {
-        _bookmark.update { it.copy(description = description) }
+        _bookmarkState.update {
+            it.copy(
+                bookmark = it.bookmark.copy(
+                    description = description
+                )
+            )
+        }
     }
 
     fun onAuthorChanged(author: String) {
-        _bookmark.update { it.copy(siteName = author) }
+        _bookmarkState.update {
+            it.copy(
+                bookmark = it.bookmark.copy(
+                    siteName = author
+                )
+            )
+        }
     }
 
     fun onTagAdded(tag: Tags) {
-        val current = _bookmark.value
+        val current = _bookmarkState.value.bookmark
         val updatedBookmarks = (current.tagIds + tag.id).toSet().toList()
-        _bookmark.update {
-            it.copy(tagIds = updatedBookmarks)
+        _bookmarkState.update {
+            it.copy(
+                bookmark = it.bookmark.copy(
+                    tagIds = updatedBookmarks
+                ),
+            )
         }
     }
 
     fun onTagRemoved(tag: Tags) {
-        val current = _bookmark.value
+        val current = _bookmarkState.value.bookmark
         val updatedBookmarks = (current.tagIds + tag.id).toSet().toList()
-        _bookmark.update {
-            it.copy(tagIds = updatedBookmarks)
+        _bookmarkState.update {
+            it.copy(
+                bookmark = it.bookmark.copy(
+                    tagIds = updatedBookmarks
+                ),
+            )
         }
     }
 
@@ -127,18 +168,35 @@ class CreateBookmarkController(
         onSuccess: (value: String) -> Unit,
         onError: (err: String) -> Unit
     ) {
-        _isSavingBookmark.update { true }
+        _bookmarkState.update {
+            it.copy(
+                isLoading = true,
+                errorMsg = "",
+                isError = false
+            )
+        }
         launch {
-            val current = _bookmark.value
+            val current = _bookmarkState.value.bookmark
             if (current.bookmarkUrl.isEmpty()) {
-                _isSavingBookmark.update { false }
-                return@launch onError.invoke("Url isn't added!")
+                _bookmarkState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMsg = "Url isn't added!",
+                        isError = true
+                    )
+                }
+                return@launch
             }
 
             val isAlreadyExist = isAlreadyExistingBookmark(current.bookmarkUrl)
             if (isAlreadyExist) {
-                _isDuplicateError.update { true }
-                _isSavingBookmark.update { false }
+                _bookmarkState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMsg = "Url isn't added!",
+                        isError = true
+                    )
+                }
                 return@launch onError.invoke("bookmark already exist!")
             }
 
@@ -146,14 +204,25 @@ class CreateBookmarkController(
                 .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
                 .onEach { onSuccess.invoke(it) }
                 .onCompletion {
-                    _isSavingBookmark.update { false }
+                    _bookmarkState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMsg = "",
+                            isError = false
+                        )
+                    }
                 }
                 .launchIn(this)
         }
     }
 
     fun clearBookmarkUrl() {
-        _url.update { "" }
-        _isDuplicateError.update { false }
+        _bookmarkState.update {
+            it.copy(
+                url = "",
+                errorMsg = "",
+                isError = false
+            )
+        }
     }
 }

@@ -56,12 +56,8 @@ fun CreateBookmarkContent(
     controller: CreateBookmarkController,
 ) {
 
-    val bookmark by controller.bookmark.collectAsState()
-    val bookmarkUrl by controller.url.collectAsState()
+    val bookmarkState by controller.bookmarkState.collectAsState()
     val tags by controller.getAllTags.collectAsState(emptyList())
-    val isParsingHtml by controller.isParsingHtml.collectAsState()
-    val isDuplicateError by controller.isDuplicateError.collectAsState()
-    val isSavingBookmark by controller.isSavingBookmark.collectAsState()
 
     Box(
         modifier = Modifier
@@ -91,7 +87,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmarkUrl,
+                value = bookmarkState.url,
                 onValueChange = controller::onChangeBookmarkUrl,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -108,13 +104,13 @@ fun CreateBookmarkContent(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        if (isParsingHtml) {
+                        if (bookmarkState.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp)
                             )
                         }
 
-                        if (bookmarkUrl.isNotEmpty()) {
+                        if (bookmarkState.url.isNotEmpty()) {
                             AsyncImage(
                                 model = R.drawable.close,
                                 modifier = Modifier
@@ -129,10 +125,10 @@ fun CreateBookmarkContent(
                         }
                     }
                 },
-                isError = isDuplicateError,
+                isError = bookmarkState.isError,
             )
 
-            if (isDuplicateError) {
+            if (bookmarkState.isError) {
                 Text(
                     "Already exist!",
                     color = Color.Red,
@@ -145,7 +141,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmark.title,
+                value = bookmarkState.bookmark.title,
                 onValueChange = controller::onTitleChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -162,7 +158,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmark.description,
+                value = bookmarkState.bookmark.description,
                 onValueChange = controller::onDescriptionChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -179,7 +175,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmark.siteName,
+                value = bookmarkState.bookmark.siteName,
                 onValueChange = controller::onAuthorChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -248,7 +244,7 @@ fun CreateBookmarkContent(
                 }
             }
 
-            if (bookmark.tagIds.isNotEmpty()) {
+            if (bookmarkState.bookmark.tagIds.isNotEmpty()) {
                 Text(
                     text = "Click on tags to remove",
                     style = MaterialTheme.typography.subtitle1,
@@ -283,7 +279,7 @@ fun CreateBookmarkContent(
             )
 
             BookmarkCard(
-                bookmark = bookmark,
+                bookmark = bookmarkState.bookmark,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp),
@@ -296,7 +292,7 @@ fun CreateBookmarkContent(
 
         val context = LocalContext.current
         OutlinedButton(
-            enabled = !isSavingBookmark,
+            enabled = !bookmarkState.isLoading && !bookmarkState.isError,
             onClick = {
                 controller.onClickCreateBookmark(
                     onError = {
