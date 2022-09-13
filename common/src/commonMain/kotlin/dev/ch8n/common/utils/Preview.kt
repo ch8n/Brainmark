@@ -19,6 +19,42 @@ fun Preview(
     }
 }
 
+@Composable
+fun DesktopPreview(
+    isSplitView: Boolean = true,
+    isDark: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        Preview(isDark = isDark) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .border(2.dp, Color.Red)
+            ) {
+                content.invoke()
+            }
+        }
+        if (isSplitView) {
+            Preview(isDark = !isDark) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .border(2.dp, Color.Blue)
+                ) {
+                    content.invoke()
+                }
+            }
+        }
+    }
+}
+
 
 @Composable
 fun AndroidPreview(

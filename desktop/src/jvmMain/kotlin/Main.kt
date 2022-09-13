@@ -21,7 +21,6 @@ import dev.ch8n.common.ui.controllers.*
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.ui.navigation.NavHostComponent
 import dev.ch8n.common.ui.theme.BrainMarkTheme
-import ui.screen.TagScreenPreview
 
 fun main() {
     val lifecycle = LifecycleRegistry()
@@ -56,26 +55,32 @@ fun BrainMarkDesktopApp(defaultComponentContext: DefaultComponentContext, lifecy
                                     setDarkTheme.invoke(!isDarkTheme)
                                 }
                             )
-                            is TagManagerController -> TagScreenPreview(
-                                controller = controller,
-                                onSettingsClicked = {
-                                    setDarkTheme.invoke(!isDarkTheme)
-                                }
-                            )
+
+                            is TagManagerController -> {}
+
+//                                TagScreenPreview(
+//                                controller = controller,
+//                                onSettingsClicked = {
+//                                    setDarkTheme.invoke(!isDarkTheme)
+//                                }
+//                            )
                             is HomeScreenController -> WorkInProgress(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)
                                 }
                             )
+
                             is CreateBookmarkController -> WorkInProgress(
                                 controller = controller,
                                 onSettingsClicked = {}
                             )
+
                             is BrowserController -> WorkInProgress(
                                 controller = controller,
                                 onSettingsClicked = {}
                             )
+
                             else -> throw IllegalStateException("Unhandled controller and ui at navigation")
                         }
                     }
