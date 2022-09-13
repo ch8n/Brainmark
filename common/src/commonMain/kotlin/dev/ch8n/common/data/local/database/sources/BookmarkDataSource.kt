@@ -18,6 +18,7 @@ interface BookmarkDataSource {
     suspend fun deleteBookmark(id: String)
     suspend fun createBookmark(bookmark: Bookmark): String
     suspend fun updateBookmark(bookmark: Bookmark): String
+    suspend fun getBookmarksPaging(createdAt: Long): List<Bookmark>
 }
 
 fun BookmarkEntity.toBookmark() = Bookmark(
@@ -45,6 +46,7 @@ class BookmarkDataSourceImpl constructor(
     override suspend fun getBookmarkByUrl(url: String): Bookmark? {
         return queries.getBookmarksByUrl(url).executeAsOneOrNull()?.toBookmark()
     }
+
     override fun getAllBookmarks(): Flow<List<Bookmark>> = queries.getBookmarks()
         .asFlow()
         .distinctUntilChanged()
@@ -52,6 +54,10 @@ class BookmarkDataSourceImpl constructor(
         .map { entities ->
             entities.map { it.toBookmark() }
         }
+
+    override suspend fun getBookmarksPaging(createdAt: Long): List<Bookmark> {
+        return queries.getBookmarksPaging(createdAt).executeAsList().map { it.toBookmark() }
+    }
 
     override suspend fun getBookmarkById(id: String): Bookmark? = withContext(dispatcher) {
         queries.getBookmarksById(id).executeAsOneOrNull()?.toBookmark()

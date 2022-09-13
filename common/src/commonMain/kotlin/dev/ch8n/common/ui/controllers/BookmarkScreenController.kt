@@ -5,9 +5,7 @@ import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 
 class BookmarkScreenController(
     componentContext: ComponentContext,
@@ -15,9 +13,20 @@ class BookmarkScreenController(
     val navigateBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
-    private val createBookmarkUseCase = DomainInjector.bookmarkUseCase.createBookmarkUseCase
+    private val bookmarkPager = DomainInjector
+        .bookmarkUseCase
+        .getBookmarksPaging
 
-    private val _bookmark = MutableStateFlow(Bookmark.SAMPLE)
-    val bookmark: StateFlow<Bookmark> = _bookmark.asStateFlow()
+    private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
+    val bookmarks = _bookmarks.asStateFlow()
+
+    fun nextBookmark(createdAt: Long) {
+        bookmarkPager.invoke(createdAt)
+            .onEach { nextBookmarks ->
+                val updated = _bookmarks.value + nextBookmarks
+                _bookmarks.update { updated }
+            }
+            .launchIn(this)
+    }
 
 }

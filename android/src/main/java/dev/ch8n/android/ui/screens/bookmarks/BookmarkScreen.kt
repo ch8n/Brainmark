@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -22,6 +23,7 @@ import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BookmarkCard
 import dev.ch8n.android.design.components.BottomNavbar
+import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
@@ -33,16 +35,23 @@ import dev.ch8n.common.utils.AndroidPreview
 fun PreviewBookmarkScreen(
     componentContext: DefaultComponentContext
 ) {
+    val context = LocalContext.current
     val controller = BookmarkScreenController(
         componentContext = componentContext,
-        navigateTo = {},
-        navigateBack = {}
+        navigateTo = {
+            "On navigate to ${it::class.simpleName}".toast(context)
+        },
+        navigateBack = {
+            "On Back".toast(context)
+        }
     )
     AndroidPreview(
         isSplitView = false,
         isDark = true
     ) {
-        BookmarkScreen(controller, {})
+        BookmarkScreen(controller, onSettingsClicked = {
+            "Settings clicked".toast(context)
+        })
     }
 }
 
@@ -52,7 +61,9 @@ fun BookmarkScreen(
     controller: BookmarkScreenController,
     onSettingsClicked: () -> Unit
 ) {
-
+    // TODO add paging using ->
+    //  using where would be fast than offset
+    //  --createdAtDate -- sort by date --> limit 10 --> save last item date as index
     val (bookmarks, setBookmarks) = remember {
         mutableStateOf(
             listOf(

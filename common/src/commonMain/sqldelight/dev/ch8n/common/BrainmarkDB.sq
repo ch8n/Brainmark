@@ -45,6 +45,12 @@ CREATE TABLE BookmarkEntity(
 getBookmarks :
 SELECT * FROM BookmarkEntity;
 
+getBookmarksPaging :
+SELECT * FROM BookmarkEntity
+WHERE createdAt > :createdAt
+ORDER BY createdAt
+LIMIT 10;
+
 getBookmarksById :
 SELECT * FROM BookmarkEntity
 WHERE id = :id;

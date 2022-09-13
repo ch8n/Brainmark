@@ -10,14 +10,15 @@ class BookmarkUseCases(
     val getBookmarkByIdUseCase: GetBookmarkByIdUseCase,
     val createBookmarkUseCase: CreateBookmarkUseCase,
     val updateBookmarkUseCase: UpdateBookmarkUseCase,
-    val deleteBookmarkUseCase: DeleteBookmarkUseCase
+    val deleteBookmarkUseCase: DeleteBookmarkUseCase,
+    val getBookmarksPaging: GetBookmarksPaging
 )
 
-class GetBookmarksByIdsUseCase(
+class GetBookmarksPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
-    operator fun invoke(bookmarkIds: List<String>) = flow {
-        val bookmarks = bookmarksDataSource.getBookmarksByIds(bookmarkIds)
+    operator fun invoke(createdAt: Long) = flow {
+        val bookmarks = bookmarksDataSource.getBookmarksPaging(createdAt)
         emit(bookmarks)
     }
 }
