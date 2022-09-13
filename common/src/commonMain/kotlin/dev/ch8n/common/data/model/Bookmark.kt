@@ -2,6 +2,7 @@ package dev.ch8n.common.data.model
 
 import androidx.compose.runtime.Immutable
 import com.benasher44.uuid.uuid4
+import kotlinx.datetime.Clock
 
 
 data class FlashCard(
@@ -48,7 +49,7 @@ data class Bookmark(
             get() = Bookmark(
                 id = uuid4().toString(),
                 tagIds = emptyList(),
-                createdAt = 0L,
+                createdAt = Clock.System.now().epochSeconds,
                 title = "What is LoreIpsome?",
                 isArchived = false,
                 mainImage = "https://samplelib.com/lib/preview/png/sample-boat-400x300.png",

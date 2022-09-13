@@ -20,6 +20,7 @@ class BrainMarkPreviewActivity : AppCompatActivity() {
 //            PreviewTagManagerScreen(
 //                defaultComponentContext()
 //            )
+
 //            PreviewCreateBookmark(
 //                defaultComponentContext()
 //            )

@@ -47,9 +47,9 @@ SELECT * FROM BookmarkEntity;
 
 getBookmarksPaging :
 SELECT * FROM BookmarkEntity
-WHERE createdAt > :createdAt
+WHERE createdAt < :createdAt
 ORDER BY createdAt
-LIMIT 10;
+LIMIT 2;
 
 getBookmarksById :
 SELECT * FROM BookmarkEntity

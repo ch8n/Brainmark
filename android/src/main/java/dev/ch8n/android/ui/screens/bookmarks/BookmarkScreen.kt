@@ -5,11 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,9 +20,7 @@ import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BookmarkCard
-import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.utils.toast
-import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
 import dev.ch8n.common.ui.navigation.Destinations
@@ -61,25 +57,10 @@ fun BookmarkScreen(
     controller: BookmarkScreenController,
     onSettingsClicked: () -> Unit
 ) {
-    // TODO add paging using ->
-    //  using where would be fast than offset
-    //  --createdAtDate -- sort by date --> limit 10 --> save last item date as index
-    val (bookmarks, setBookmarks) = remember {
-        mutableStateOf(
-            listOf(
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-                Bookmark.SAMPLE,
-            )
-        )
+    val bookmarks by controller.bookmarks.collectAsState()
+
+    LaunchedEffect(Unit) {
+        controller.nextBookmark(System.currentTimeMillis())
     }
 
     Box(
@@ -155,55 +136,34 @@ fun BookmarkScreen(
                 thickness = 0.5.dp
             )
 
-            Spacer(Modifier.size(16.dp))
-
-            TagProgress(
-                archivedCount = "5",
-                totalCount = "10",
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .align(Alignment.CenterHorizontally)
-            )
-
-            Spacer(Modifier.size(32.dp))
+            Spacer(Modifier.size(8.dp))
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 126.dp)
             ) {
-
-                items(bookmarks) { bookmark ->
+                itemsIndexed(bookmarks) { index, bookmark ->
                     BookmarkCard(
                         bookmark = bookmark,
                         modifier = Modifier
-                            .padding(vertical = 8.dp)
+                            .padding(vertical = 16.dp)
                             .fillMaxWidth()
                             .height(176.dp),
                         onClick = {
                             controller.navigateTo(Destinations.PreviewScreen)
                         }
                     )
+                    LaunchedEffect(index) {
+                        if (index == bookmarks.lastIndex) {
+                            controller.nextBookmark(bookmark.createdAt)
+                        }
+                    }
+
                 }
 
             }
 
-
         }
-
-        BottomNavbar(
-            modifier = Modifier
-                .padding(16.dp)
-                .align(Alignment.BottomCenter)
-                .width(240.dp),
-            onTagClicked = {
-                controller.navigateTo(Destinations.TagManager)
-            },
-            onBookmarkClicked = {},
-            onNewBookmarkClicked = {
-                controller.navigateTo(Destinations.CreateBookmark)
-            }
-        )
-
     }
 }
 
