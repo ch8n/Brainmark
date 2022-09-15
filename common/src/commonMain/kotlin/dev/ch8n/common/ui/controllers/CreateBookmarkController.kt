@@ -91,7 +91,7 @@ class CreateBookmarkController(
     fun onChangeBookmarkUrl(url: String) {
         _screenState.update {
             it.copy(
-                isLoading = true,
+                isLoading = url.isNotBlank(),
                 url = url,
             )
         }

@@ -44,6 +44,7 @@ class HtmlParserService(
             .ifEmpty { metaTags.metaSelectorProperty("og:image") }
             .ifEmpty { htmlTags.metaSelectorName("image:src") }
             .ifEmpty { htmlTags.metaSelectorProperty("image:src") }
+            .ifEmpty { htmlTags.getHref("image_src") }
 
         // favIcon
         val favIcon = htmlTags.getHref("apple-touch-icon")
@@ -61,13 +62,13 @@ class HtmlParserService(
             .ifEmpty { metaTags.metaSelectorProperty("og:url") }
 
         return@withContext MetaDTO(
-            title = title.normalize(),
-            description = description.normalize(),
-            mediaType = mediaType.normalize(),
-            mainImage = mainImage.normalize(),
-            favIcon = favIcon.normalize(),
-            authorOrSite = authorOrSite.normalize(),
-            url = url.normalize()
+            title = title,
+            description = description,
+            mediaType = mediaType,
+            mainImage = mainImage,
+            favIcon = favIcon,
+            authorOrSite = authorOrSite,
+            url = url
         )
     }
 
@@ -75,11 +76,9 @@ class HtmlParserService(
         return this
             .filter { it.contains("rel=\"$rel\"") }
             .map { it.split("href=\"", "\"").getOrNull(7) ?: "" }
-            .firstOrNull { it.contains("http") } ?: ""
-    }
-
-    private fun String.normalize(): String {
-        return this.replace("\"", "")
+            .firstOrNull { it.contains("http") }
+            ?.split("\"")
+            ?.getOrNull(1) ?: ""
     }
 
     private fun Sequence<String>.getHtmlTagContent(tagName: String): String {
@@ -89,21 +88,27 @@ class HtmlParserService(
                 it.split("$tagName>", "</$tagName>")
                     .getOrNull(1) ?: ""
             }
-            .firstOrNull() ?: ""
+            .firstOrNull()
+            ?.split("\"")
+            ?.getOrNull(1) ?: ""
     }
 
     private fun Sequence<String>.metaSelectorName(nameAttr: String): String {
         return this
             .filter { it.contains("name=\"$nameAttr\"", ignoreCase = true) }
             .map { it.split("content=").getOrNull(1) ?: "" }
-            .firstOrNull() ?: ""
+            .firstOrNull()
+            ?.split("\"")
+            ?.getOrNull(1) ?: ""
     }
 
     private fun Sequence<String>.metaSelectorProperty(propertyAttr: String): String {
         return this
             .filter { it.contains("property=\"$propertyAttr\"", ignoreCase = true) }
             .map { it.split("content=").getOrNull(1) ?: "" }
-            .firstOrNull() ?: ""
+            .firstOrNull()
+            ?.split("\"")
+            ?.getOrNull(1) ?: ""
     }
 }
 

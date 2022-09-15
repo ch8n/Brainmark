@@ -59,8 +59,10 @@ fun BookmarkScreen(
 ) {
     val bookmarks by controller.bookmarks.collectAsState()
 
-    LaunchedEffect(Unit) {
-        controller.nextBookmark(System.currentTimeMillis())
+    LaunchedEffect(bookmarks){
+        if (bookmarks.isEmpty()){
+            controller
+        }
     }
 
     Box(

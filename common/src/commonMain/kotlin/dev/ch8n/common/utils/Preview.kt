@@ -58,14 +58,13 @@ fun DesktopPreview(
 
 @Composable
 fun AndroidPreview(
+    modifier: Modifier = Modifier.fillMaxSize(),
     isSplitView: Boolean = true,
     isDark: Boolean = true,
     content: @Composable () -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(400.dp)
+        modifier = modifier
     ) {
         Preview(isDark = isDark) {
             Box(
