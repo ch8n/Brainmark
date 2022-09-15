@@ -65,7 +65,7 @@ class HtmlParserService(
             title = title,
             description = description,
             mediaType = mediaType,
-            mainImage = mainImage,
+            mainImage = mainImage.ifEmpty { favIcon },
             favIcon = favIcon,
             authorOrSite = authorOrSite,
             url = url

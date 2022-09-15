@@ -76,7 +76,7 @@ fun BookmarkCard(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(black1)
-                    .alpha(0.4f)
+                    .alpha(0.7f)
             ) {
                 AsyncImage(
                     model = bookmark.mainImage,
