@@ -21,6 +21,7 @@ import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
+import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.AndroidPreview
 
@@ -56,7 +57,7 @@ fun CreateBookmarkContent(
     controller: CreateBookmarkController,
 ) {
 
-    val bookmarkState by controller.bookmarkState.collectAsState()
+    val screenState by controller.screenState.collectAsState()
     val tags by controller.getAllTags.collectAsState(emptyList())
 
     Box(
@@ -87,7 +88,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmarkState.url,
+                value = screenState.url,
                 onValueChange = controller::onChangeBookmarkUrl,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -104,13 +105,13 @@ fun CreateBookmarkContent(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        if (bookmarkState.isLoading) {
+                        if (screenState.isLoading) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(24.dp)
                             )
                         }
 
-                        if (bookmarkState.url.isNotEmpty()) {
+                        if (screenState.url.isNotEmpty()) {
                             AsyncImage(
                                 model = R.drawable.close,
                                 modifier = Modifier
@@ -125,12 +126,12 @@ fun CreateBookmarkContent(
                         }
                     }
                 },
-                isError = bookmarkState.isError,
+                isError = screenState.isError,
             )
 
-            if (bookmarkState.isError) {
+            if (screenState.isError) {
                 Text(
-                    "Already exist!",
+                    text = screenState.errorMsg,
                     color = Color.Red,
                     style = MaterialTheme.typography.subtitle1,
                     modifier = Modifier.padding(horizontal = 24.dp)
@@ -141,7 +142,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmarkState.bookmark.title,
+                value = screenState.title,
                 onValueChange = controller::onTitleChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -158,7 +159,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmarkState.bookmark.description,
+                value = screenState.description,
                 onValueChange = controller::onDescriptionChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -175,7 +176,7 @@ fun CreateBookmarkContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clearFocusOnKeyboardDismiss(),
-                value = bookmarkState.bookmark.siteName,
+                value = screenState.siteName,
                 onValueChange = controller::onAuthorChanged,
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
@@ -244,7 +245,7 @@ fun CreateBookmarkContent(
                 }
             }
 
-            if (bookmarkState.bookmark.tagIds.isNotEmpty()) {
+            if (screenState.tagIds.isNotEmpty()) {
                 Text(
                     text = "Click on tags to remove",
                     style = MaterialTheme.typography.subtitle1,
@@ -279,7 +280,9 @@ fun CreateBookmarkContent(
             )
 
             BookmarkCard(
-                bookmark = bookmarkState.bookmark,
+                bookmark = remember(screenState) {
+                    screenState.createBookmark()
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(240.dp),
@@ -292,7 +295,7 @@ fun CreateBookmarkContent(
 
         val context = LocalContext.current
         OutlinedButton(
-            enabled = !bookmarkState.isLoading && !bookmarkState.isError,
+            enabled = !screenState.isLoading && !screenState.isError,
             onClick = {
                 controller.onClickCreateBookmark(
                     onError = {

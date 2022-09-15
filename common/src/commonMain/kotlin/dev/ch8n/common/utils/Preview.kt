@@ -63,7 +63,9 @@ fun AndroidPreview(
     content: @Composable () -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(400.dp)
     ) {
         Preview(isDark = isDark) {
             Box(

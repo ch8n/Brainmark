@@ -1,21 +1,67 @@
 package dev.ch8n.common.ui.controllers
 
 import com.arkivanov.decompose.ComponentContext
+import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
+import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 class CreateBookmarkController(
     componentContext: ComponentContext,
     val navigateTo: (Destinations) -> Unit,
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
+
+    data class ScreenState(
+        val isLoading: Boolean,
+        val isError: Boolean,
+        val errorMsg: String,
+        val title: String,
+        val description: String,
+        val siteName: String,
+        val favIcon: String,
+        val mainImage: String,
+        val url: String,
+        val tagIds: List<String>
+    ) {
+        companion object {
+            fun reset() = ScreenState(
+                isLoading = false,
+                isError = false,
+                errorMsg = "",
+                title = "",
+                description = "",
+                siteName = "",
+                favIcon = "",
+                mainImage = "",
+                url = "",
+                tagIds = emptyList()
+            )
+
+            fun ScreenState.createBookmark() = Bookmark(
+                id = uuid4().toString(),
+                tagIds = tagIds,
+                createdAt = Clock.System.now().epochSeconds,
+                isArchived = false,
+                mainImage = mainImage,
+                title = title,
+                description = description,
+                siteName = siteName,
+                favIcon = favIcon,
+                bookmarkUrl = url,
+                flashCardIds = emptyList(),
+                notes = ""
+            )
+        }
+    }
 
     val getAllTags = DomainInjector
         .tagUseCase
@@ -32,32 +78,18 @@ class CreateBookmarkController(
 
     private val htmlService = DomainInjector.htmlParserService
 
-    data class BookmarkState(
-        val bookmark: Bookmark,
-        val url: String = bookmark.bookmarkUrl,
-        val isError: Boolean,
-        val errorMsg: String,
-        val isLoading: Boolean,
-    )
+    private val _screenState = MutableStateFlow(ScreenState.reset())
+    val screenState = _screenState.asStateFlow()
 
-    private val _bookmarkState = MutableStateFlow<BookmarkState>(
-        BookmarkState(
-            bookmark = Bookmark.new,
-            isError = false,
-            errorMsg = "",
-            isLoading = false
-        )
-    )
-
-    val bookmarkState = _bookmarkState.asStateFlow()
-
-    val selectedTags = getAllTags.combine(_bookmarkState) { tags, _bookmarkState ->
-        return@combine bookmarkState.value.bookmark.tagIds.mapNotNull { id -> tags.find { it.id == id } }
+    val selectedTags = getAllTags.combine(_screenState) { tags, _bookmarkState ->
+        return@combine _bookmarkState.tagIds.mapNotNull { id ->
+            tags.find { it.id == id }
+        }
     }
 
     private var metaParseJob: Job? = null
     fun onChangeBookmarkUrl(url: String) {
-        _bookmarkState.update {
+        _screenState.update {
             it.copy(
                 isLoading = true,
                 url = url,
@@ -76,90 +108,73 @@ class CreateBookmarkController(
     }
 
     private suspend fun updateBookmarkMeta(url: String) {
-        try {
-            val isAlreadyExist = isAlreadyExistingBookmark(url)
-            if (isAlreadyExist) {
-                _bookmarkState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMsg = "Bookmark already Exist!",
-                        isError = true
-                    )
-                }
-                return
-            }
-            val html = htmlService.getHtml(url)
-            val meta = htmlService.parseMeta(url, html)
-            _bookmarkState.update {
+        val isAlreadyExist = isAlreadyExistingBookmark(url)
+        if (isAlreadyExist) {
+            _screenState.update {
                 it.copy(
                     isLoading = false,
-                    isError = false,
-                    errorMsg = "",
-                    bookmark = it.bookmark.copy(
-                        title = meta.title,
-                        description = meta.description,
-                        siteName = meta.authorOrSite,
-                        favIcon = meta.favIcon,
-                        mainImage = meta.mainImage,
-                        bookmarkUrl = meta.url
-                    )
+                    errorMsg = "Bookmark already Exist!",
+                    isError = true
                 )
             }
-        } catch (e: Exception) {
+            return
+        }
+
+        val metaOrNull = kotlin.runCatching {
+            val html = htmlService.getHtml(url)
+            htmlService.parseMeta(url, html)
+        }.getOrNull()
+
+        val meta = metaOrNull ?: return
+        _screenState.update {
+            it.copy(
+                isLoading = false,
+                isError = false,
+                errorMsg = "",
+                title = meta.title,
+                description = meta.description,
+                siteName = meta.authorOrSite,
+                favIcon = meta.favIcon,
+                mainImage = meta.mainImage,
+                url = meta.url
+            )
         }
     }
 
     fun onTitleChanged(title: String) {
-        _bookmarkState.update {
-            it.copy(
-                bookmark = it.bookmark.copy(
-                    title = title
-                )
-            )
+        _screenState.update {
+            it.copy(title = title)
         }
     }
 
     fun onDescriptionChanged(description: String) {
-        _bookmarkState.update {
-            it.copy(
-                bookmark = it.bookmark.copy(
-                    description = description
-                )
-            )
+        _screenState.update {
+            it.copy(description = description)
         }
     }
 
     fun onAuthorChanged(author: String) {
-        _bookmarkState.update {
-            it.copy(
-                bookmark = it.bookmark.copy(
-                    siteName = author
-                )
-            )
+        _screenState.update {
+            it.copy(siteName = author)
         }
     }
 
     fun onTagAdded(tag: Tags) {
-        val current = _bookmarkState.value.bookmark
-        val updatedBookmarks = (current.tagIds + tag.id).toSet().toList()
-        _bookmarkState.update {
-            it.copy(
-                bookmark = it.bookmark.copy(
-                    tagIds = updatedBookmarks
-                ),
-            )
+        val current = _screenState.value.tagIds
+        val exist = current.any { it == tag.id }
+        if (!exist) {
+            val updated = current + tag.id
+            _screenState.update {
+                it.copy(tagIds = updated)
+            }
         }
     }
 
     fun onTagRemoved(tag: Tags) {
-        val current = _bookmarkState.value.bookmark
-        val updatedBookmarks = (current.tagIds + tag.id).toSet().toList()
-        _bookmarkState.update {
-            it.copy(
-                bookmark = it.bookmark.copy(
-                    tagIds = updatedBookmarks
-                ),
-            )
+        val current = _screenState.value.tagIds
+        val updated = current.filter { it != tag.id }
+        _screenState.update {
+            it.copy(tagIds = updated)
         }
     }
 
@@ -167,7 +182,7 @@ class CreateBookmarkController(
         onSuccess: (value: String) -> Unit,
         onError: (err: String) -> Unit
     ) {
-        _bookmarkState.update {
+        _screenState.update {
             it.copy(
                 isLoading = true,
                 errorMsg = "",
@@ -175,9 +190,9 @@ class CreateBookmarkController(
             )
         }
         launch {
-            val current = _bookmarkState.value.bookmark
-            if (current.bookmarkUrl.isEmpty()) {
-                _bookmarkState.update {
+            val current = _screenState.value
+            if (current.url.isEmpty()) {
+                _screenState.update {
                     it.copy(
                         isLoading = false,
                         errorMsg = "Url isn't added!",
@@ -187,9 +202,9 @@ class CreateBookmarkController(
                 return@launch
             }
 
-            val isAlreadyExist = isAlreadyExistingBookmark(current.bookmarkUrl)
+            val isAlreadyExist = isAlreadyExistingBookmark(current.url)
             if (isAlreadyExist) {
-                _bookmarkState.update {
+                _screenState.update {
                     it.copy(
                         isLoading = false,
                         errorMsg = "Url isn't added!",
@@ -199,16 +214,13 @@ class CreateBookmarkController(
                 return@launch onError.invoke("bookmark already exist!")
             }
 
-            createBookmarkUseCase.invoke(current)
+            createBookmarkUseCase
+                .invoke(_screenState.value.createBookmark())
                 .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
                 .onEach { onSuccess.invoke(it) }
-                .onCompletion {
-                    _bookmarkState.update {
-                        it.copy(
-                            isLoading = false,
-                            errorMsg = "",
-                            isError = false
-                        )
+                .onCompletion { error ->
+                    if (error == null) {
+                        _screenState.update { ScreenState.reset() }
                     }
                 }
                 .launchIn(this)
@@ -216,12 +228,6 @@ class CreateBookmarkController(
     }
 
     fun clearBookmarkUrl() {
-        _bookmarkState.update {
-            it.copy(
-                url = "",
-                errorMsg = "",
-                isError = false
-            )
-        }
+        _screenState.update { ScreenState.reset() }
     }
 }

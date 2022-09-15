@@ -19,7 +19,6 @@ class BookmarkScreenController(
 
     private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val bookmarks = _bookmarks.asStateFlow()
-
     fun nextBookmark(createdAt: Long) {
         bookmarkPager.invoke(createdAt)
             .onEach { nextBookmarks ->

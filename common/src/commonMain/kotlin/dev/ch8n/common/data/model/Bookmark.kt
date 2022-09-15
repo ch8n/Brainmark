@@ -44,19 +44,20 @@ data class Bookmark(
 ) {
     companion object {
 
+
         // TODO create a func
         val new: Bookmark
             get() = Bookmark(
                 id = uuid4().toString(),
                 tagIds = emptyList(),
                 createdAt = Clock.System.now().epochSeconds,
-                title = "What is LoreIpsome?",
+                title = "",
                 isArchived = false,
-                mainImage = "https://samplelib.com/lib/preview/png/sample-boat-400x300.png",
-                description = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                siteName = "https://www.lipsum.com/",
-                favIcon = "https://www.lipsum.com/favicon.ico",
-                bookmarkUrl = "https://www.lipsum.com/",
+                mainImage = "",
+                description = "",
+                siteName = "",
+                favIcon = "",
+                bookmarkUrl = "",
                 flashCardIds = emptyList(),
                 notes = ""
             )
