@@ -43,13 +43,11 @@ CREATE TABLE BookmarkEntity(
 );
 
 getBookmarks :
-SELECT * FROM BookmarkEntity;
+SELECT * FROM BookmarkEntity ;
 
 getBookmarksPaging :
 SELECT * FROM BookmarkEntity
-WHERE createdAt < :createdAt
-ORDER BY createdAt
-LIMIT 2;
+LIMIT :limit OFFSET :offset;
 
 getBookmarksById :
 SELECT * FROM BookmarkEntity

@@ -17,8 +17,8 @@ class BookmarkUseCases(
 class GetBookmarksPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
-    operator fun invoke(createdAt: Long) = flow {
-        val bookmarks = bookmarksDataSource.getBookmarksPaging(createdAt)
+    operator fun invoke(limit: Long, offset: Long) = flow {
+        val bookmarks = bookmarksDataSource.getBookmarksPaging(limit, offset)
         emit(bookmarks)
     }
 }

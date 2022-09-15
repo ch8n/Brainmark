@@ -59,18 +59,16 @@ fun BookmarkScreen(
 ) {
     val bookmarks by controller.bookmarks.collectAsState()
 
-    LaunchedEffect(bookmarks){
-        if (bookmarks.isEmpty()){
-            controller
+    LaunchedEffect(bookmarks) {
+        if (bookmarks.isEmpty()) {
+            controller.loadFirstBookmark()
         }
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                MaterialTheme.colors.surface
-            )
+            .background(MaterialTheme.colors.surface)
     ) {
 
         val (searchQuery, setSearchQuery) = remember {
@@ -144,9 +142,9 @@ fun BookmarkScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 126.dp)
             ) {
-                itemsIndexed(bookmarks) { index, bookmark ->
+                itemsIndexed(bookmarks) { index, _bookmark ->
                     BookmarkCard(
-                        bookmark = bookmark,
+                        bookmark = _bookmark,
                         modifier = Modifier
                             .padding(vertical = 16.dp)
                             .fillMaxWidth()
@@ -155,12 +153,12 @@ fun BookmarkScreen(
                             controller.navigateTo(Destinations.PreviewScreen)
                         }
                     )
+
                     LaunchedEffect(index) {
                         if (index == bookmarks.lastIndex) {
-                            controller.nextBookmark(bookmark.createdAt)
+                            controller.nextBookmark()
                         }
                     }
-
                 }
 
             }
