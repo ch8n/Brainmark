@@ -61,10 +61,11 @@ fun BookmarkScreen(
 ) {
     val screenState by controller.screenState.collectAsState()
     val bookmarks by controller.bookmarks.collectAsState()
+    val pagingInvalidateKey by controller.pagingInvalidateKey.collectAsState()
     val allTags by controller.allTags.collectAsState(emptyList())
     var isTagDropDownShow by rememberMutableState(false)
 
-    LaunchedEffect(bookmarks) {
+    LaunchedEffect(bookmarks, pagingInvalidateKey) {
         if (bookmarks.isEmpty()) {
             controller.nextBookmark()
         }

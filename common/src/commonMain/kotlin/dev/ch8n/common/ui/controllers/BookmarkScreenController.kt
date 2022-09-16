@@ -1,6 +1,7 @@
 package dev.ch8n.common.ui.controllers
 
 import com.arkivanov.decompose.ComponentContext
+import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
@@ -60,6 +61,10 @@ class BookmarkScreenController(
 
     private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val bookmarks = _bookmarks.asStateFlow()
+
+    private val _pagingInvalidateKey = MutableStateFlow(uuid4().toString())
+    val pagingInvalidateKey = _pagingInvalidateKey.asStateFlow()
+
     fun nextBookmark() {
         val current = _bookmarks.value
         val limit = 5L
@@ -80,15 +85,12 @@ class BookmarkScreenController(
         onTagSelected(ScreenState.allTagOption)
     }
 
-    fun invalidatePaging() {
-        _bookmarks.value = emptyList()
-    }
-
     fun onTagSelected(tag: Tags) {
         _screenState.update {
             it.copy(selectedTag = tag)
         }
-        invalidatePaging()
+        _bookmarks.value = emptyList()
+        _pagingInvalidateKey.value = uuid4().toString()
     }
 
 }
