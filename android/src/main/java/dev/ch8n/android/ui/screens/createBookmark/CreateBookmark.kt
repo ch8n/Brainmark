@@ -295,7 +295,7 @@ fun CreateBookmarkContent(
 
         val context = LocalContext.current
         OutlinedButton(
-            enabled = !screenState.isLoading && !screenState.isError,
+            enabled = screenState.url.isNotEmpty() && !screenState.isError,
             onClick = {
                 controller.onClickCreateBookmark(
                     onError = {
