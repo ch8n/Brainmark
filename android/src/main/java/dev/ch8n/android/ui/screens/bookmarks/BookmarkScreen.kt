@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BookmarkCard
+import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BookmarkScreenController
@@ -52,16 +53,20 @@ fun PreviewBookmarkScreen(
 }
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookmarkScreen(
     controller: BookmarkScreenController,
     onSettingsClicked: () -> Unit
 ) {
+    val screenState by controller.screenState.collectAsState()
     val bookmarks by controller.bookmarks.collectAsState()
+    val allTags by controller.allTags.collectAsState(emptyList())
+    var isTagDropDownShow by rememberMutableState(false)
 
     LaunchedEffect(bookmarks) {
         if (bookmarks.isEmpty()) {
-            controller.loadFirstBookmark()
+            controller.nextBookmark()
         }
     }
 
@@ -80,12 +85,62 @@ fun BookmarkScreen(
                 .padding(24.dp)
                 .fillMaxWidth(),
         ) {
-            ToolbarBookmark(
-                tag = Tags.TAG_KOTLIN,
-                onSettingsClicked = onSettingsClicked,
-                onTagSwitched = {},
+
+            ExposedDropdownMenuBox(
+                expanded = isTagDropDownShow,
+                onExpandedChange = { isTagDropDownShow = it },
                 modifier = Modifier.fillMaxWidth()
-            )
+            ) {
+
+                ToolbarBookmark(
+                    selectedTag = screenState.selectedTag,
+                    onSettingsClicked = onSettingsClicked,
+                    onSelectTag = { isTagDropDownShow = true },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                ExposedDropdownMenu(
+                    expanded = isTagDropDownShow,
+                    onDismissRequest = { isTagDropDownShow = false },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+
+                    DropdownMenuItem(
+                        modifier = Modifier.background(
+                            MaterialTheme.colors.onSurface
+                        ),
+                        onClick = {
+                            isTagDropDownShow = false
+                            controller.navigateTo(Destinations.TagManager)
+                        }
+                    ) {
+                        Text(
+                            text = "Create a new Tag",
+                            color = MaterialTheme.colors.surface
+                        )
+                    }
+
+                    DropdownMenuItem(
+                        onClick = {
+                            isTagDropDownShow = false
+                            controller.allTagSelected()
+                        }
+                    ) {
+                        Text(text = "All Tag")
+                    }
+
+                    allTags.forEach { tag ->
+                        DropdownMenuItem(
+                            onClick = {
+                                isTagDropDownShow = false
+                                controller.onTagSelected(tag)
+                            }
+                        ) {
+                            Text(text = tag.name)
+                        }
+                    }
+                }
+            }
 
             Spacer(Modifier.size(16.dp))
 
@@ -221,9 +276,9 @@ fun TagProgress(
 
 @Composable
 private fun ToolbarBookmark(
-    tag: Tags,
+    selectedTag: Tags,
     onSettingsClicked: () -> Unit,
-    onTagSwitched: (tag: Tags) -> Unit,
+    onSelectTag: () -> Unit,
     modifier: Modifier = Modifier
 ) {
 
@@ -250,14 +305,16 @@ private fun ToolbarBookmark(
             Column(
                 modifier = Modifier
                     .offset(y = 4.dp)
-                    .clickable { }
+                    .clickable {
+                        onSelectTag.invoke()
+                    }
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = tag.name,
+                        text = selectedTag.name,
                         style = MaterialTheme.typography.h1,
                         color = MaterialTheme.colors.onSurface
                     )

@@ -13,6 +13,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalView
 
 
+@Composable
+inline fun <T> rememberMutableState(init: T) = remember { mutableStateOf(init) }
+
+@Composable
+inline fun <T> rememberNullableState(init: T?) = remember { mutableStateOf(init) }
+
 fun String.toast(context: Context) {
     Toast.makeText(context, this, Toast.LENGTH_SHORT).show()
 }

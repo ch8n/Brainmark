@@ -1,7 +1,15 @@
 package dev.ch8n.common.utils
 
 import io.ktor.http.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
+fun Flow<*>.onceIn(coroutineScope: CoroutineScope) {
+    val flow = this
+    coroutineScope.launch { flow.firstOrNull() }
+}
 
 fun String.isValidUrl(): Boolean {
     val result = kotlin.runCatching { Url(this) }

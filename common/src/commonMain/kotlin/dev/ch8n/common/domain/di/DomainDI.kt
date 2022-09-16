@@ -15,13 +15,12 @@ object DomainResolver {
     fun provideBookmarkUseCase(): BookmarkUseCases {
         val bookmarkDataSource = DataInjector.bookmarkDataSource
         return BookmarkUseCases(
-            getAllBookmarkUseCase = GetAllBookmarkUseCase(bookmarkDataSource),
             getBookmarkByIdUseCase = GetBookmarkByIdUseCase(bookmarkDataSource),
-            createBookmarkUseCase = CreateBookmarkUseCase(bookmarkDataSource),
-            updateBookmarkUseCase = UpdateBookmarkUseCase(bookmarkDataSource),
+            upsertBookmarkUseCase = UpsertBookmarkUseCase(bookmarkDataSource),
             deleteBookmarkUseCase = DeleteBookmarkUseCase(bookmarkDataSource),
             getBookmarkByUrl = GetBookmarkByUrlUseCase(bookmarkDataSource),
-            getBookmarksPaging = GetBookmarksPaging(bookmarkDataSource)
+            getAllBookmarksPaging = GetBookmarksPaging(bookmarkDataSource),
+            getBookmarksByTagPaging = GetBookmarkByTagPaging(bookmarkDataSource)
         )
     }
 

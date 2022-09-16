@@ -70,7 +70,7 @@ class CreateBookmarkController(
 
     private val createBookmarkUseCase = DomainInjector
         .bookmarkUseCase
-        .createBookmarkUseCase
+        .upsertBookmarkUseCase
 
     private val getBookmarkByUrl = DomainInjector
         .bookmarkUseCase

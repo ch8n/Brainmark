@@ -11,6 +11,7 @@ data class Tags(
     val color: Int,
 ) {
     companion object {
+
         val New: Tags
             get() = Tags(
                 id = uuid4().toString(),

@@ -49,6 +49,12 @@ getBookmarksPaging :
 SELECT * FROM BookmarkEntity
 LIMIT :limit OFFSET :offset;
 
+getBookmarksByTagPaging :
+SELECT * FROM BookmarkEntity
+WHERE tagsIds LIKE :tagId
+LIMIT :limit OFFSET :offset;
+
+
 getBookmarksById :
 SELECT * FROM BookmarkEntity
 WHERE id = :id;
