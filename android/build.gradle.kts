@@ -11,6 +11,7 @@ version = Android.Platform.versionName
 repositories {
     google()
     mavenCentral()
+    maven(url = "https://jitpack.io")
 }
 
 dependencies {

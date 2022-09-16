@@ -3,6 +3,8 @@ package dev.ch8n.common.data.local.database.sources
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import dev.ch8n.common.BookmarkEntity
+import dev.ch8n.common.SearchAllBookmarkPaging
+import dev.ch8n.common.SearchBookmarkByTagPaging
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.sqlDB.BrainmarkDB
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,6 +22,8 @@ interface BookmarkDataSource {
     suspend fun upsertBookmark(bookmark: Bookmark): String
     suspend fun allBookmarksPaging(limit: Long, offset: Long): List<Bookmark>
     suspend fun bookmarksByTagPaging(tagId: String, limit: Long, offset: Long): List<Bookmark>
+    suspend fun searchAllBookmarksPaging(keyword: String, limit: Long, offset: Long): List<Bookmark>
+    suspend fun searchBookmarksPaging(keyword: String, tagId: String, limit: Long, offset: Long): List<Bookmark>
 }
 
 fun BookmarkEntity.toBookmark() = Bookmark(
@@ -62,6 +66,54 @@ class BookmarkDataSourceImpl constructor(
 
     override suspend fun bookmarksByTagPaging(tagId: String, limit: Long, offset: Long): List<Bookmark> {
         return queries.getBookmarksByTagPaging(tagId, limit, offset).executeAsList().map { it.toBookmark() }
+    }
+
+    override suspend fun searchAllBookmarksPaging(keyword: String, limit: Long, offset: Long): List<Bookmark> {
+        return queries
+            .searchAllBookmarkPaging(keyword, limit, offset)
+            .executeAsList()
+            .map { it.toBookmark() }
+    }
+
+    private fun SearchAllBookmarkPaging.toBookmark() = Bookmark(
+        id = id,
+        bookmarkUrl = url,
+        createdAt = createdAt,
+        isArchived = isReviewed,
+        notes = notes,
+        mainImage = mainImage,
+        title = title,
+        description = description,
+        siteName = siteName,
+        favIcon = favIcon,
+        tagIds = tagsIds,
+        flashCardIds = flashCardsIds
+    )
+
+    private fun SearchBookmarkByTagPaging.toBookmark() = Bookmark(
+        id = id,
+        bookmarkUrl = url,
+        createdAt = createdAt,
+        isArchived = isReviewed,
+        notes = notes,
+        mainImage = mainImage,
+        title = title,
+        description = description,
+        siteName = siteName,
+        favIcon = favIcon,
+        tagIds = tagsIds,
+        flashCardIds = flashCardsIds
+    )
+
+    override suspend fun searchBookmarksPaging(
+        keyword: String,
+        tagId: String,
+        limit: Long,
+        offset: Long
+    ): List<Bookmark> {
+        return queries.searchBookmarkByTagPaging(tagId, keyword, limit, offset)
+            .executeAsList()
+            .map { it.toBookmark() }
     }
 
     override suspend fun getBookmarkById(id: String): Bookmark? = withContext(dispatcher) {

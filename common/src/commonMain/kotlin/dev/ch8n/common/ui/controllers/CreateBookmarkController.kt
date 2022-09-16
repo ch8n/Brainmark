@@ -1,5 +1,6 @@
 package dev.ch8n.common.ui.controllers
 
+import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Bookmark
@@ -8,6 +9,7 @@ import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
+import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -20,6 +22,7 @@ class CreateBookmarkController(
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
+    @Immutable
     data class ScreenState(
         val isLoading: Boolean,
         val isError: Boolean,
@@ -216,14 +219,18 @@ class CreateBookmarkController(
 
             createBookmarkUseCase
                 .invoke(_screenState.value.createBookmark())
-                .catch { onError.invoke(it.cause?.message ?: "Something went wrong!") }
-                .onEach { onSuccess.invoke(it) }
+                .catch {
+                    onError.invoke(it.cause?.message ?: "Something went wrong!")
+                }
+                .onEach {
+                    onSuccess.invoke(it)
+                }
                 .onCompletion { error ->
                     if (error == null) {
                         _screenState.update { ScreenState.reset() }
                     }
                 }
-                .launchIn(this)
+                .onceIn(this)
         }
     }
 

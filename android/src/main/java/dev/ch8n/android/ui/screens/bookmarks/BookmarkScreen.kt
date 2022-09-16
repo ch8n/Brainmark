@@ -77,10 +77,6 @@ fun BookmarkScreen(
             .background(MaterialTheme.colors.surface)
     ) {
 
-        val (searchQuery, setSearchQuery) = remember {
-            mutableStateOf("")
-        }
-
         Column(
             modifier = Modifier
                 .padding(24.dp)
@@ -147,8 +143,10 @@ fun BookmarkScreen(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = searchQuery,
-                onValueChange = setSearchQuery,
+                value = screenState.searchQuery,
+                onValueChange = {
+                    controller.onSearchQueryUpdated(it)
+                },
                 shape = MaterialTheme.shapes.large,
                 singleLine = true,
                 label = {
@@ -168,17 +166,34 @@ fun BookmarkScreen(
                     textColor = MaterialTheme.colors.onSurface
                 ),
                 trailingIcon = {
-                    AsyncImage(
-                        model = R.drawable.search,
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .size(24.dp),
-                        contentDescription = "",
-                        contentScale = ContentScale.Fit,
-                        colorFilter = ColorFilter.tint(
-                            color = MaterialTheme.colors.onSurface
+                    if (screenState.searchQuery.isEmpty()) {
+                        AsyncImage(
+                            model = R.drawable.search,
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .size(24.dp),
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
+                            colorFilter = ColorFilter.tint(
+                                color = MaterialTheme.colors.onSurface
+                            )
                         )
-                    )
+                    }else{
+                        AsyncImage(
+                            model = R.drawable.close,
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .clickable {
+                                    controller.onClearSearchQuery()
+                                }
+                                .size(24.dp),
+                            contentDescription = "",
+                            contentScale = ContentScale.Fit,
+                            colorFilter = ColorFilter.tint(
+                                color = MaterialTheme.colors.onSurface
+                            )
+                        )
+                    }
                 }
             )
 

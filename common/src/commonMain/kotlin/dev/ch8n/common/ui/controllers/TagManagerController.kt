@@ -25,7 +25,7 @@ class TagManagerController(
 ) : DecomposeController(componentContext) {
 
     @Immutable
-    data class ViewState(
+    data class ScreenState(
         val selectedId: String,
         val tagName: String,
         val tagColor: Color,
@@ -34,7 +34,7 @@ class TagManagerController(
     ) {
         companion object {
             val Initial
-                get() = ViewState(
+                get() = ScreenState(
                     selectedId = "",
                     tagName = "",
                     tagColor = ColorsUtils.randomColor,
@@ -44,7 +44,7 @@ class TagManagerController(
         }
     }
 
-    val state = MutableStateFlow(ViewState.Initial)
+    val state = MutableStateFlow(ScreenState.Initial)
 
     private val createTag = DomainInjector
         .tagUseCase
@@ -72,7 +72,7 @@ class TagManagerController(
                 // check tag name
                 val name = it.tagName
                 if (name.length < 3) {
-                    return@update ViewState.Initial.copy(
+                    return@update ScreenState.Initial.copy(
                         errorMsg = "Name > 2 characters"
                     )
                 }
@@ -87,7 +87,7 @@ class TagManagerController(
 
                 val alreadyExists = isNewTag && match != null
                 if (alreadyExists) {
-                    return@update ViewState.Initial.copy(
+                    return@update ScreenState.Initial.copy(
                         errorMsg = "Already Exist!"
                     )
                 }
@@ -96,7 +96,7 @@ class TagManagerController(
                     val isColorChanged = match.color != color
                     val isNameChanged = match.name != name
                     if (!isColorChanged && !isNameChanged) {
-                        return@update ViewState.Initial.copy(
+                        return@update ScreenState.Initial.copy(
                             errorMsg = "Already Exist!"
                         )
                     }
@@ -117,7 +117,7 @@ class TagManagerController(
                     }
 
                     is Result.Success -> {
-                        ViewState.Initial
+                        ScreenState.Initial
                     }
                 }
             }
@@ -138,7 +138,7 @@ class TagManagerController(
                 val id = it.selectedId
                 if (id.isEmpty()) {
                     // a new tag
-                    return@update ViewState.Initial
+                    return@update ScreenState.Initial
                 }
 
                 // delete tag in db
@@ -154,7 +154,7 @@ class TagManagerController(
                     }
 
                     is Result.Success -> {
-                        ViewState.Initial
+                        ScreenState.Initial
                     }
                 }
             }
@@ -183,7 +183,7 @@ class TagManagerController(
 
     fun clearSelectedTag() {
         state.update {
-            ViewState.Initial
+            ScreenState.Initial
         }
     }
 }

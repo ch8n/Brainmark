@@ -20,7 +20,9 @@ object DomainResolver {
             deleteBookmarkUseCase = DeleteBookmarkUseCase(bookmarkDataSource),
             getBookmarkByUrl = GetBookmarkByUrlUseCase(bookmarkDataSource),
             getAllBookmarksPaging = GetBookmarksPaging(bookmarkDataSource),
-            getBookmarksByTagPaging = GetBookmarkByTagPaging(bookmarkDataSource)
+            getBookmarksByTagPaging = GetBookmarkByTagPaging(bookmarkDataSource),
+            searchAllBookmarkPaging = SearchAllBookmarkPaging(bookmarkDataSource),
+            searchBookmarkByTagPaging = SearchBookmarkByTagPaging(bookmarkDataSource)
         )
     }
 

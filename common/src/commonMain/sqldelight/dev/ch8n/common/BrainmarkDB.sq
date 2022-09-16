@@ -42,6 +42,28 @@ CREATE TABLE BookmarkEntity(
     flashCardsIds TEXT AS List<String> NOT NULL
 );
 
+CREATE VIRTUAL TABLE BookmarkFTS USING fts5(
+    id TEXT NOT NULL PRIMARY KEY UNIQUE,
+    title TEXT NOT NULL DEFAULT "",
+    description TEXT NOT NULL DEFAULT "",
+    siteName TEXT NOT NULL DEFAULT "",
+);
+
+-- Triggers to keep the FTS index up to date.
+CREATE TRIGGER InsertBookmarkFTS AFTER INSERT ON BookmarkEntity BEGIN
+  INSERT OR REPLACE INTO BookmarkFTS(id, title,description,siteName)
+  VALUES (new.id, new.title, new.description,new.siteName);
+END;
+
+CREATE TRIGGER DeleteBookmarkFTS AFTER DELETE ON BookmarkEntity BEGIN
+  INSERT INTO BookmarkFTS(id, title,description,siteName) VALUES('delete', old.title, old.description, old.siteName);
+END;
+
+CREATE TRIGGER UpdateBookmarkFTS AFTER UPDATE ON BookmarkEntity BEGIN
+  INSERT OR REPLACE INTO BookmarkFTS(id, title,description,siteName)
+  VALUES (new.id, new.title, new.description,new.siteName);
+END;
+
 getBookmarks :
 SELECT * FROM BookmarkEntity ;
 
@@ -54,6 +76,23 @@ SELECT * FROM BookmarkEntity
 WHERE tagsIds LIKE :tagId
 LIMIT :limit OFFSET :offset;
 
+searchAllBookmarkPaging :
+SELECT * FROM BookmarkEntity
+JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
+WHERE (BookmarkFTS.title MATCH :keyword)
+OR (BookmarkFTS.description MATCH :keyword)
+OR (BookmarkFTS.siteName MATCH :keyword)
+LIMIT :limit OFFSET :offset;
+
+
+searchBookmarkByTagPaging :
+SELECT * FROM BookmarkEntity
+JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
+WHERE (tagsIds LIKE :tagId)
+AND (BookmarkFTS.title MATCH :keyword)
+OR (BookmarkFTS.description MATCH :keyword)
+OR (BookmarkFTS.siteName MATCH :keyword)
+LIMIT :limit OFFSET :offset;
 
 getBookmarksById :
 SELECT * FROM BookmarkEntity

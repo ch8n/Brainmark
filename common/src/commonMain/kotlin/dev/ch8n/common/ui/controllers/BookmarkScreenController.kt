@@ -1,5 +1,6 @@
 package dev.ch8n.common.ui.controllers
 
+import androidx.compose.runtime.Immutable
 import com.arkivanov.decompose.ComponentContext
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Bookmark
@@ -19,6 +20,7 @@ class BookmarkScreenController(
     val navigateBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
+    @Immutable
     data class ScreenState(
         val selectedTag: Tags,
         val isLoading: Boolean,
@@ -59,6 +61,14 @@ class BookmarkScreenController(
         .bookmarkUseCase
         .getBookmarksByTagPaging
 
+    private val searchBookmarkByTagPager = DomainInjector
+        .bookmarkUseCase
+        .searchBookmarkByTagPaging
+
+    private val searchAllBookmarkPager = DomainInjector
+        .bookmarkUseCase
+        .searchAllBookmarkPaging
+
     private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val bookmarks = _bookmarks.asStateFlow()
 
@@ -70,11 +80,21 @@ class BookmarkScreenController(
         val limit = 5L
         val offset = current.size.toLong()
         val selectedTag = _screenState.value.selectedTag
-        val flow = if (selectedTag == ScreenState.allTagOption) {
-            allBookmarkPager.invoke(limit, offset)
-        } else {
-            bookmarkByTagPager.invoke(selectedTag.id, limit, offset)
+        val searchQuery = _screenState.value.searchQuery.trim()
+        val flow = when {
+            searchQuery.isNotEmpty() -> if (selectedTag == ScreenState.allTagOption) {
+                searchAllBookmarkPager.invoke(searchQuery, limit, offset)
+            } else {
+                searchBookmarkByTagPager.invoke(searchQuery, selectedTag.id, limit, offset)
+            }
+
+            else -> if (selectedTag == ScreenState.allTagOption) {
+                allBookmarkPager.invoke(limit, offset)
+            } else {
+                bookmarkByTagPager.invoke(selectedTag.id, limit, offset)
+            }
         }
+
         flow.onEach { nextBookmarks ->
             val updated = current + nextBookmarks
             _bookmarks.update { updated }
@@ -85,12 +105,30 @@ class BookmarkScreenController(
         onTagSelected(ScreenState.allTagOption)
     }
 
+    fun invalidatePaging() {
+        _bookmarks.value = emptyList()
+        _pagingInvalidateKey.value = uuid4().toString()
+    }
+
     fun onTagSelected(tag: Tags) {
         _screenState.update {
             it.copy(selectedTag = tag)
         }
-        _bookmarks.value = emptyList()
-        _pagingInvalidateKey.value = uuid4().toString()
+        invalidatePaging()
+    }
+
+    fun onSearchQueryUpdated(query: String) {
+        _screenState.update {
+            it.copy(searchQuery = query)
+        }
+        invalidatePaging()
+    }
+
+    fun onClearSearchQuery() {
+        _screenState.update {
+            it.copy(searchQuery = "")
+        }
+        invalidatePaging()
     }
 
 }
