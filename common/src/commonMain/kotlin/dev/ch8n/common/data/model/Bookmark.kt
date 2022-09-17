@@ -2,7 +2,6 @@ package dev.ch8n.common.data.model
 
 import androidx.compose.runtime.Immutable
 import com.benasher44.uuid.uuid4
-import kotlinx.datetime.Clock
 
 
 data class FlashCard(
@@ -44,13 +43,11 @@ data class Bookmark(
 ) {
     companion object {
 
-
-        // TODO create a func
-        val new: Bookmark
+        val Empty: Bookmark
             get() = Bookmark(
-                id = uuid4().toString(),
+                id = "0",
                 tagIds = emptyList(),
-                createdAt = Clock.System.now().epochSeconds,
+                createdAt = 0L,
                 title = "",
                 isArchived = false,
                 mainImage = "",

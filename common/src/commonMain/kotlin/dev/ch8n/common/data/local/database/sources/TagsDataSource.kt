@@ -54,8 +54,7 @@ class TagsDataSourceImpl constructor(
 
     override suspend fun getTagsByIds(ids: List<String>): List<Tags> = withContext(dispatcher) {
         coroutineScope {
-            ids
-                .map { id -> async { getTagById(id) } }
+            ids.map { id -> async { getTagById(id) } }
                 .awaitAll()
                 .filterNotNull()
         }

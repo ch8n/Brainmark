@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -35,24 +36,33 @@ import com.google.accompanist.placeholder.shimmer
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
+import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BrowserController
-import dev.ch8n.common.utils.DevelopmentPreview
+import dev.ch8n.common.utils.AndroidPreview
 
 
 @Composable
 fun PreviewBrowserScreen(
     componentContext: DefaultComponentContext
 ) {
+    val context = LocalContext.current
     val controller = remember {
         BrowserController(
             componentContext = componentContext,
-            navigateTo = {},
-            onBack = {}
+            navigateTo = {
+                "On navigate to ${it::class.simpleName}".toast(context)
+            },
+            onBack = {
+                "On Back".toast(context)
+            }
         )
     }
-    DevelopmentPreview { isDark ->
+    AndroidPreview(
+        isSplitView = false,
+        isDark = true,
+    ) {
         BrowserScreen(controller)
     }
 }
@@ -64,8 +74,15 @@ fun BrowserScreen(
     controller: BrowserController,
 ) {
 
-    val tags by controller.tags.collectAsState()
-    val bookmark by controller.bookmark.collectAsState()
+    val screenState by controller.screenState.collectAsState()
+
+    LaunchedEffect(screenState) {
+        val bookmark = screenState.bookmark
+        if (bookmark.id == "0") {
+            controller.getBookmark("")
+        }
+    }
+
     val (isLoading, setLoading) = remember { mutableStateOf(false) }
 
     Column(
@@ -73,8 +90,8 @@ fun BrowserScreen(
     ) {
 
         ToolbarBrowser(
-            bookmark = bookmark,
-            tags = tags,
+            bookmark = screenState.bookmark,
+            tags = screenState.tags,
             modifier = Modifier.fillMaxWidth(),
             onBackPressed = controller.onBack,
             onShowFlashCards = {},
@@ -122,7 +139,7 @@ fun BrowserScreen(
                     loadsImagesAutomatically = true
                     javaScriptEnabled = true
                 }
-                it.loadUrl(bookmark.bookmarkUrl)
+                it.loadUrl(screenState.bookmark.bookmarkUrl)
             }
         )
 
