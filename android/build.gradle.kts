@@ -15,6 +15,7 @@ repositories {
 }
 
 dependencies {
+    implementation("com.github.requery:sqlite-android:3.39.2")
     implementation(project(":common"))
     androidX()
     decompose()

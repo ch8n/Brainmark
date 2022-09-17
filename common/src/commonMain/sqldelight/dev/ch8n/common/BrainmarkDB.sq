@@ -79,9 +79,7 @@ LIMIT :limit OFFSET :offset;
 searchAllBookmarkPaging :
 SELECT * FROM BookmarkEntity
 JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
-WHERE (BookmarkFTS.title MATCH :keyword)
-OR (BookmarkFTS.description MATCH :keyword)
-OR (BookmarkFTS.siteName MATCH :keyword)
+WHERE BookmarkFTS MATCH :keyword
 LIMIT :limit OFFSET :offset;
 
 
@@ -89,9 +87,7 @@ searchBookmarkByTagPaging :
 SELECT * FROM BookmarkEntity
 JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
 WHERE (tagsIds LIKE :tagId)
-AND (BookmarkFTS.title MATCH :keyword)
-OR (BookmarkFTS.description MATCH :keyword)
-OR (BookmarkFTS.siteName MATCH :keyword)
+AND (BookmarkFTS MATCH :keyword)
 LIMIT :limit OFFSET :offset;
 
 getBookmarksById :

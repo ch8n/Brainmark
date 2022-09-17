@@ -34,6 +34,7 @@ import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
+import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BrowserController
@@ -145,7 +146,9 @@ fun CreateTag(
     ) {
 
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(0.6f),
+            modifier = Modifier
+                .fillMaxWidth(0.6f)
+                .clearFocusOnKeyboardDismiss(),
             value = selectedTag.name,
             onValueChange = {
                 updatedSelectedTag.invoke(selectedTag.copy(name = it))

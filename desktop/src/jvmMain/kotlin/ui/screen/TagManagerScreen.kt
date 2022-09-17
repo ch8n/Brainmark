@@ -221,7 +221,8 @@ fun CreateTag(
             modifier = Modifier.fillMaxWidth(0.6f)
         ) {
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth(),
                 value = tagName,
                 onValueChange = onTagNameUpdated,
                 shape = MaterialTheme.shapes.large,

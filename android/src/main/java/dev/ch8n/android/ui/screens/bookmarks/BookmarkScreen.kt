@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BookmarkCard
+import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Tags
@@ -142,7 +143,9 @@ fun BookmarkScreen(
             Spacer(Modifier.size(16.dp))
 
             OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clearFocusOnKeyboardDismiss(),
                 value = screenState.searchQuery,
                 onValueChange = {
                     controller.onSearchQueryUpdated(it)
@@ -178,7 +181,7 @@ fun BookmarkScreen(
                                 color = MaterialTheme.colors.onSurface
                             )
                         )
-                    }else{
+                    } else {
                         AsyncImage(
                             model = R.drawable.close,
                             modifier = Modifier
