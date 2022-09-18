@@ -91,9 +91,9 @@ fun ReaderView() {
         Divider(modifier = Modifier.fillMaxWidth())
 
         Column(Modifier.fillMaxWidth().border(1.dp, Color.Cyan)) {
-            reader.plainText.lines().forEach {
+            reader.plainText.split(". ").forEach {
                 Text(
-                    text = it,
+                    text = "$it.",
                     fontSize = 16.sp,
                 )
 
