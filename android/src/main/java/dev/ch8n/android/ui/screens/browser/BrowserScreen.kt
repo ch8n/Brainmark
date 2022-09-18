@@ -1,9 +1,13 @@
 package dev.ch8n.android.ui.screens.browser
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,9 +25,8 @@ import com.arkivanov.decompose.DefaultComponentContext
 import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
+import dev.ch8n.android.ui.components.ScrollableColumn
 import dev.ch8n.android.utils.toast
-import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BrowserController
 import dev.ch8n.common.utils.AndroidPreview
 
@@ -59,6 +62,7 @@ fun BrowserScreen(
     controller: BrowserController,
 ) {
 
+    val context = LocalContext.current
     val screenState by controller.screenState.collectAsState()
 
     LaunchedEffect(screenState) {
@@ -67,44 +71,8 @@ fun BrowserScreen(
             controller.getBookmark("")
         }
     }
-
-    val (isLoading, setLoading) = remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier.fillMaxSize()
-    ) {
-
-        // TODO make collapsable
-        ToolbarBrowser(
-            bookmark = screenState.bookmark,
-            tags = screenState.tags,
-            modifier = Modifier
-                .fillMaxWidth(),
-            onBackPressed = controller.onBack,
-            onShowFlashCards = {},
-            onEditBookmark = {},
-            onArchiveBookmark = {},
-            onClickedTag = {}
-        )
-    }
-
-}
-
-
-@Composable
-private fun ToolbarBrowser(
-    bookmark: Bookmark,
-    tags: List<Tags>,
-    modifier: Modifier = Modifier,
-    onBackPressed: () -> Unit,
-    onShowFlashCards: () -> Unit,
-    onEditBookmark: (bookmark: Bookmark) -> Unit,
-    onArchiveBookmark: (bookmark: Bookmark) -> Unit,
-    onClickedTag: (tag: Tags) -> Unit
-) {
-
     Box(
-        modifier = modifier
+        modifier = Modifier.fillMaxSize()
     ) {
         Box(
             modifier = Modifier
@@ -113,7 +81,7 @@ private fun ToolbarBrowser(
                 .alpha(0.4f)
         ) {
             AsyncImage(
-                model = bookmark.mainImage,
+                model = screenState.bookmark.mainImage,
                 modifier = Modifier
                     .fillMaxSize()
                     .align(Alignment.TopStart),
@@ -122,28 +90,29 @@ private fun ToolbarBrowser(
             )
         }
 
-        AsyncImage(
-            model = R.drawable.back,
+        ScrollableColumn(
             modifier = Modifier
-                .padding(24.dp)
-                .size(24.dp)
-                .align(Alignment.TopStart)
-                .clickable { onBackPressed.invoke() },
-            contentDescription = "",
-            contentScale = ContentScale.Fit,
-            colorFilter = ColorFilter.tint(
-                color = Color.White
-            )
-        )
-
-        Column(
-            modifier = Modifier
-                .padding(start = 24.dp, top = 74.dp, end = 24.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            AsyncImage(
+                model = R.drawable.back,
+                modifier = Modifier
+                    .size(24.dp)
+                    .align(Alignment.Start)
+                    .clickable { controller.onBack.invoke() },
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(
+                    color = Color.White
+                )
+            )
+
+            Spacer(Modifier.size(24.dp))
 
             Text(
-                text = bookmark.title,
+                text = screenState.bookmark.title,
                 style = MaterialTheme.typography.h2.copy(
                     fontWeight = FontWeight.Medium
                 ),
@@ -155,21 +124,23 @@ private fun ToolbarBrowser(
             FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 300.dp, max = 300.dp)
-                    .border(1.dp, Color.Red)
+                    .heightIn(max = 300.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                tags.forEach { tag ->
+                screenState.tags.forEach { tag ->
                     TagChip(
                         tag = tag,
                         modifier = Modifier
                             .padding(8.dp)
                             .wrapContentWidth()
                             .height(35.dp),
-                        onTagClicked = onClickedTag
+                        onTagClicked = {
+                            "goto bookmarks with tag filter".toast(context)
+                        }
                     )
                 }
             }
+
             Row(
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
@@ -181,7 +152,9 @@ private fun ToolbarBrowser(
                     model = R.drawable.flash_card,
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { onShowFlashCards.invoke() },
+                        .clickable {
+                            "show Notes".toast(context)
+                        },
                     contentDescription = "",
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.tint(
@@ -193,7 +166,9 @@ private fun ToolbarBrowser(
                     model = R.drawable.edit,
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { onEditBookmark.invoke(bookmark) },
+                        .clickable {
+                            "on edit bookmark".toast(context)
+                        },
                     contentDescription = "",
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.tint(
@@ -205,7 +180,9 @@ private fun ToolbarBrowser(
                     model = R.drawable.archive,
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { onArchiveBookmark.invoke(bookmark) },
+                        .clickable {
+                            "archive bookmark".toast(context)
+                        },
                     contentDescription = "",
                     contentScale = ContentScale.Fit,
                     colorFilter = ColorFilter.tint(
@@ -213,8 +190,34 @@ private fun ToolbarBrowser(
                     )
                 )
             }
-        }
 
+            OutlinedButton(
+                onClick = {
+                    "open reader mode".toast(context)
+                }
+            ) {
+                Text("Preview in Reader Mode")
+            }
+
+            OutlinedButton(
+                onClick = {
+                    "open chrome".toast(context)
+                }
+            ) {
+                Text("View in Chrome")
+            }
+
+
+            OutlinedButton(
+                onClick = {
+                    "open webview".toast(context)
+                }
+            ) {
+                Text("View in App | bypass paywalls.")
+            }
+        }
     }
 
+
 }
+
