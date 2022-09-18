@@ -1,7 +1,7 @@
 package dev.ch8n.common.data.di
 
-import dev.ch8n.common.data.local.database.config.createDatabase
 import dev.ch8n.common.data.local.database.config.SqlDriverFactory
+import dev.ch8n.common.data.local.database.config.createDatabase
 import dev.ch8n.common.data.local.database.sources.BookmarkDataSource
 import dev.ch8n.common.data.local.database.sources.BookmarkDataSourceImpl
 import dev.ch8n.common.data.local.database.sources.TagsDataSource
@@ -13,11 +13,9 @@ object DataResolver {
     fun provideSqlDriver(): SqlDriverFactory {
         return SqlDriverFactory()
     }
-
     fun provideDatabase(sqlDriverFactory: SqlDriverFactory): BrainmarkDB {
         return createDatabase(sqlDriverFactory)
     }
-
     fun provideBookmarkDataSource(database: BrainmarkDB): BookmarkDataSource {
         return BookmarkDataSourceImpl(database)
     }

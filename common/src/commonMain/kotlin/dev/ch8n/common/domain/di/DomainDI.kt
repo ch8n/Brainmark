@@ -51,4 +51,5 @@ object DomainInjector {
     val htmlParserService by lazy {
         DomainResolver.provideHtmlParser()
     }
+
 }

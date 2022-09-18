@@ -187,6 +187,7 @@ kotlin {
                 api(Android2.Dependencies.ktorAndroid)
                 api(Android2.Dependencies.sqlDelightAndroid)
                 api(Android.Dependencies.Ktor.android)
+                implementation("net.dankito.readability4j:readability4j:1.0.8")
             }
         }
         val androidTest by getting {

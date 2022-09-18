@@ -9,10 +9,7 @@ import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.DecomposeController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
@@ -22,7 +19,7 @@ class BrowserController(
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
-    fun withLoading(action: suspend () -> Unit) {
+    private fun withLoading(action: suspend () -> Unit) {
         try {
             _screenState.update { it.copy(isLoading = true) }
             launch { action.invoke() }
@@ -32,25 +29,30 @@ class BrowserController(
     }
 
     fun getBookmark(bookmarkId: String) {
+        // todo fix use get bookmark by id
         withLoading {
-            getBookmarkById
-                .onEach { bookmarks ->
+            getBookmarkById(1, 1)
+                .flatMapMerge { bookmarks ->
                     val bookmark = bookmarks.first()
                     val tagIds = bookmark.tagIds
                     _screenState.update {
                         it.copy(bookmark = bookmarks.first())
                     }
-
+                    getTagsById.invoke(tagIds)
+                }
+                .onEach { tags ->
+                    _screenState.update {
+                        it.copy(tags = tags)
+                    }
                 }
                 .onceIn(this)
         }
-        // TODO fix
     }
 
     private val getBookmarkById = DomainInjector
         .bookmarkUseCase
-        // TODO change
-        .getAllBookmarksPaging(1, 0)
+        // TODO change with get bookmark with id
+        .getAllBookmarksPaging
 
     private val getTagsById = DomainInjector
         .tagUseCase

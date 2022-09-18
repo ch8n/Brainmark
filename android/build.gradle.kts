@@ -15,9 +15,10 @@ repositories {
 }
 
 dependencies {
-    implementation("com.github.requery:sqlite-android:3.39.2")
     implementation(project(":common"))
     androidX()
+    implementation("androidx.browser:browser:1.4.0")
+    implementation("com.github.requery:sqlite-android:3.39.2")
     decompose()
     accompanist()
     implementation(Android.Dependencies.Coil)
