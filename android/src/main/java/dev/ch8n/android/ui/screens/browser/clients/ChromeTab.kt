@@ -5,8 +5,8 @@ import android.net.Uri
 import androidx.browser.customtabs.CustomTabsIntent
 
 
-fun launchChromeTab(url: String, context: Context) {
+fun Context.launchChromeTab(url: String) {
     val builder = CustomTabsIntent.Builder()
     val customTabsIntent: CustomTabsIntent = builder.build()
-    customTabsIntent.launchUrl(context, Uri.parse(url))
+    customTabsIntent.launchUrl(this, Uri.parse(url))
 }

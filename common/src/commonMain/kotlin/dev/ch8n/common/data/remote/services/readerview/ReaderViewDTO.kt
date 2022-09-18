@@ -4,14 +4,16 @@ data class ReaderViewDTO(
     val title: String,
     val byline: String,
     val excerpt: String,
-    val plainText: String
+    val plainText: String,
+    val htmlText: String
 ) {
     companion object {
         val empty = ReaderViewDTO(
             title = "",
             byline = "",
             excerpt = "",
-            plainText = ""
+            plainText = "",
+            htmlText = ""
         )
     }
 }
