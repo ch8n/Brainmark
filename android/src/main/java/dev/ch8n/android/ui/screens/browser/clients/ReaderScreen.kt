@@ -40,6 +40,11 @@ fun HtmlText(
     )
 }
 
+// TODO feature
+// 1. select and highlight
+// 2. drop notes
+// 3. beautify
+// 4. can we use type???
 @Composable
 fun ReaderScreen(
     controller: ReaderModeController

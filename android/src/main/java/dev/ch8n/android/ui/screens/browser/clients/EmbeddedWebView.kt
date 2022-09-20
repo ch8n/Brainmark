@@ -8,8 +8,6 @@ import android.webkit.WebViewClient
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,7 +21,10 @@ import com.google.accompanist.placeholder.shimmer
 import dev.ch8n.android.utils.rememberMutableState
 
 @Composable
-fun EmbeddedWebView(url: String) {
+fun AndroidWebView(
+    url: String,
+
+    ) {
     var isLoading by rememberMutableState(false)
     val webViewClient = remember {
         object : WebViewClient() {
@@ -56,8 +57,7 @@ fun EmbeddedWebView(url: String) {
                         animation = tween(durationMillis = 400)
                     )
                 )
-            )
-            .verticalScroll(rememberScrollState()),
+            ),
         update = {
             it.webViewClient = webViewClient
             it.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY

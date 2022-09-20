@@ -26,6 +26,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.components.ScrollableColumn
+import dev.ch8n.android.ui.screens.browser.clients.launchChromeTab
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.PreviewBookmarkController
 import dev.ch8n.common.ui.navigation.Destinations
@@ -205,12 +206,13 @@ fun BrowserScreen(
 
             OutlinedButton(
                 onClick = {
-                    "open chrome".toast(context)
+                    context.launchChromeTab(
+                        screenState.bookmark.bookmarkUrl
+                    )
                 }
             ) {
                 Text("View in Chrome")
             }
-
 
             OutlinedButton(
                 onClick = {
