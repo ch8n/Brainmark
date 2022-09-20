@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
-class BookmarkScreenController(
+class BookmarkController(
     componentContext: ComponentContext,
     val navigateTo: (Destinations) -> Unit,
-    val navigateBack: () -> Unit,
+    val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 
     @Immutable

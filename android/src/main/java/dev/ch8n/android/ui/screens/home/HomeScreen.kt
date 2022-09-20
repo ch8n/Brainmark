@@ -27,7 +27,7 @@ import dev.ch8n.android.design.components.ContinueBookmarkCard
 import dev.ch8n.android.design.components.FlashCard
 import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.android.utils.toast
-import dev.ch8n.common.ui.controllers.HomeScreenController
+import dev.ch8n.common.ui.controllers.HomeController
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.AndroidPreview
 
@@ -38,7 +38,7 @@ fun PreviewHomeScreen(
 ) {
     val context = LocalContext.current
     val controller = remember {
-        HomeScreenController(
+        HomeController(
             componentContext = componentContext,
             navigateTo = {
                 "On navigate to ${it::class.simpleName}".toast(context)
@@ -61,7 +61,7 @@ fun PreviewHomeScreen(
 
 @Composable
 fun HomeScreen(
-    controller: HomeScreenController,
+    controller: HomeController,
     onSettingsClicked: () -> Unit
 ) {
     Box(
@@ -101,7 +101,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .height(176.dp),
                 onClicked = {
-                    controller.navigateTo(Destinations.PreviewScreen)
+                    controller.navigateTo(Destinations.PreviewBookmark)
                 }
             )
 
@@ -123,7 +123,7 @@ fun HomeScreen(
 
                         },
                         onClicked = {
-                            controller.navigateTo(Destinations.PreviewScreen)
+                            controller.navigateTo(Destinations.PreviewBookmark)
                         }
                     )
                 }
@@ -144,7 +144,7 @@ fun HomeScreen(
                             .width(320.dp)
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(Destinations.PreviewScreen)
+                            controller.navigateTo(Destinations.PreviewBookmark)
                         },
                         onNext = {
 
@@ -165,7 +165,7 @@ fun HomeScreen(
                 controller.navigateTo(Destinations.TagManager)
             },
             onBookmarkClicked = {
-                controller.navigateTo(Destinations.BookmarkBrowser)
+                controller.navigateTo(Destinations.Bookmarks)
             },
             onNewBookmarkClicked = {
                 controller.navigateTo(Destinations.CreateBookmark)

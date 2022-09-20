@@ -49,7 +49,7 @@ fun BrainMarkDesktopApp(defaultComponentContext: DefaultComponentContext, lifecy
                 ) {
                     Children(routerState = navigation.rootRouterState) { child ->
                         when (val controller = child.instance) {
-                            is BookmarkScreenController -> WorkInProgress(
+                            is BookmarkController -> WorkInProgress(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)
@@ -64,7 +64,7 @@ fun BrainMarkDesktopApp(defaultComponentContext: DefaultComponentContext, lifecy
 //                                    setDarkTheme.invoke(!isDarkTheme)
 //                                }
 //                            )
-                            is HomeScreenController -> WorkInProgress(
+                            is HomeController -> WorkInProgress(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)
@@ -76,7 +76,7 @@ fun BrainMarkDesktopApp(defaultComponentContext: DefaultComponentContext, lifecy
                                 onSettingsClicked = {}
                             )
 
-                            is BrowserController -> WorkInProgress(
+                            is PreviewBookmarkController -> WorkInProgress(
                                 controller = controller,
                                 onSettingsClicked = {}
                             )
@@ -95,7 +95,7 @@ fun BrainMarkDesktopApp(defaultComponentContext: DefaultComponentContext, lifecy
 fun WorkInProgress(controller: Any, onSettingsClicked: () -> Unit) {
 
     LaunchedEffect(Unit) {
-        if (controller is HomeScreenController) {
+        if (controller is HomeController) {
             controller.navigateTo(Destinations.TagManager)
         }
     }

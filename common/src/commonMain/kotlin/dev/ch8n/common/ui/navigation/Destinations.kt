@@ -8,7 +8,7 @@ sealed class Destinations : Parcelable {
     object Home : Destinations()
 
     @Parcelize
-    object BookmarkBrowser : Destinations()
+    object Bookmarks : Destinations()
 
     @Parcelize
     object TagManager : Destinations()
@@ -17,5 +17,9 @@ sealed class Destinations : Parcelable {
     object CreateBookmark : Destinations()
 
     @Parcelize
-    object PreviewScreen : Destinations()
+    object PreviewBookmark : Destinations()
+
+    @Parcelize
+    data class ReaderScreen(val url: String) : Destinations()
+
 }

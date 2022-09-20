@@ -24,7 +24,7 @@ import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Tags
-import dev.ch8n.common.ui.controllers.BookmarkScreenController
+import dev.ch8n.common.ui.controllers.BookmarkController
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.AndroidPreview
 
@@ -34,12 +34,12 @@ fun PreviewBookmarkScreen(
     componentContext: DefaultComponentContext
 ) {
     val context = LocalContext.current
-    val controller = BookmarkScreenController(
+    val controller = BookmarkController(
         componentContext = componentContext,
         navigateTo = {
             "On navigate to ${it::class.simpleName}".toast(context)
         },
-        navigateBack = {
+        onBack = {
             "On Back".toast(context)
         }
     )
@@ -57,7 +57,7 @@ fun PreviewBookmarkScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookmarkScreen(
-    controller: BookmarkScreenController,
+    controller: BookmarkController,
     onSettingsClicked: () -> Unit
 ) {
     val screenState by controller.screenState.collectAsState()
@@ -224,7 +224,7 @@ fun BookmarkScreen(
                             .fillMaxWidth()
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(Destinations.PreviewScreen)
+                            controller.navigateTo(Destinations.PreviewBookmark)
                         }
                     )
 

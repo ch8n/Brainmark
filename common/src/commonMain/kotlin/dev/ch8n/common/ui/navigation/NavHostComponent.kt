@@ -20,13 +20,14 @@ class NavHostComponent(
         destinations: Destinations,
         context: ComponentContext
     ): DecomposeController = when (destinations) {
-        is Destinations.BookmarkBrowser -> BookmarkScreenController(
+
+        is Destinations.Bookmarks -> BookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
-            navigateBack = ::navigateBack,
+            onBack = ::navigateBack,
         )
 
-        is Destinations.Home -> HomeScreenController(
+        is Destinations.Home -> HomeController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
@@ -44,10 +45,17 @@ class NavHostComponent(
             onBack = ::navigateBack,
         )
 
-        is Destinations.PreviewScreen -> BrowserController(
+        is Destinations.PreviewBookmark -> PreviewBookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
+        )
+
+        is Destinations.ReaderScreen -> ReaderModeController(
+            componentContext = context,
+            navigateTo = ::navigateTo,
+            onBack = ::navigateBack,
+            bookmarkUrl = destinations.url
         )
     }
 

@@ -15,6 +15,7 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import dev.ch8n.android.ui.screens.bookmarks.BookmarkScreen
 import dev.ch8n.android.ui.screens.browser.BrowserScreen
+import dev.ch8n.android.ui.screens.browser.clients.ReaderScreen
 import dev.ch8n.android.ui.screens.createBookmark.CreateBookmarkContent
 import dev.ch8n.android.ui.screens.home.HomeScreen
 import dev.ch8n.android.ui.screens.tagManager.TagScreenManager
@@ -43,30 +44,39 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     Children(routerState = navigation.rootRouterState) { child ->
                         when (val controller = child.instance) {
-                            is BookmarkScreenController -> BookmarkScreen(
+                            is BookmarkController -> BookmarkScreen(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)
                                 }
                             )
+
                             is TagManagerController -> TagScreenManager(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)
                                 }
                             )
-                            is HomeScreenController -> HomeScreen(
+
+                            is HomeController -> HomeScreen(
                                 controller = controller,
                                 onSettingsClicked = {
                                     setDarkTheme.invoke(!isDarkTheme)
                                 }
                             )
+
                             is CreateBookmarkController -> CreateBookmarkContent(
                                 controller = controller
                             )
-                            is BrowserController -> BrowserScreen(
+
+                            is PreviewBookmarkController -> BrowserScreen(
                                 controller = controller,
                             )
+
+                            is ReaderModeController -> ReaderScreen(
+                                controller = controller,
+                            )
+
                             else -> throw IllegalStateException("Unhandled controller and ui at navigation")
                         }
                     }

@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 @OptIn(FlowPreview::class)
-class BrowserController(
+class PreviewBookmarkController(
     componentContext: ComponentContext,
     val navigateTo: (Destinations) -> Unit,
     val onBack: () -> Unit,

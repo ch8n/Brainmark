@@ -27,7 +27,8 @@ import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.components.ScrollableColumn
 import dev.ch8n.android.utils.toast
-import dev.ch8n.common.ui.controllers.BrowserController
+import dev.ch8n.common.ui.controllers.PreviewBookmarkController
+import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.utils.AndroidPreview
 
 
@@ -37,7 +38,7 @@ fun PreviewBrowserScreen(
 ) {
     val context = LocalContext.current
     val controller = remember {
-        BrowserController(
+        PreviewBookmarkController(
             componentContext = componentContext,
             navigateTo = {
                 "On navigate to ${it::class.simpleName}".toast(context)
@@ -59,7 +60,7 @@ fun PreviewBrowserScreen(
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun BrowserScreen(
-    controller: BrowserController,
+    controller: PreviewBookmarkController,
 ) {
 
     val context = LocalContext.current
@@ -71,6 +72,7 @@ fun BrowserScreen(
             controller.getBookmark("")
         }
     }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -193,7 +195,9 @@ fun BrowserScreen(
 
             OutlinedButton(
                 onClick = {
-                    "open reader mode".toast(context)
+                    controller.navigateTo(
+                        Destinations.ReaderScreen(screenState.bookmark.bookmarkUrl)
+                    )
                 }
             ) {
                 Text("Preview in Reader Mode")

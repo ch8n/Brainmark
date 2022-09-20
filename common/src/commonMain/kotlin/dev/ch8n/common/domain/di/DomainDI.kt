@@ -2,6 +2,7 @@ package dev.ch8n.common.domain.di
 
 import dev.ch8n.common.data.di.DataInjector
 import dev.ch8n.common.data.remote.services.htmlParser.HtmlParserService
+import dev.ch8n.common.data.remote.services.readerview.ReaderViewService
 import dev.ch8n.common.domain.usecases.*
 import io.ktor.client.*
 
@@ -38,6 +39,8 @@ object DomainResolver {
             deleteTagUseCase = DeleteTagUseCase(tagsDataSource),
         )
     }
+
+    fun provideReaderParser() = ReaderViewService()
 }
 
 object DomainInjector {
@@ -50,6 +53,10 @@ object DomainInjector {
     }
     val htmlParserService by lazy {
         DomainResolver.provideHtmlParser()
+    }
+
+    val readerParserService by lazy {
+        DomainResolver.provideReaderParser()
     }
 
 }

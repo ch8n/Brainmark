@@ -1,6 +1,5 @@
 package dev.ch8n.common.ui.controllers
 
-import androidx.compose.runtime.remember
 import com.arkivanov.decompose.ComponentContext
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.FlashCard
@@ -10,7 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class HomeScreenController(
+class HomeController(
     componentContext: ComponentContext,
     val navigateTo: (Destinations) -> Unit,
     val onBack: () -> Unit,
