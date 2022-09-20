@@ -115,7 +115,7 @@ fun ReaderScreen(
                     painterResource(R.drawable.internet)
                 },
                 contentDescription = null,
-                tint = Color.Unspecified
+                tint = MaterialTheme.colors.onSurface
             )
         }
     }
