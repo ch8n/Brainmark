@@ -109,7 +109,7 @@ fun ReaderScreen(
             }
         ) {
             Icon(
-                painter = if (isPlainText) {
+                painter = if (!isPlainText) {
                     painterResource(R.drawable.text)
                 } else {
                     painterResource(R.drawable.internet)

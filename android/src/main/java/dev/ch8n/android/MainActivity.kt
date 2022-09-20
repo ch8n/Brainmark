@@ -15,6 +15,7 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import dev.ch8n.android.ui.screens.bookmarks.BookmarkScreen
 import dev.ch8n.android.ui.screens.browser.BrowserScreen
+import dev.ch8n.android.ui.screens.browser.clients.AndroidWebView
 import dev.ch8n.android.ui.screens.browser.clients.ReaderScreen
 import dev.ch8n.android.ui.screens.createBookmark.CreateBookmarkContent
 import dev.ch8n.android.ui.screens.home.HomeScreen
@@ -74,6 +75,10 @@ class MainActivity : AppCompatActivity() {
                             )
 
                             is ReaderModeController -> ReaderScreen(
+                                controller = controller,
+                            )
+
+                            is WebViewController -> AndroidWebView(
                                 controller = controller,
                             )
 

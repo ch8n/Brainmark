@@ -49,9 +49,17 @@ class NavHostComponent(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
+            bookmarkId = destinations.bookmarkId
         )
 
         is Destinations.ReaderScreen -> ReaderModeController(
+            componentContext = context,
+            navigateTo = ::navigateTo,
+            onBack = ::navigateBack,
+            bookmarkUrl = destinations.url
+        )
+
+        is Destinations.WebView -> WebViewController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,

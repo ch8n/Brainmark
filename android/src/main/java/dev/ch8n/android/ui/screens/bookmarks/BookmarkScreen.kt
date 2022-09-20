@@ -224,7 +224,9 @@ fun BookmarkScreen(
                             .fillMaxWidth()
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(Destinations.PreviewBookmark)
+                            controller.navigateTo(
+                                Destinations.PreviewBookmark(it.id)
+                            )
                         }
                     )
 

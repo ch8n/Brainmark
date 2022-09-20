@@ -46,7 +46,8 @@ fun PreviewBrowserScreen(
             },
             onBack = {
                 "On Back".toast(context)
-            }
+            },
+            bookmarkId = ""
         )
     }
     AndroidPreview(
@@ -70,7 +71,7 @@ fun BrowserScreen(
     LaunchedEffect(screenState) {
         val bookmark = screenState.bookmark
         if (bookmark.id == "0") {
-            controller.getBookmark("")
+            controller.getBookmark()
         }
     }
 
@@ -216,7 +217,11 @@ fun BrowserScreen(
 
             OutlinedButton(
                 onClick = {
-                    "open webview".toast(context)
+                    controller.navigateTo(
+                        Destinations.WebView(
+                            screenState.bookmark.bookmarkUrl
+                        )
+                    )
                 }
             ) {
                 Text("View in App | bypass paywalls.")

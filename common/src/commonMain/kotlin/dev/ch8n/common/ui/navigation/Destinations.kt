@@ -17,9 +17,12 @@ sealed class Destinations : Parcelable {
     object CreateBookmark : Destinations()
 
     @Parcelize
-    object PreviewBookmark : Destinations()
+    data class PreviewBookmark(val bookmarkId: String) : Destinations()
 
     @Parcelize
     data class ReaderScreen(val url: String) : Destinations()
+
+    @Parcelize
+    data class WebView(val url: String) : Destinations()
 
 }

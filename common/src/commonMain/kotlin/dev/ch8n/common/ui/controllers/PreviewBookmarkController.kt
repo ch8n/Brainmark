@@ -17,6 +17,7 @@ class PreviewBookmarkController(
     componentContext: ComponentContext,
     val navigateTo: (Destinations) -> Unit,
     val onBack: () -> Unit,
+    private val bookmarkId: String
 ) : DecomposeController(componentContext) {
 
     private fun withLoading(action: suspend () -> Unit) {
@@ -28,15 +29,13 @@ class PreviewBookmarkController(
         }
     }
 
-    fun getBookmark(bookmarkId: String) {
-        // todo fix use get bookmark by id
+    fun getBookmark() {
         withLoading {
-            getBookmarkById(1, 1)
-                .flatMapMerge { bookmarks ->
-                    val bookmark = bookmarks.first()
+            getBookmarkById(bookmarkId)
+                .flatMapMerge { bookmark ->
                     val tagIds = bookmark.tagIds
                     _screenState.update {
-                        it.copy(bookmark = bookmarks.first())
+                        it.copy(bookmark = bookmark)
                     }
                     getTagsById.invoke(tagIds)
                 }
@@ -51,8 +50,7 @@ class PreviewBookmarkController(
 
     private val getBookmarkById = DomainInjector
         .bookmarkUseCase
-        // TODO change with get bookmark with id
-        .getAllBookmarksPaging
+        .getBookmarkByIdUseCase
 
     private val getTagsById = DomainInjector
         .tagUseCase

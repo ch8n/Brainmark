@@ -101,7 +101,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .height(176.dp),
                 onClicked = {
-                    controller.navigateTo(Destinations.PreviewBookmark)
+                    controller.navigateTo(Destinations.PreviewBookmark(""))
                 }
             )
 
@@ -123,7 +123,7 @@ fun HomeScreen(
 
                         },
                         onClicked = {
-                            controller.navigateTo(Destinations.PreviewBookmark)
+                            controller.navigateTo(Destinations.PreviewBookmark(""))
                         }
                     )
                 }
@@ -144,7 +144,7 @@ fun HomeScreen(
                             .width(320.dp)
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(Destinations.PreviewBookmark)
+                            controller.navigateTo(Destinations.PreviewBookmark(""))
                         },
                         onNext = {
 
