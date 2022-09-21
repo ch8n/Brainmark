@@ -22,7 +22,7 @@ import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.AndroidPreview
 
 @Composable
@@ -225,7 +225,7 @@ fun CreateBookmarkContent(
 
                     DropdownMenuItem(
                         onClick = {
-                            controller.navigateTo(Destinations.TagManager)
+                            controller.navigateTo(Destination.TagManager)
                             setDropDownShown.invoke(false)
                         }
                     ) {

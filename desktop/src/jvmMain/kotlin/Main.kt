@@ -18,7 +18,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.Children
 import com.arkivanov.decompose.extensions.compose.jetbrains.lifecycle.LifecycleController
 import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import dev.ch8n.common.ui.controllers.*
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.ui.navigation.NavHostComponent
 import dev.ch8n.common.ui.theme.BrainMarkTheme
 
@@ -96,7 +96,7 @@ fun WorkInProgress(controller: Any, onSettingsClicked: () -> Unit) {
 
     LaunchedEffect(Unit) {
         if (controller is HomeController) {
-            controller.navigateTo(Destinations.TagManager)
+            controller.navigateTo(Destination.TagManager)
         }
     }
 }

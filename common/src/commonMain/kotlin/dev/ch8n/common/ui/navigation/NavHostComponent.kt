@@ -6,71 +6,72 @@ import com.arkivanov.decompose.value.Value
 import dev.ch8n.common.ui.controllers.*
 import dev.ch8n.common.utils.DecomposeController
 
+
 class NavHostComponent(
     componentContext: ComponentContext,
 ) : DecomposeController(componentContext) {
 
-    private val router: Router<Destinations, DecomposeController> = router(
-        initialConfiguration = Destinations.Home,
+    private val router: Router<Destination, DecomposeController> = router(
+        initialConfiguration = Destination.Home,
         childFactory = ::createComponents,
         handleBackButton = true
     )
 
     private fun createComponents(
-        destinations: Destinations,
+        destination: Destination,
         context: ComponentContext
-    ): DecomposeController = when (destinations) {
+    ): DecomposeController = when (destination) {
 
-        is Destinations.Bookmarks -> BookmarkController(
+        is Destination.Bookmarks -> BookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
 
-        is Destinations.Home -> HomeController(
+        is Destination.Home -> HomeController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
 
-        is Destinations.TagManager -> TagManagerController(
+        is Destination.TagManager -> TagManagerController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
 
-        is Destinations.CreateBookmark -> CreateBookmarkController(
+        is Destination.CreateBookmark -> CreateBookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
         )
 
-        is Destinations.PreviewBookmark -> PreviewBookmarkController(
+        is Destination.PreviewBookmark -> PreviewBookmarkController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
-            bookmarkId = destinations.bookmarkId
+            bookmarkId = destination.bookmarkId
         )
 
-        is Destinations.ReaderScreen -> ReaderModeController(
+        is Destination.ReaderScreen -> ReaderModeController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
-            bookmarkUrl = destinations.url
+            bookmarkUrl = destination.url
         )
 
-        is Destinations.WebView -> WebViewController(
+        is Destination.WebView -> WebViewController(
             componentContext = context,
             navigateTo = ::navigateTo,
             onBack = ::navigateBack,
-            bookmarkUrl = destinations.url
+            bookmarkUrl = destination.url
         )
     }
 
-    val rootRouterState: Value<RouterState<Destinations, DecomposeController>> = router.state
+    val rootRouterState: Value<RouterState<Destination, DecomposeController>> = router.state
 
-    private fun navigateTo(destinations: Destinations) {
-        router.push(destinations)
+    private fun navigateTo(destination: Destination) {
+        router.push(destination)
     }
 
     private fun navigateBack() {

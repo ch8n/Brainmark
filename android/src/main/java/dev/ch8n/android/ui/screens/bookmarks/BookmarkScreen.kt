@@ -25,7 +25,7 @@ import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.ui.controllers.BookmarkController
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.AndroidPreview
 
 
@@ -109,7 +109,7 @@ fun BookmarkScreen(
                         ),
                         onClick = {
                             isTagDropDownShow = false
-                            controller.navigateTo(Destinations.TagManager)
+                            controller.navigateTo(Destination.TagManager)
                         }
                     ) {
                         Text(
@@ -225,7 +225,7 @@ fun BookmarkScreen(
                             .height(176.dp),
                         onClick = {
                             controller.navigateTo(
-                                Destinations.PreviewBookmark(it.id)
+                                Destination.PreviewBookmark(it.id)
                             )
                         }
                     )

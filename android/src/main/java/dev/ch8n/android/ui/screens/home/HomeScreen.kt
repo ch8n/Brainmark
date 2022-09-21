@@ -28,7 +28,7 @@ import dev.ch8n.android.design.components.FlashCard
 import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.HomeController
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.AndroidPreview
 
 
@@ -101,7 +101,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .height(176.dp),
                 onClicked = {
-                    controller.navigateTo(Destinations.PreviewBookmark(""))
+                    controller.navigateTo(Destination.PreviewBookmark(""))
                 }
             )
 
@@ -123,7 +123,7 @@ fun HomeScreen(
 
                         },
                         onClicked = {
-                            controller.navigateTo(Destinations.PreviewBookmark(""))
+                            controller.navigateTo(Destination.PreviewBookmark(""))
                         }
                     )
                 }
@@ -144,7 +144,7 @@ fun HomeScreen(
                             .width(320.dp)
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(Destinations.PreviewBookmark(""))
+                            controller.navigateTo(Destination.PreviewBookmark(""))
                         },
                         onNext = {
 
@@ -162,13 +162,13 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .width(240.dp),
             onTagClicked = {
-                controller.navigateTo(Destinations.TagManager)
+                controller.navigateTo(Destination.TagManager)
             },
             onBookmarkClicked = {
-                controller.navigateTo(Destinations.Bookmarks)
+                controller.navigateTo(Destination.Bookmarks)
             },
             onNewBookmarkClicked = {
-                controller.navigateTo(Destinations.CreateBookmark)
+                controller.navigateTo(Destination.CreateBookmark)
             }
         )
     }

@@ -29,7 +29,7 @@ import dev.ch8n.android.ui.components.ScrollableColumn
 import dev.ch8n.android.ui.screens.browser.clients.launchChromeTab
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.PreviewBookmarkController
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.AndroidPreview
 
 
@@ -198,7 +198,7 @@ fun BrowserScreen(
             OutlinedButton(
                 onClick = {
                     controller.navigateTo(
-                        Destinations.ReaderScreen(screenState.bookmark.bookmarkUrl)
+                        Destination.ReaderScreen(screenState.bookmark.bookmarkUrl)
                     )
                 }
             ) {
@@ -218,7 +218,7 @@ fun BrowserScreen(
             OutlinedButton(
                 onClick = {
                     controller.navigateTo(
-                        Destinations.WebView(
+                        Destination.WebView(
                             screenState.bookmark.bookmarkUrl
                         )
                     )

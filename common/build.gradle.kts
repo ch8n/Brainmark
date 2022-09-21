@@ -40,7 +40,7 @@ object Common2 {
         const val essentyParcelable = "0.4.1"
 
         //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
-        const val decomposeVersion = "0.7.0"
+        const val decomposeVersion = "0.8.0"
 
         //https://ktor.io/docs/getting-started-ktor-client-multiplatform-mobile.html
         const val ktorVersion = "2.0.3"

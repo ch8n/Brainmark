@@ -7,7 +7,7 @@ import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.DecomposeController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.Job
@@ -18,7 +18,7 @@ import kotlinx.datetime.Clock
 
 class CreateBookmarkController(
     componentContext: ComponentContext,
-    val navigateTo: (Destinations) -> Unit,
+    val navigateTo: (Destination) -> Unit,
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 

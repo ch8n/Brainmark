@@ -3,7 +3,7 @@ package dev.ch8n.common.ui.controllers
 import com.arkivanov.decompose.ComponentContext
 import dev.ch8n.common.data.remote.services.readerview.ReaderViewDTO
 import dev.ch8n.common.domain.di.DomainInjector
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.DecomposeController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class ReaderModeController constructor(
     componentContext: ComponentContext,
-    val navigateTo: (Destinations) -> Unit,
+    val navigateTo: (Destination) -> Unit,
     val onBack: () -> Unit,
     private val bookmarkUrl: String,
 ) : DecomposeController(componentContext) {

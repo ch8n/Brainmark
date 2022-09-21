@@ -3,7 +3,7 @@ package dev.ch8n.common.ui.controllers
 import com.arkivanov.decompose.ComponentContext
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.FlashCard
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.DecomposeController
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class HomeController(
     componentContext: ComponentContext,
-    val navigateTo: (Destinations) -> Unit,
+    val navigateTo: (Destination) -> Unit,
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 

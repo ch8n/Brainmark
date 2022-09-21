@@ -7,7 +7,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.Destination
 import dev.ch8n.common.utils.ColorsUtils
 import dev.ch8n.common.utils.DecomposeController
 import dev.ch8n.common.utils.Result
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 class TagManagerController(
     componentContext: ComponentContext,
-    val navigateTo: (Destinations) -> Unit,
+    val navigateTo: (Destination) -> Unit,
     val onBack: () -> Unit,
 ) : DecomposeController(componentContext) {
 

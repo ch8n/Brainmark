@@ -24,11 +24,19 @@ import dev.ch8n.common.ui.controllers.*
 import dev.ch8n.common.ui.navigation.NavHostComponent
 import dev.ch8n.common.ui.theme.BrainMarkTheme
 import dev.ch8n.common.utils.PlatformDependencies
+import dev.ch8n.common.utils.RootComponent
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         brainMarkApp()
+    }
+
+    fun AppCompatActivity.brainMarkApp2() {
+        val root = RootComponent(defaultComponentContext())
+        setContent {
+
+        }
     }
 
     @OptIn(ExperimentalDecomposeApi::class)
