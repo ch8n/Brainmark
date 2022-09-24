@@ -15,6 +15,7 @@ import dev.ch8n.android.ui.screens.home.AndroidHomeController
 import dev.ch8n.android.ui.screens.tagManager.AndroidTagManagerController
 import dev.ch8n.common.data.di.DataInjector
 import dev.ch8n.common.ui.navigation.*
+import dev.ch8n.common.ui.theme.BrainMarkTheme
 
 
 class MainActivity : AppCompatActivity() {
@@ -34,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalDecomposeApi::class)
     fun AppCompatActivity.brainMarkAndroidApp() {
         val navController = createNavController(
+            initialDestination = BookmarksDestination,
             componentContext = defaultComponentContext(),
             createDestinations = { destinations: Destinations, context: ComponentContext ->
                 when (destinations) {
@@ -63,11 +65,13 @@ class MainActivity : AppCompatActivity() {
             }
         )
         setContent {
-            Children(
-                stack = requireNotNull(navController.destinations),
-                modifier = Modifier.fillMaxSize()
-            ) { destination ->
-                destination.instance.Render()
+            BrainMarkTheme {
+                Children(
+                    stack = requireNotNull(navController.destinations),
+                    modifier = Modifier.fillMaxSize()
+                ) { destination ->
+                    destination.instance.Render()
+                }
             }
         }
     }
