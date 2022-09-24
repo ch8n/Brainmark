@@ -9,6 +9,10 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import dev.ch8n.android.ui.screens.bookmarks.AndroidBookmarksController
+import dev.ch8n.android.ui.screens.browser.AndroidPreviewBookmarkHomeController
+import dev.ch8n.android.ui.screens.home.AndroidHomeController
+import dev.ch8n.android.ui.screens.tagManager.AndroidTagManagerController
 import dev.ch8n.common.data.di.DataInjector
 import dev.ch8n.common.ui.navigation.*
 
@@ -33,13 +37,28 @@ class MainActivity : AppCompatActivity() {
             componentContext = defaultComponentContext(),
             createDestinations = { destinations: Destinations, context: ComponentContext ->
                 when (destinations) {
-                    is BookmarksDestination -> TODO()
-                    is HomeDestination -> TODO()
-                    is PreviewBookmarkHomeDestination -> TODO()
-                    is TagManagerDestination -> TODO()
-                    is PreviewBookmarkChromeTabDestination -> TODO()
-                    is PreviewBookmarkEmbeddedWebDestination -> TODO()
-                    is PreviewBookmarkReaderModeDestination -> TODO()
+                    is BookmarksDestination -> AndroidBookmarksController(this)
+                    is HomeDestination -> AndroidHomeController(this)
+                    is PreviewBookmarkHomeDestination -> AndroidPreviewBookmarkHomeController(
+                        this,
+                        destinations.bookmark
+                    )
+
+                    is TagManagerDestination -> AndroidTagManagerController(this)
+                    is PreviewBookmarkChromeTabDestination -> AndroidPreviewBookmarkHomeController(
+                        this,
+                        destinations.bookmark
+                    )
+
+                    is PreviewBookmarkEmbeddedWebDestination -> AndroidPreviewBookmarkHomeController(
+                        this,
+                        destinations.bookmark
+                    )
+
+                    is PreviewBookmarkReaderModeDestination -> AndroidPreviewBookmarkHomeController(
+                        this,
+                        destinations.bookmark
+                    )
                 }
             }
         )
