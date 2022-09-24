@@ -28,41 +28,49 @@ import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.components.ScrollableColumn
 import dev.ch8n.android.ui.screens.browser.clients.launchChromeTab
 import dev.ch8n.android.utils.toast
-import dev.ch8n.common.ui.controllers.PreviewBookmarkController
-import dev.ch8n.common.ui.navigation.Destination
+import dev.ch8n.common.data.model.Bookmark
+import dev.ch8n.common.ui.controllers.PreviewBookmarkHomeController
+import dev.ch8n.common.ui.navigation.EmptyNavController
+import dev.ch8n.common.ui.navigation.NavController
+import dev.ch8n.common.ui.navigation.PreviewBookmarkEmbeddedWebDestination
+import dev.ch8n.common.ui.navigation.PreviewBookmarkReaderModeDestination
 import dev.ch8n.common.utils.AndroidPreview
+
+
+class AndroidPreviewBookmarkHomeController(
+    navController: NavController,
+    bookmark: Bookmark
+) : PreviewBookmarkHomeController(navController, bookmark) {
+    @Composable
+    override fun Render() {
+        PreviewBookmarkHome(controller = this)
+    }
+}
 
 
 @Composable
 fun PreviewBrowserScreen(
     componentContext: DefaultComponentContext
 ) {
-    val context = LocalContext.current
     val controller = remember {
-        PreviewBookmarkController(
-            componentContext = componentContext,
-            navigateTo = {
-                "On navigate to ${it::class.simpleName}".toast(context)
-            },
-            onBack = {
-                "On Back".toast(context)
-            },
-            bookmarkId = ""
+        AndroidPreviewBookmarkHomeController(
+            EmptyNavController(),
+            Bookmark.Empty
         )
     }
     AndroidPreview(
         isSplitView = false,
         isDark = true,
     ) {
-        BrowserScreen(controller)
+        PreviewBookmarkHome(controller)
     }
 }
 
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun BrowserScreen(
-    controller: PreviewBookmarkController,
+fun PreviewBookmarkHome(
+    controller: AndroidPreviewBookmarkHomeController,
 ) {
 
     val context = LocalContext.current
@@ -105,7 +113,7 @@ fun BrowserScreen(
                 modifier = Modifier
                     .size(24.dp)
                     .align(Alignment.Start)
-                    .clickable { controller.onBack.invoke() },
+                    .clickable { controller.back() },
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 colorFilter = ColorFilter.tint(
@@ -197,8 +205,8 @@ fun BrowserScreen(
 
             OutlinedButton(
                 onClick = {
-                    controller.navigateTo(
-                        Destination.ReaderScreen(screenState.bookmark.bookmarkUrl)
+                    controller.routeTo(
+                        PreviewBookmarkReaderModeDestination(screenState.bookmark)
                     )
                 }
             ) {
@@ -217,9 +225,9 @@ fun BrowserScreen(
 
             OutlinedButton(
                 onClick = {
-                    controller.navigateTo(
-                        Destination.WebView(
-                            screenState.bookmark.bookmarkUrl
+                    controller.routeTo(
+                        PreviewBookmarkEmbeddedWebDestination(
+                            screenState.bookmark
                         )
                     )
                 }

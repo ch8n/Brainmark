@@ -3,97 +3,52 @@ package dev.ch8n.android
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.defaultComponentContext
-import com.arkivanov.decompose.extensions.compose.jetbrains.Children
-import dev.ch8n.android.ui.screens.bookmarks.BookmarkScreen
-import dev.ch8n.android.ui.screens.browser.BrowserScreen
-import dev.ch8n.android.ui.screens.browser.clients.AndroidWebView
-import dev.ch8n.android.ui.screens.browser.clients.ReaderScreen
-import dev.ch8n.android.ui.screens.createBookmark.CreateBookmarkContent
-import dev.ch8n.android.ui.screens.home.HomeScreen
-import dev.ch8n.android.ui.screens.tagManager.TagScreenManager
-import dev.ch8n.common.ui.controllers.*
-import dev.ch8n.common.ui.navigation.NavHostComponent
-import dev.ch8n.common.ui.theme.BrainMarkTheme
-import dev.ch8n.common.utils.PlatformDependencies
-import dev.ch8n.common.utils.RootComponent
+import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
+import dev.ch8n.common.data.di.DataInjector
+import dev.ch8n.common.ui.navigation.*
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        brainMarkApp()
+        val appContext = DataInjector.applicationContext
+        appContext.setContext(applicationContext)
+        brainMarkAndroidApp()
     }
 
-    fun AppCompatActivity.brainMarkApp2() {
-        val root = RootComponent(defaultComponentContext())
-        setContent {
-
-        }
+    override fun onDestroy() {
+        val appContext = DataInjector.applicationContext
+        appContext.clear()
+        super.onDestroy()
     }
 
     @OptIn(ExperimentalDecomposeApi::class)
-    fun brainMarkApp() {
-        PlatformDependencies.setApplicationContext(applicationContext)
-        val navigation = NavHostComponent(defaultComponentContext())
-        setContent {
-            val (isDarkTheme, setDarkTheme) = remember { mutableStateOf(true) }
-            BrainMarkTheme(isDark = isDarkTheme) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colors.surface)
-                ) {
-                    Children(routerState = navigation.rootRouterState) { child ->
-                        when (val controller = child.instance) {
-                            is BookmarkController -> BookmarkScreen(
-                                controller = controller,
-                                onSettingsClicked = {
-                                    setDarkTheme.invoke(!isDarkTheme)
-                                }
-                            )
-
-                            is TagManagerController -> TagScreenManager(
-                                controller = controller,
-                                onSettingsClicked = {
-                                    setDarkTheme.invoke(!isDarkTheme)
-                                }
-                            )
-
-                            is HomeController -> HomeScreen(
-                                controller = controller,
-                                onSettingsClicked = {
-                                    setDarkTheme.invoke(!isDarkTheme)
-                                }
-                            )
-
-                            is CreateBookmarkController -> CreateBookmarkContent(
-                                controller = controller
-                            )
-
-                            is PreviewBookmarkController -> BrowserScreen(
-                                controller = controller,
-                            )
-
-                            is ReaderModeController -> ReaderScreen(
-                                controller = controller,
-                            )
-
-                            is WebViewController -> AndroidWebView(
-                                controller = controller,
-                            )
-
-                            else -> throw IllegalStateException("Unhandled controller and ui at navigation")
-                        }
-                    }
+    fun AppCompatActivity.brainMarkAndroidApp() {
+        val navController = createNavController(
+            componentContext = defaultComponentContext(),
+            createDestinations = { destinations: Destinations, context: ComponentContext ->
+                when (destinations) {
+                    is BookmarksDestination -> TODO()
+                    is HomeDestination -> TODO()
+                    is PreviewBookmarkHomeDestination -> TODO()
+                    is TagManagerDestination -> TODO()
+                    is PreviewBookmarkChromeTabDestination -> TODO()
+                    is PreviewBookmarkEmbeddedWebDestination -> TODO()
+                    is PreviewBookmarkReaderModeDestination -> TODO()
                 }
+            }
+        )
+        setContent {
+            Children(
+                stack = requireNotNull(navController.destinations),
+                modifier = Modifier.fillMaxSize()
+            ) { destination ->
+                destination.instance.Render()
             }
         }
     }

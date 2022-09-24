@@ -1,16 +1,15 @@
 package dev.ch8n.common.ui.controllers
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.arkivanov.decompose.ComponentContext
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
-import dev.ch8n.common.ui.navigation.Destination
+import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.ColorsUtils
-import dev.ch8n.common.utils.DecomposeController
 import dev.ch8n.common.utils.Result
+import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.characterAreSame
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -18,13 +17,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class TagManagerController(
-    componentContext: ComponentContext,
-    val navigateTo: (Destination) -> Unit,
-    val onBack: () -> Unit,
-) : DecomposeController(componentContext) {
+abstract class TagManagerController(
+    navController: NavController
+) : UiController(navController) {
 
-    @Immutable
+    @Stable
     data class ScreenState(
         val selectedId: String,
         val tagName: String,

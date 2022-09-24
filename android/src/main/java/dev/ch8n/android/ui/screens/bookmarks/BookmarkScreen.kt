@@ -1,7 +1,6 @@
 package dev.ch8n.android.ui.screens.bookmarks
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,7 +9,6 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,8 +22,9 @@ import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Tags
-import dev.ch8n.common.ui.controllers.BookmarkController
-import dev.ch8n.common.ui.navigation.Destination
+import dev.ch8n.common.ui.navigation.EmptyNavController
+import dev.ch8n.common.ui.navigation.PreviewBookmarkHomeDestination
+import dev.ch8n.common.ui.navigation.TagManagerDestination
 import dev.ch8n.common.utils.AndroidPreview
 
 
@@ -34,14 +33,8 @@ fun PreviewBookmarkScreen(
     componentContext: DefaultComponentContext
 ) {
     val context = LocalContext.current
-    val controller = BookmarkController(
-        componentContext = componentContext,
-        navigateTo = {
-            "On navigate to ${it::class.simpleName}".toast(context)
-        },
-        onBack = {
-            "On Back".toast(context)
-        }
+    val controller = AndroidBookmarksController(
+        navController = EmptyNavController()
     )
     AndroidPreview(
         isSplitView = false,
@@ -57,7 +50,7 @@ fun PreviewBookmarkScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BookmarkScreen(
-    controller: BookmarkController,
+    controller: AndroidBookmarksController,
     onSettingsClicked: () -> Unit
 ) {
     val screenState by controller.screenState.collectAsState()
@@ -109,7 +102,7 @@ fun BookmarkScreen(
                         ),
                         onClick = {
                             isTagDropDownShow = false
-                            controller.navigateTo(Destination.TagManager)
+                            controller.routeTo(TagManagerDestination)
                         }
                     ) {
                         Text(
@@ -224,8 +217,8 @@ fun BookmarkScreen(
                             .fillMaxWidth()
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(
-                                Destination.PreviewBookmark(it.id)
+                            controller.routeTo(
+                                PreviewBookmarkHomeDestination(it)
                             )
                         }
                     )
@@ -242,58 +235,6 @@ fun BookmarkScreen(
         }
     }
 }
-
-@Composable
-fun TagProgress(
-    archivedCount: String,
-    totalCount: String,
-    modifier: Modifier,
-) {
-    Box(
-        modifier = modifier
-            .clip(MaterialTheme.shapes.large)
-            .height(56.dp)
-            .border(
-                width = 2.dp,
-                shape = MaterialTheme.shapes.large,
-                color = MaterialTheme.colors.onSurface,
-            )
-    ) {
-
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.TopCenter),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "$archivedCount/$totalCount Bookmarks",
-                style = MaterialTheme.typography.subtitle1,
-                color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.padding(start = 24.dp, top = 8.dp)
-
-            )
-
-            Text(
-                text = "100%",
-                style = MaterialTheme.typography.h4,
-                color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.padding(end = 24.dp, top = 8.dp)
-            )
-        }
-
-        LinearProgressIndicator(
-            modifier = Modifier
-                .padding(bottom = 16.dp)
-                .fillMaxWidth(0.85f)
-                .align(Alignment.BottomCenter),
-        )
-
-    }
-}
-
 
 @Composable
 private fun ToolbarBookmark(

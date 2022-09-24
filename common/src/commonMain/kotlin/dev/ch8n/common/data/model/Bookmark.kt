@@ -1,6 +1,8 @@
 package dev.ch8n.common.data.model
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
+import com.arkivanov.essenty.parcelable.Parcelable
+import com.arkivanov.essenty.parcelable.Parcelize
 import com.benasher44.uuid.uuid4
 
 
@@ -26,7 +28,8 @@ data class FlashCard(
     }
 }
 
-@Immutable
+@Stable
+@Parcelize
 data class Bookmark(
     val id: String,
     val tagIds: List<String>,
@@ -40,7 +43,7 @@ data class Bookmark(
     val bookmarkUrl: String,
     val flashCardIds: List<String>,
     val notes: String
-) {
+) : Parcelable {
     companion object {
 
         val Empty: Bookmark

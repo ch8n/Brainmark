@@ -1,22 +1,20 @@
 package dev.ch8n.common.ui.controllers
 
-import com.arkivanov.decompose.ComponentContext
+import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.remote.services.readerview.ReaderViewDTO
 import dev.ch8n.common.domain.di.DomainInjector
-import dev.ch8n.common.ui.navigation.Destination
-import dev.ch8n.common.utils.DecomposeController
+import dev.ch8n.common.ui.navigation.NavController
+import dev.ch8n.common.utils.UiController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ReaderModeController constructor(
-    componentContext: ComponentContext,
-    val navigateTo: (Destination) -> Unit,
-    val onBack: () -> Unit,
-    private val bookmarkUrl: String,
-) : DecomposeController(componentContext) {
+abstract class PreviewReaderModeController constructor(
+    navController: NavController,
+    private val bookmark: Bookmark
+) : UiController(navController) {
 
     private val readerService = DomainInjector
         .readerParserService
@@ -26,7 +24,8 @@ class ReaderModeController constructor(
 
     fun refreshReader() {
         launch(Dispatchers.IO) {
-            val reader = readerService.getReaderViewContent(bookmarkUrl)
+            val reader = readerService
+                .getReaderViewContent(bookmark.bookmarkUrl)
             _readerView.update { reader }
         }
     }

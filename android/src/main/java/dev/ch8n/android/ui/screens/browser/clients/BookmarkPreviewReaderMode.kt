@@ -21,7 +21,7 @@ import dev.ch8n.android.R
 import dev.ch8n.android.ui.components.ScrollableColumn
 import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.common.data.remote.services.readerview.ReaderViewDTO
-import dev.ch8n.common.ui.controllers.ReaderModeController
+import dev.ch8n.common.ui.controllers.PreviewReaderModeController
 
 @Composable
 fun HtmlText(
@@ -47,7 +47,7 @@ fun HtmlText(
 // 4. can we use type???
 @Composable
 fun ReaderScreen(
-    controller: ReaderModeController
+    controller: PreviewReaderModeController
 ) {
 
     val reader by controller.reader.collectAsState()

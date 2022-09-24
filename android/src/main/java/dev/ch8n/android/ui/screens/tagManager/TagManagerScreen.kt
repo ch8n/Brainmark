@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,10 @@ import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.screens.colorPicker.ColorPicker
 import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
+import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.TagManagerController
+import dev.ch8n.common.ui.navigation.EmptyNavController
+import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.ui.theme.StringRes
 import dev.ch8n.common.utils.AndroidPreview
 import dev.ch8n.common.utils.ColorsUtils
@@ -35,11 +39,7 @@ fun PreviewTagManagerScreen(
     componentContext: DefaultComponentContext
 ) {
     val controller = remember {
-        TagManagerController(
-            componentContext = componentContext,
-            navigateTo = {},
-            onBack = {}
-        )
+        AndroidTagManagerController(navController = EmptyNavController())
     }
     AndroidPreview(
         isSplitView = false,
@@ -48,11 +48,26 @@ fun PreviewTagManagerScreen(
     }
 }
 
+class AndroidTagManagerController(
+    navController: NavController
+) : TagManagerController(navController) {
+    @Composable
+    override fun Render() {
+        val context = LocalContext.current
+        TagScreenManager(
+            controller = this,
+            onSettingsClicked = {
+                "TODO".toast(context)
+            }
+        )
+    }
+}
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun TagScreenManager(
-    controller: TagManagerController,
+    controller: AndroidTagManagerController,
     onSettingsClicked: () -> Unit
 ) {
 

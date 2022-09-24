@@ -28,9 +28,25 @@ import dev.ch8n.android.design.components.FlashCard
 import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.HomeController
-import dev.ch8n.common.ui.navigation.Destination
+import dev.ch8n.common.ui.navigation.EmptyNavController
+import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.AndroidPreview
 
+
+class AndroidHomeController(
+    navController: NavController
+) : HomeController(navController) {
+    @Composable
+    override fun Render() {
+        val context = LocalContext.current
+        HomeScreen(
+            controller = this,
+            onSettingsClicked = {
+                "TODO".toast(context)
+            }
+        )
+    }
+}
 
 @Composable
 fun PreviewHomeScreen(
@@ -38,14 +54,8 @@ fun PreviewHomeScreen(
 ) {
     val context = LocalContext.current
     val controller = remember {
-        HomeController(
-            componentContext = componentContext,
-            navigateTo = {
-                "On navigate to ${it::class.simpleName}".toast(context)
-            },
-            onBack = {
-                "On back".toast(context)
-            }
+        AndroidHomeController(
+            navController = EmptyNavController()
         )
     }
     AndroidPreview(
@@ -61,7 +71,7 @@ fun PreviewHomeScreen(
 
 @Composable
 fun HomeScreen(
-    controller: HomeController,
+    controller: AndroidHomeController,
     onSettingsClicked: () -> Unit
 ) {
     Box(
@@ -101,7 +111,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .height(176.dp),
                 onClicked = {
-                    controller.navigateTo(Destination.PreviewBookmark(""))
+                    //controller.routeTo(Destination.PreviewBookmark(""))
                 }
             )
 
@@ -123,7 +133,7 @@ fun HomeScreen(
 
                         },
                         onClicked = {
-                            controller.navigateTo(Destination.PreviewBookmark(""))
+                            //controller.navigateTo(Destination.PreviewBookmark(""))
                         }
                     )
                 }
@@ -144,7 +154,7 @@ fun HomeScreen(
                             .width(320.dp)
                             .height(176.dp),
                         onClick = {
-                            controller.navigateTo(Destination.PreviewBookmark(""))
+                            //controller.navigateTo(Destination.PreviewBookmark(""))
                         },
                         onNext = {
 
@@ -162,13 +172,13 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .width(240.dp),
             onTagClicked = {
-                controller.navigateTo(Destination.TagManager)
+                //controller.navigateTo(Destination.TagManager)
             },
             onBookmarkClicked = {
-                controller.navigateTo(Destination.Bookmarks)
+                //controller.navigateTo(Destination.Bookmarks)
             },
             onNewBookmarkClicked = {
-                controller.navigateTo(Destination.CreateBookmark)
+                //controller.navigateTo(Destination.CreateBookmark)
             }
         )
     }

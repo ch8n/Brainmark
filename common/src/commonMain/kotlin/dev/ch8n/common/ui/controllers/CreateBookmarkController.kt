@@ -1,14 +1,13 @@
 package dev.ch8n.common.ui.controllers
 
-import androidx.compose.runtime.Immutable
-import com.arkivanov.decompose.ComponentContext
+import androidx.compose.runtime.Stable
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
-import dev.ch8n.common.ui.navigation.Destination
-import dev.ch8n.common.utils.DecomposeController
+import dev.ch8n.common.ui.navigation.NavController
+import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,13 +15,11 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 
-class CreateBookmarkController(
-    componentContext: ComponentContext,
-    val navigateTo: (Destination) -> Unit,
-    val onBack: () -> Unit,
-) : DecomposeController(componentContext) {
+abstract class CreateBookmarkController(
+    navController: NavController
+) : UiController(navController) {
 
-    @Immutable
+    @Stable
     data class ScreenState(
         val isLoading: Boolean,
         val isError: Boolean,

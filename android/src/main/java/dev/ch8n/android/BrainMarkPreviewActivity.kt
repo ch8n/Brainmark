@@ -5,16 +5,16 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.arkivanov.decompose.defaultComponentContext
 import dev.ch8n.android.ui.screens.browser.PreviewBrowserScreen
-import dev.ch8n.common.utils.PlatformDependencies
+import dev.ch8n.common.foundations.ApplicationContext
 
 class BrainMarkPreviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ApplicationContext.setContext(applicationContext)
         brainMarkApp()
     }
 
     private fun brainMarkApp() {
-        PlatformDependencies.setApplicationContext(applicationContext)
         setContent {
             //PreviewBrowserScreen(defaultComponentContext())
 //            PreviewTagManagerScreen(

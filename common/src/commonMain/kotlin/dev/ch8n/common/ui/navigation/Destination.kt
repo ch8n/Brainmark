@@ -2,27 +2,28 @@ package dev.ch8n.common.ui.navigation
 
 import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
+import dev.ch8n.common.data.model.Bookmark
 
-sealed class Destination : Parcelable {
-    @Parcelize
-    object Home : Destination()
+sealed interface Destinations : Parcelable
 
-    @Parcelize
-    object Bookmarks : Destination()
+@Parcelize
+object HomeDestination : Destinations
 
-    @Parcelize
-    object TagManager : Destination()
+@Parcelize
+object TagManagerDestination : Destinations
 
-    @Parcelize
-    object CreateBookmark : Destination()
+@Parcelize
+object BookmarksDestination : Destinations
 
-    @Parcelize
-    data class PreviewBookmark(val bookmarkId: String) : Destination()
+@Parcelize
+data class PreviewBookmarkHomeDestination(val bookmark: Bookmark) : Destinations
 
-    @Parcelize
-    data class ReaderScreen(val url: String) : Destination()
+@Parcelize
+data class PreviewBookmarkReaderModeDestination(val bookmark: Bookmark) : Destinations
 
-    @Parcelize
-    data class WebView(val url: String) : Destination()
+@Parcelize
+data class PreviewBookmarkChromeTabDestination(val bookmark: Bookmark) : Destinations
 
-}
+@Parcelize
+data class PreviewBookmarkEmbeddedWebDestination(val bookmark: Bookmark) : Destinations
+
