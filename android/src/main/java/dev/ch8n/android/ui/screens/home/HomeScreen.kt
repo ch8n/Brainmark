@@ -22,7 +22,6 @@ import com.arkivanov.decompose.DefaultComponentContext
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.ContinueBookmarkCard
-import dev.ch8n.android.design.components.FlashCard
 import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.HomeController
@@ -79,10 +78,12 @@ fun HomeScreen(
 
         val lastReadBookmarks by controller.lastReadBookmarks.collectAsState()
         val readingRecommendations by controller.readingRecommendations.collectAsState()
+        val revisionBookmarks by controller.revisionBookmarks.collectAsState()
 
         LaunchedEffect(Unit) {
             controller.getLastReadBookmarks()
             controller.getReadingRecommendations()
+            controller.getRevisionBookmarks()
         }
 
         ToolbarHome(
@@ -153,22 +154,23 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
             ) {
-                controller.flashCardSample.forEach {
-                    FlashCard(
-                        flashCard = it,
+                revisionBookmarks.forEach { bookmark ->
+                    RecommendedReadCard(
+                        bookmark = bookmark,
                         modifier = Modifier
                             .padding(start = 24.dp)
-                            .width(320.dp)
-                            .height(176.dp),
-                        onClick = {
-                            //controller.navigateTo(Destination.PreviewBookmark(""))
-                        },
-                        onNext = {
+                            .width(216.dp)
+                            .height(240.dp),
+                        onMenuClicked = {
 
+                        },
+                        onClicked = {
+                            controller.routeTo(PreviewBookmarkHomeDestination(it))
                         }
                     )
                 }
             }
+
 
             Spacer(modifier = Modifier.size(100.dp))
         }
