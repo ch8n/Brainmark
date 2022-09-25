@@ -47,7 +47,7 @@ abstract class PreviewBookmarkHomeController(
                 bookmark.copy(
                     lastReadAt = Clock.System.now().epochSeconds
                 )
-            )
+            ).onceIn(this)
         }
     }
 

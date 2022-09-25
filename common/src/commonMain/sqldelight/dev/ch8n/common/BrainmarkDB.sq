@@ -43,7 +43,7 @@ CREATE TABLE BookmarkEntity(
     flashCardsIds TEXT AS List<String> NOT NULL
 );
 
-CREATE VIRTUAL TABLE BookmarkFTS USING fts5(
+CREATE VIRTUAL TABLE BookmarkFTS USING fts4(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
     title TEXT NOT NULL DEFAULT "",
     description TEXT NOT NULL DEFAULT "",
@@ -82,7 +82,7 @@ LIMIT :limit OFFSET :offset;
 
 getBookmarksByLastReadPaging :
 SELECT * FROM BookmarkEntity
-ORDER BY lastReadAt ASC
+ORDER BY lastReadAt DESC
 LIMIT :limit OFFSET :offset;
 
 searchAllBookmarkPaging :
