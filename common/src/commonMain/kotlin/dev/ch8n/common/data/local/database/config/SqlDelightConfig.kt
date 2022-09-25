@@ -3,9 +3,11 @@ package dev.ch8n.common.data.local.database.config
 import com.squareup.sqldelight.ColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import dev.ch8n.common.BookmarkEntity
+import dev.ch8n.common.foundations.ApplicationContext
 import dev.ch8n.sqlDB.BrainmarkDB
 
-expect class SqlDriverFactory() {
+
+expect class SqlDriverFactory(applicationContext: ApplicationContext) {
     fun createDriver(): SqlDriver
 }
 

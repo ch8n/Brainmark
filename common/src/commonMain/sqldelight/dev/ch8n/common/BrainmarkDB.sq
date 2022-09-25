@@ -31,6 +31,7 @@ CREATE TABLE BookmarkEntity(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
     url TEXT NOT NULL UNIQUE,
     createdAt INTEGER NOT NULL,
+    lastReadAt INTEGER NOT NULL,
     isReviewed INTEGER AS Boolean DEFAULT 0 NOT NULL,
     notes TEXT NOT NULL DEFAULT "",
     mainImage TEXT NOT NULL DEFAULT "",
@@ -42,7 +43,7 @@ CREATE TABLE BookmarkEntity(
     flashCardsIds TEXT AS List<String> NOT NULL
 );
 
-CREATE VIRTUAL TABLE BookmarkFTS USING fts5(
+CREATE VIRTUAL TABLE BookmarkFTS USING fts4(
     id TEXT NOT NULL PRIMARY KEY UNIQUE,
     title TEXT NOT NULL DEFAULT "",
     description TEXT NOT NULL DEFAULT "",
@@ -71,9 +72,17 @@ getBookmarksPaging :
 SELECT * FROM BookmarkEntity
 LIMIT :limit OFFSET :offset;
 
+getRandomBookmarks :
+SELECT * FROM BookmarkEntity ORDER BY RANDOM() LIMIT 10;
+
 getBookmarksByTagPaging :
 SELECT * FROM BookmarkEntity
 WHERE tagsIds LIKE :tagId
+LIMIT :limit OFFSET :offset;
+
+getBookmarksByLastReadPaging :
+SELECT * FROM BookmarkEntity
+ORDER BY lastReadAt DESC
 LIMIT :limit OFFSET :offset;
 
 searchAllBookmarkPaging :
@@ -81,7 +90,6 @@ SELECT * FROM BookmarkEntity
 JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
 WHERE BookmarkFTS MATCH :keyword
 LIMIT :limit OFFSET :offset;
-
 
 searchBookmarkByTagPaging :
 SELECT * FROM BookmarkEntity
@@ -99,8 +107,8 @@ SELECT * FROM BookmarkEntity
 WHERE url = :url;
 
 upsertBookmark:
-INSERT OR REPLACE INTO BookmarkEntity(id, url,createdAt,isReviewed,notes,mainImage,title ,description ,siteName ,favIcon ,tagsIds,flashCardsIds)
-VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
+INSERT OR REPLACE INTO BookmarkEntity(id, url,createdAt,lastReadAt,isReviewed,notes,mainImage,title ,description ,siteName ,favIcon ,tagsIds,flashCardsIds)
+VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
 
 deleteBookmark:
 DELETE FROM BookmarkEntity

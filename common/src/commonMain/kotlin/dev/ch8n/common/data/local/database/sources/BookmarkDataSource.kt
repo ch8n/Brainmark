@@ -16,10 +16,12 @@ import kotlinx.coroutines.withContext
 
 interface BookmarkDataSource {
     fun getAllBookmarks(): Flow<List<Bookmark>>
+    fun getReadingRecommendations(): List<Bookmark>
     suspend fun getBookmarkByUrl(url: String): Bookmark?
     suspend fun getBookmarkById(id: String): Bookmark?
     suspend fun deleteBookmark(id: String)
     suspend fun upsertBookmark(bookmark: Bookmark): String
+    suspend fun getBookmarksByLastReadPaging(limit: Long, offset: Long): List<Bookmark>
     suspend fun allBookmarksPaging(limit: Long, offset: Long): List<Bookmark>
     suspend fun bookmarksByTagPaging(tagId: String, limit: Long, offset: Long): List<Bookmark>
     suspend fun searchAllBookmarksPaging(keyword: String, limit: Long, offset: Long): List<Bookmark>
@@ -30,6 +32,7 @@ fun BookmarkEntity.toBookmark() = Bookmark(
     id = id,
     bookmarkUrl = url,
     createdAt = createdAt,
+    lastReadAt = lastReadAt,
     isArchived = isReviewed,
     notes = notes,
     mainImage = mainImage,
@@ -50,6 +53,12 @@ class BookmarkDataSourceImpl constructor(
 
     override suspend fun getBookmarkByUrl(url: String): Bookmark? {
         return queries.getBookmarksByUrl(url).executeAsOneOrNull()?.toBookmark()
+    }
+
+    override fun getReadingRecommendations(): List<Bookmark> {
+        return queries.getRandomBookmarks().executeAsList().map {
+            it.toBookmark()
+        }
     }
 
     override fun getAllBookmarks(): Flow<List<Bookmark>> = queries.getBookmarks()
@@ -79,6 +88,7 @@ class BookmarkDataSourceImpl constructor(
         id = id,
         bookmarkUrl = url,
         createdAt = createdAt,
+        lastReadAt = lastReadAt,
         isArchived = isReviewed,
         notes = notes,
         mainImage = mainImage,
@@ -94,6 +104,7 @@ class BookmarkDataSourceImpl constructor(
         id = id,
         bookmarkUrl = url,
         createdAt = createdAt,
+        lastReadAt = lastReadAt,
         isArchived = isReviewed,
         notes = notes,
         mainImage = mainImage,
@@ -120,6 +131,13 @@ class BookmarkDataSourceImpl constructor(
         queries.getBookmarksById(id).executeAsOneOrNull()?.toBookmark()
     }
 
+    override suspend fun getBookmarksByLastReadPaging(limit: Long, offset: Long): List<Bookmark> =
+        withContext(dispatcher) {
+            queries.getBookmarksByLastReadPaging(limit, offset).executeAsList().map {
+                it.toBookmark()
+            }
+        }
+
     override suspend fun deleteBookmark(id: String) = withContext(dispatcher) {
         queries.deleteBookmark(id)
     }
@@ -129,6 +147,7 @@ class BookmarkDataSourceImpl constructor(
             id = bookmark.id,
             url = bookmark.bookmarkUrl,
             createdAt = bookmark.createdAt,
+            lastReadAt = bookmark.lastReadAt,
             isReviewed = bookmark.isArchived,
             notes = bookmark.notes,
             mainImage = bookmark.mainImage,

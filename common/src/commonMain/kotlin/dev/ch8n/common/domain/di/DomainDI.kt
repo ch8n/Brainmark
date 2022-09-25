@@ -23,7 +23,9 @@ object DomainResolver {
             getAllBookmarksPaging = GetBookmarksPaging(bookmarkDataSource),
             getBookmarksByTagPaging = GetBookmarkByTagPaging(bookmarkDataSource),
             searchAllBookmarkPaging = SearchAllBookmarkPaging(bookmarkDataSource),
-            searchBookmarkByTagPaging = SearchBookmarkByTagPaging(bookmarkDataSource)
+            searchBookmarkByTagPaging = SearchBookmarkByTagPaging(bookmarkDataSource),
+            getBookmarksByLastReadPaging = GetBookmarksByLastReadPaging(bookmarkDataSource),
+            getReadingRecommendations = GetReadingRecommendations(bookmarkDataSource),
         )
     }
 

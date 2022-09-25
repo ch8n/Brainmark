@@ -22,8 +22,21 @@ import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.CreateBookmarkController
 import dev.ch8n.common.ui.controllers.CreateBookmarkController.ScreenState.Companion.createBookmark
-import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.EmptyNavController
+import dev.ch8n.common.ui.navigation.NavController
+import dev.ch8n.common.ui.navigation.TagManagerDestination
 import dev.ch8n.common.utils.AndroidPreview
+
+
+class AndroidCreateBookmarkController(
+    navController: NavController
+) : CreateBookmarkController(navController) {
+
+    @Composable
+    override fun Render() {
+        CreateBookmarkScreen(controller = this)
+    }
+}
 
 @Composable
 fun PreviewCreateBookmark(
@@ -31,21 +44,13 @@ fun PreviewCreateBookmark(
 ) {
     val context = LocalContext.current
     val controller = remember {
-        CreateBookmarkController(
-            componentContext = componentContext,
-            navigateTo = {
-                "On navigate to ${it::class.simpleName}".toast(context)
-            },
-            onBack = {
-                "On Back".toast(context)
-            }
-        )
+        AndroidCreateBookmarkController(EmptyNavController())
     }
     AndroidPreview(
         isSplitView = false,
         isDark = false
     ) {
-        CreateBookmarkContent(
+        CreateBookmarkScreen(
             controller = controller
         )
     }
@@ -53,8 +58,8 @@ fun PreviewCreateBookmark(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun CreateBookmarkContent(
-    controller: CreateBookmarkController,
+fun CreateBookmarkScreen(
+    controller: AndroidCreateBookmarkController,
 ) {
 
     val screenState by controller.screenState.collectAsState()
@@ -72,7 +77,7 @@ fun CreateBookmarkContent(
                 .fillMaxWidth()
                 .align(Alignment.TopCenter),
             onClose = {
-                controller.onBack()
+                controller.back()
             }
         )
 
@@ -225,7 +230,7 @@ fun CreateBookmarkContent(
 
                     DropdownMenuItem(
                         onClick = {
-                            controller.navigateTo(Destinations.TagManager)
+                            controller.routeTo(TagManagerDestination)
                             setDropDownShown.invoke(false)
                         }
                     ) {

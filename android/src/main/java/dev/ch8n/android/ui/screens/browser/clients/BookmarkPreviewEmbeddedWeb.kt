@@ -21,11 +21,11 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
 import dev.ch8n.android.utils.rememberMutableState
-import dev.ch8n.common.ui.controllers.WebViewController
+import dev.ch8n.common.ui.controllers.PreviewEmbeddedWebController
 
 @Composable
 fun AndroidWebView(
-    controller: WebViewController
+    controller: PreviewEmbeddedWebController
 ) {
 
     var isLoading by rememberMutableState(false)
@@ -61,7 +61,7 @@ fun AndroidWebView(
                     loadsImagesAutomatically = true
                     javaScriptEnabled = true
                 }
-                it.loadUrl(controller.bookmarkUrl)
+                it.loadUrl(controller.bookmark.bookmarkUrl)
             }
         },
         modifier = Modifier

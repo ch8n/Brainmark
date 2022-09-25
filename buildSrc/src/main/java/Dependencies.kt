@@ -50,7 +50,7 @@ object Android {
         }
 
         //https://arkivanov.github.io/Decompose/extensions/compose/#extensions-for-jetpackjetbrains-compose
-        const val decomposeVersion = "0.7.0"
+        const val decomposeVersion = "0.8.0"
 
         // https://coil-kt.github.io/coil/compose/
         const val coilVersion = "2.1.0"

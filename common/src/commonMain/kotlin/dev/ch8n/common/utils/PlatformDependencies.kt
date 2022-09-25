@@ -1,3 +1,14 @@
 package dev.ch8n.common.utils
 
-expect object PlatformDependencies
+
+enum class SupportedPlatform {
+    ComposeAndroid,
+    SwiftIOS,
+    ReactWeb,
+    KtorServer,
+    ComposeDesktopJVM
+}
+
+expect object PlatformDependencies {
+    val currentPlatform: SupportedPlatform
+}

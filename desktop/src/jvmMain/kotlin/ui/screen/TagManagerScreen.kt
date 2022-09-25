@@ -25,6 +25,8 @@ import com.arkivanov.essenty.lifecycle.LifecycleRegistry
 import design.components.FlowLayout
 import design.components.TagChip
 import dev.ch8n.common.ui.controllers.TagManagerController
+import dev.ch8n.common.ui.navigation.EmptyNavController
+import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.ui.theme.StringRes
 import dev.ch8n.common.utils.ColorsUtils
 import dev.ch8n.common.utils.DesktopPreview
@@ -45,17 +47,19 @@ fun main() = application {
     }
 }
 
+
+class DesktopTagManagerController(navController: NavController) : TagManagerController(navController) {
+    @Composable
+    override fun Render() {
+
+    }
+}
+
 @Composable
 fun PreviewTagManagerScreen(componentContext: DefaultComponentContext) {
     val controller = remember {
-        TagManagerController(
-            componentContext = componentContext,
-            navigateTo = {
-
-            },
-            onBack = {
-
-            }
+        DesktopTagManagerController(
+            EmptyNavController()
         )
     }
     DesktopPreview(

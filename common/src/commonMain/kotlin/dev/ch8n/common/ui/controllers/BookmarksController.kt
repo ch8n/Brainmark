@@ -1,26 +1,23 @@
 package dev.ch8n.common.ui.controllers
 
-import androidx.compose.runtime.Immutable
-import com.arkivanov.decompose.ComponentContext
+import androidx.compose.runtime.Stable
 import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
-import dev.ch8n.common.ui.navigation.Destinations
-import dev.ch8n.common.utils.DecomposeController
+import dev.ch8n.common.ui.navigation.NavController
+import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 
-class BookmarkController(
-    componentContext: ComponentContext,
-    val navigateTo: (Destinations) -> Unit,
-    val onBack: () -> Unit,
-) : DecomposeController(componentContext) {
+abstract class BookmarksController(
+    navController: NavController
+) : UiController(navController) {
 
-    @Immutable
+    @Stable
     data class ScreenState(
         val selectedTag: Tags,
         val isLoading: Boolean,
