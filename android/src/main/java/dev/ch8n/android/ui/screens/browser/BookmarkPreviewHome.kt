@@ -149,56 +149,38 @@ fun PreviewBookmarkHome(
                 }
             }
 
-            Row(
+            OutlineButton(
                 modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 16.dp)
-                    .align(Alignment.End),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(36.dp)
-            ) {
-                AsyncImage(
-                    model = R.drawable.flash_card,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            "show Notes".toast(context)
-                        },
-                    contentDescription = "",
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(
-                        color = Color.White
-                    )
-                )
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Open Bookmark Notes",
+                onClick = {
+                    "TODO".toast(context)
+                }
+            )
 
-                AsyncImage(
-                    model = R.drawable.edit,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            "on edit bookmark".toast(context)
-                        },
-                    contentDescription = "",
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(
-                        color = Color.White
-                    )
-                )
+            OutlineButton(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Edit Bookmark",
+                onClick = {
+                    "TODO".toast(context)
+                }
+            )
 
-                AsyncImage(
-                    model = R.drawable.archive,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable {
-                            "archive bookmark".toast(context)
-                        },
-                    contentDescription = "",
-                    contentScale = ContentScale.Fit,
-                    colorFilter = ColorFilter.tint(
-                        color = Color.White
-                    )
-                )
-            }
-
+            OutlineButton(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Archive Bookmark",
+                onClick = {
+                    "TODO".toast(context)
+                }
+            )
 
             OutlineButton(
                 modifier = Modifier
