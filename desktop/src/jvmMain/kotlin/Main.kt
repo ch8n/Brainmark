@@ -23,7 +23,8 @@ fun main() {
     val lifecycle = LifecycleRegistry()
     val defaultComponentContext = DefaultComponentContext(lifecycle = lifecycle)
     val navController = createNavController(
-        defaultComponentContext,
+        initialDestination = HomeDestination,
+        componentContext = defaultComponentContext,
         createDestinations = { destinations: Destinations, context: ComponentContext ->
             when (destinations) {
                 is BookmarksDestination -> TODO()
@@ -33,6 +34,7 @@ fun main() {
                 is PreviewBookmarkHomeDestination -> TODO()
                 is PreviewBookmarkReaderModeDestination -> TODO()
                 is TagManagerDestination -> TODO()
+                is CreateBookmarksDestination -> TODO()
             }
         }
     )
