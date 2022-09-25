@@ -11,6 +11,7 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import dev.ch8n.android.ui.screens.bookmarks.AndroidBookmarksController
 import dev.ch8n.android.ui.screens.browser.AndroidPreviewBookmarkHomeController
+import dev.ch8n.android.ui.screens.createBookmark.AndroidCreateBookmarkController
 import dev.ch8n.android.ui.screens.home.AndroidHomeController
 import dev.ch8n.android.ui.screens.tagManager.AndroidTagManagerController
 import dev.ch8n.common.data.di.DataInjector
@@ -61,6 +62,8 @@ class MainActivity : AppCompatActivity() {
                         this,
                         destinations.bookmark
                     )
+
+                    is CreateBookmarksDestination -> AndroidCreateBookmarkController(this)
                 }
             }
         )

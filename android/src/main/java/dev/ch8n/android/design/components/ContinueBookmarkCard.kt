@@ -43,7 +43,7 @@ fun PreviewContinueBookmarkCard() {
 fun ContinueBookmarkCard(
     modifier: Modifier,
     bookmark: Bookmark,
-    onClicked: () -> Unit
+    onClicked: (Bookmark) -> Unit
 ) {
 
     Box(modifier = modifier) {
@@ -63,7 +63,7 @@ fun ContinueBookmarkCard(
                 .clip(MaterialTheme.shapes.medium)
                 .shadow(4.dp, MaterialTheme.shapes.medium)
                 .clickable {
-                    onClicked.invoke()
+                    onClicked.invoke(bookmark)
                 }
         ) {
             Box(

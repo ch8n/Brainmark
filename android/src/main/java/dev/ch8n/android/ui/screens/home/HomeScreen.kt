@@ -1,13 +1,11 @@
 package dev.ch8n.android.ui.screens.home
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,8 +26,7 @@ import dev.ch8n.android.design.components.FlashCard
 import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.ui.controllers.HomeController
-import dev.ch8n.common.ui.navigation.EmptyNavController
-import dev.ch8n.common.ui.navigation.NavController
+import dev.ch8n.common.ui.navigation.*
 import dev.ch8n.common.utils.AndroidPreview
 
 
@@ -80,7 +77,13 @@ fun HomeScreen(
             .background(MaterialTheme.colors.surface)
     ) {
 
-        val bookmarks by controller.bookmarks.collectAsState()
+        val lastReadBookmarks by controller.lastReadBookmarks.collectAsState()
+        val readingRecommendations by controller.readingRecommendations.collectAsState()
+
+        LaunchedEffect(Unit) {
+            controller.getLastReadBookmarks()
+            controller.getReadingRecommendations()
+        }
 
         ToolbarHome(
             modifier = Modifier
@@ -104,16 +107,20 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.size(12.dp))
 
-            ContinueBookmarkCard(
-                bookmark = bookmarks.first(),
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-                    .fillMaxWidth()
-                    .height(176.dp),
-                onClicked = {
-                    //controller.routeTo(Destination.PreviewBookmark(""))
-                }
-            )
+            AnimatedVisibility(
+                visible = lastReadBookmarks.firstOrNull() != null
+            ) {
+                ContinueBookmarkCard(
+                    bookmark = lastReadBookmarks.first(),
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .fillMaxWidth()
+                        .height(176.dp),
+                    onClicked = {
+                        controller.routeTo(PreviewBookmarkHomeDestination(it))
+                    }
+                )
+            }
 
             Title("Reading Recommendation")
 
@@ -122,7 +129,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
             ) {
-                bookmarks.forEach { bookmark ->
+                readingRecommendations.forEach { bookmark ->
                     RecommendedReadCard(
                         bookmark = bookmark,
                         modifier = Modifier
@@ -133,7 +140,7 @@ fun HomeScreen(
 
                         },
                         onClicked = {
-                            //controller.navigateTo(Destination.PreviewBookmark(""))
+                            controller.routeTo(PreviewBookmarkHomeDestination(it))
                         }
                     )
                 }
@@ -172,13 +179,13 @@ fun HomeScreen(
                 .align(Alignment.BottomCenter)
                 .width(240.dp),
             onTagClicked = {
-                //controller.navigateTo(Destination.TagManager)
+                controller.routeTo(TagManagerDestination)
             },
             onBookmarkClicked = {
-                //controller.navigateTo(Destination.Bookmarks)
+                controller.routeTo(BookmarksDestination)
             },
             onNewBookmarkClicked = {
-                //controller.navigateTo(Destination.CreateBookmark)
+                controller.routeTo(CreateBookmarksDestination)
             }
         )
     }
