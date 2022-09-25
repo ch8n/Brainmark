@@ -50,6 +50,7 @@ abstract class CreateBookmarkController(
                 id = uuid4().toString(),
                 tagIds = tagIds,
                 createdAt = Clock.System.now().epochSeconds,
+                lastReadAt = 0L,
                 isArchived = false,
                 mainImage = mainImage,
                 title = title,

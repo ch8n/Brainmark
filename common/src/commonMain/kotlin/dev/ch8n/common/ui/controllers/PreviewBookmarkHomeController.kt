@@ -10,6 +10,7 @@ import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import java.util.concurrent.CancellationException
 
 @OptIn(FlowPreview::class)
@@ -36,10 +37,25 @@ abstract class PreviewBookmarkHomeController(
         }
     }
 
+    private val updateBookmarkReadAt = DomainInjector
+        .bookmarkUseCase
+        .upsertBookmarkUseCase
+
+    private fun updateBookmarkReadTime(bookmark: Bookmark) {
+        launch {
+            updateBookmarkReadAt.invoke(
+                bookmark.copy(
+                    lastReadAt = Clock.System.now().epochSeconds
+                )
+            )
+        }
+    }
+
     fun getBookmark() {
         withLoading {
             getBookmarkById(bookmark.id)
                 .flatMapMerge { bookmark ->
+                    updateBookmarkReadTime(bookmark)
                     val tagIds = bookmark.tagIds
                     _screenState.update {
                         it.copy(bookmark = bookmark)

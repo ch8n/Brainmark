@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     @OptIn(ExperimentalDecomposeApi::class)
     fun AppCompatActivity.brainMarkAndroidApp() {
         val navController = createNavController(
-            initialDestination = BookmarksDestination,
+            initialDestination = HomeDestination,
             componentContext = defaultComponentContext(),
             createDestinations = { destinations: Destinations, context: ComponentContext ->
                 when (destinations) {
