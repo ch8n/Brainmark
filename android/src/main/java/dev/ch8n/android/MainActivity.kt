@@ -11,6 +11,8 @@ import com.arkivanov.decompose.defaultComponentContext
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.Children
 import dev.ch8n.android.ui.screens.bookmarks.AndroidBookmarksController
 import dev.ch8n.android.ui.screens.browser.AndroidPreviewBookmarkHomeController
+import dev.ch8n.android.ui.screens.browser.clients.AndroidPreviewEmbeddedWebController
+import dev.ch8n.android.ui.screens.browser.clients.AndroidPreviewReaderModeController
 import dev.ch8n.android.ui.screens.createBookmark.AndroidCreateBookmarkController
 import dev.ch8n.android.ui.screens.home.AndroidHomeController
 import dev.ch8n.android.ui.screens.tagManager.AndroidTagManagerController
@@ -53,12 +55,12 @@ class MainActivity : AppCompatActivity() {
                         destinations.bookmark
                     )
 
-                    is PreviewBookmarkEmbeddedWebDestination -> AndroidPreviewBookmarkHomeController(
+                    is PreviewBookmarkEmbeddedWebDestination -> AndroidPreviewEmbeddedWebController(
                         this,
                         destinations.bookmark
                     )
 
-                    is PreviewBookmarkReaderModeDestination -> AndroidPreviewBookmarkHomeController(
+                    is PreviewBookmarkReaderModeDestination -> AndroidPreviewReaderModeController(
                         this,
                         destinations.bookmark
                     )
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
         setContent {
-            BrainMarkTheme {
+            BrainMarkTheme(isDark = true) {
                 Children(
                     stack = requireNotNull(navController.destinations),
                     modifier = Modifier.fillMaxSize()

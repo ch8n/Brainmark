@@ -1,13 +1,9 @@
 package dev.ch8n.android.ui.screens.browser
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -203,27 +199,39 @@ fun PreviewBookmarkHome(
                 )
             }
 
-            OutlinedButton(
+
+            OutlineButton(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Open in Reader Mode",
                 onClick = {
                     controller.routeTo(
                         PreviewBookmarkReaderModeDestination(screenState.bookmark)
                     )
                 }
-            ) {
-                Text("Preview in Reader Mode")
-            }
+            )
 
-            OutlinedButton(
+            OutlineButton(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Open in Chrome Tab",
                 onClick = {
                     context.launchChromeTab(
                         screenState.bookmark.bookmarkUrl
                     )
                 }
-            ) {
-                Text("View in Chrome")
-            }
+            )
 
-            OutlinedButton(
+            OutlineButton(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Open in WebView",
                 onClick = {
                     controller.routeTo(
                         PreviewBookmarkEmbeddedWebDestination(
@@ -231,12 +239,41 @@ fun PreviewBookmarkHome(
                         )
                     )
                 }
-            ) {
-                Text("View in App | bypass paywalls.")
-            }
+            )
+
         }
     }
+}
 
 
+@Composable
+fun OutlineButton(
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier
+) {
+    Row(
+        modifier = modifier
+            .background(
+                MaterialTheme.colors.surface,
+                MaterialTheme.shapes.large
+            )
+            .border(
+                2.dp,
+                MaterialTheme.colors.onSurface,
+                MaterialTheme.shapes.large
+            )
+            .clickable {
+                onClick.invoke()
+            },
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.subtitle1,
+            color = MaterialTheme.colors.onSurface
+        )
+    }
 }
 

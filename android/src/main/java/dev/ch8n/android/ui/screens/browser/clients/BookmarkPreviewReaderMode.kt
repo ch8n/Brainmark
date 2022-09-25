@@ -20,8 +20,10 @@ import androidx.core.text.HtmlCompat
 import dev.ch8n.android.R
 import dev.ch8n.android.ui.components.ScrollableColumn
 import dev.ch8n.android.utils.rememberMutableState
+import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.remote.services.readerview.ReaderViewDTO
 import dev.ch8n.common.ui.controllers.PreviewReaderModeController
+import dev.ch8n.common.ui.navigation.NavController
 
 @Composable
 fun HtmlText(
@@ -38,6 +40,17 @@ fun HtmlText(
             it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_COMPACT)
         }
     )
+}
+
+
+class AndroidPreviewReaderModeController(
+    navController: NavController,
+    bookmark: Bookmark,
+) : PreviewReaderModeController(navController, bookmark) {
+    @Composable
+    override fun Render() {
+        ReaderScreen(this)
+    }
 }
 
 // TODO feature

@@ -21,7 +21,20 @@ import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
 import dev.ch8n.android.utils.rememberMutableState
+import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.ui.controllers.PreviewEmbeddedWebController
+import dev.ch8n.common.ui.navigation.NavController
+
+
+class AndroidPreviewEmbeddedWebController(
+    navController: NavController,
+    bookmark: Bookmark,
+) : PreviewEmbeddedWebController(navController, bookmark) {
+    @Composable
+    override fun Render() {
+        AndroidWebView(this)
+    }
+}
 
 @Composable
 fun AndroidWebView(
