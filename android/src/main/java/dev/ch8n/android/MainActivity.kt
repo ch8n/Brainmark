@@ -27,10 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private val _deeplinkStack = MutableStateFlow<List<Destinations>>(emptyList())
     private fun handleDeeplink(intent: Intent?) {
-        var url = intent?.data?.toString()
-        if (url == null) {
-            url = intent?.extras?.getString("android.intent.extra.TEXT")
-        }
+        val url = intent?.extras?.getString("android.intent.extra.TEXT")
         val updatedStack = listOfNotNull(
             HomeDestination,
             if (url != null) CreateBookmarksDestination(url) else null
