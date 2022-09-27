@@ -44,6 +44,24 @@ abstract class PreviewBookmarkHomeController(
         .bookmarkUseCase
         .upsertBookmarkUseCase
 
+    private val updateBookmarkArchived = DomainInjector
+        .bookmarkUseCase
+        .upsertBookmarkUseCase
+
+
+    fun archiveBookmark() {
+        val currentBookmark = _screenState.value.bookmark
+        val updated = currentBookmark.copy(isArchived = !currentBookmark.isArchived)
+        updateBookmarkArchived
+            .invoke(updated)
+            .onEach {
+                _screenState.update {
+                    it.copy(bookmark = updated)
+                }
+            }
+            .onceIn(this)
+    }
+
     private fun updateBookmarkReadTime(bookmark: Bookmark) {
         launch {
             updateBookmarkReadAt.invoke(

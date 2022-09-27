@@ -176,9 +176,13 @@ fun PreviewBookmarkHome(
                     .padding(horizontal = 24.dp, vertical = 8.dp)
                     .fillMaxWidth()
                     .height(55.dp),
-                label = "Archive Bookmark",
+                label = if (screenState.bookmark.isArchived) {
+                    "Un-archive Bookmark"
+                } else {
+                    "Archive Bookmark"
+                },
                 onClick = {
-                    "TODO".toast(context)
+                    controller.archiveBookmark()
                 }
             )
 
