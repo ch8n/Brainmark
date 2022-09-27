@@ -187,7 +187,7 @@ fun HomeScreen(
                 controller.routeTo(BookmarksDestination)
             },
             onNewBookmarkClicked = {
-                controller.routeTo(CreateBookmarksDestination)
+                controller.routeTo(CreateBookmarksDestination())
             }
         )
     }

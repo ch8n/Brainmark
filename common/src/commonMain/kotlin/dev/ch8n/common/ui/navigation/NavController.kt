@@ -9,13 +9,13 @@ import dev.ch8n.common.utils.UiController
 fun createNavController(
     componentContext: ComponentContext,
     stackNavigator: StackNavigation<Destinations> = StackNavigation(),
-    initialDestination: Destinations,
+    deeplinkStack: List<Destinations>,
     createDestinations: NavControllerImpl.(destinations: Destinations, context: ComponentContext) -> UiController
 ): NavController = NavControllerImpl(
-    initialDestination = initialDestination,
     componentContext = componentContext,
     navigation = stackNavigator,
-    createDestinations = createDestinations
+    createDestinations = createDestinations,
+    deeplinkStack = deeplinkStack
 )
 
 
@@ -42,18 +42,18 @@ interface NavController {
 }
 
 class NavControllerImpl(
-    private val initialDestination: Destinations,
     private val componentContext: ComponentContext,
     private val navigation: StackNavigation<Destinations>,
     private val createDestinations: NavControllerImpl.(
         destinations: Destinations,
         context: ComponentContext
-    ) -> UiController
+    ) -> UiController,
+    private val deeplinkStack: List<Destinations>
 ) : NavController {
 
     override val destinations = componentContext.childStack(
         source = navigation,
-        initialConfiguration = initialDestination,
+        initialStack = { deeplinkStack },
         handleBackButton = true,
         childFactory = { configuration: Destinations, componentContext: ComponentContext ->
             createDestinations(this, configuration, componentContext)

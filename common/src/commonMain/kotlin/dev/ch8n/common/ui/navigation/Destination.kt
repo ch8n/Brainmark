@@ -16,7 +16,7 @@ object TagManagerDestination : Destinations
 object BookmarksDestination : Destinations
 
 @Parcelize
-object CreateBookmarksDestination : Destinations
+data class CreateBookmarksDestination(val url: String? = null) : Destinations
 
 @Parcelize
 data class PreviewBookmarkHomeDestination(val bookmark: Bookmark) : Destinations

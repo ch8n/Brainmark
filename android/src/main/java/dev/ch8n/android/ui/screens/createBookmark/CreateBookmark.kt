@@ -29,8 +29,9 @@ import dev.ch8n.common.utils.AndroidPreview
 
 
 class AndroidCreateBookmarkController(
-    navController: NavController
-) : CreateBookmarkController(navController) {
+    navController: NavController,
+    url: String?
+) : CreateBookmarkController(navController, url) {
 
     @Composable
     override fun Render() {
@@ -44,7 +45,7 @@ fun PreviewCreateBookmark(
 ) {
     val context = LocalContext.current
     val controller = remember {
-        AndroidCreateBookmarkController(EmptyNavController())
+        AndroidCreateBookmarkController(EmptyNavController(), null)
     }
     AndroidPreview(
         isSplitView = false,
@@ -64,6 +65,10 @@ fun CreateBookmarkScreen(
 
     val screenState by controller.screenState.collectAsState()
     val tags by controller.getAllTags.collectAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        controller.autofillDeeplink()
+    }
 
     Box(
         modifier = Modifier

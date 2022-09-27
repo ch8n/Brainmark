@@ -23,7 +23,7 @@ fun main() {
     val lifecycle = LifecycleRegistry()
     val defaultComponentContext = DefaultComponentContext(lifecycle = lifecycle)
     val navController = createNavController(
-        initialDestination = HomeDestination,
+        deeplinkStack = listOf(HomeDestination),
         componentContext = defaultComponentContext,
         createDestinations = { destinations: Destinations, context: ComponentContext ->
             when (destinations) {
