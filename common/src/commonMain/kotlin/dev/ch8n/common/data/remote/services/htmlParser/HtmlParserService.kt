@@ -39,19 +39,20 @@ class HtmlParserService(
             .ifEmpty { metaTags.metaSelectorName("og:medium") }
             .ifEmpty { metaTags.metaSelectorProperty("og:medium") }
 
-        // mainImage
-        val mainImage = metaTags.metaSelectorName("og:image")
-            .ifEmpty { metaTags.metaSelectorProperty("og:image") }
-            .ifEmpty { htmlTags.metaSelectorName("image:src") }
-            .ifEmpty { htmlTags.metaSelectorProperty("image:src") }
-            .ifEmpty { htmlTags.getHref("image_src") }
-
         // favIcon
         val favIcon = htmlTags.getHref("apple-touch-icon")
             .ifEmpty { htmlTags.getHref("icon") }
             .ifEmpty { htmlTags.getHref("shortcut icon") }
             .ifEmpty { htmlTags.getHref("image_src") }
             .ifEmpty { "https://www.google.com/s2/favicons?domain=$domain" }
+
+        // mainImage
+        val mainImage = metaTags.metaSelectorName("og:image")
+            .ifEmpty { metaTags.metaSelectorProperty("og:image") }
+            .ifEmpty { htmlTags.metaSelectorName("image:src") }
+            .ifEmpty { htmlTags.metaSelectorProperty("image:src") }
+            .ifEmpty { htmlTags.getHref("image_src") }
+            .ifEmpty { favIcon }
 
         // author or site
         val authorOrSite = metaTags.metaSelectorName("author")
@@ -65,7 +66,7 @@ class HtmlParserService(
             title = title,
             description = description,
             mediaType = mediaType,
-            mainImage = mainImage.ifEmpty { favIcon },
+            mainImage = mainImage,
             favIcon = favIcon,
             authorOrSite = authorOrSite,
             url = url
