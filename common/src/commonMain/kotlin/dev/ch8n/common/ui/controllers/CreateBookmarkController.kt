@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 
 abstract class CreateBookmarkController(
-    navController: NavController
+    navController: NavController,
+    private val url: String?
 ) : UiController(navController) {
 
     @Stable
@@ -87,6 +88,12 @@ abstract class CreateBookmarkController(
             tags.find { it.id == id }
         }
     }
+
+    fun autofillDeeplink() {
+        val url = url ?: return
+        onChangeBookmarkUrl(url)
+    }
+
 
     private var metaParseJob: Job? = null
     fun onChangeBookmarkUrl(url: String) {

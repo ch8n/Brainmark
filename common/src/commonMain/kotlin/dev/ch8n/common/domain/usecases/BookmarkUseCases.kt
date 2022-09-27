@@ -15,6 +15,7 @@ class BookmarkUseCases(
     val searchBookmarkByTagPaging: SearchBookmarkByTagPaging,
     val getBookmarksByLastReadPaging: GetBookmarksByLastReadPaging,
     val getReadingRecommendations: GetReadingRecommendations,
+    val getRevisionBookmarks: GetRevisionBookmarks,
 )
 
 class GetBookmarkByUrlUseCase(
@@ -68,6 +69,16 @@ class GetBookmarksByLastReadPaging(
 ) {
     operator fun invoke(limit: Long, offset: Long) = flow {
         val bookmarks = bookmarksDataSource.getBookmarksByLastReadPaging(limit, offset)
+        emit(bookmarks)
+    }
+}
+
+
+class GetRevisionBookmarks(
+    private val bookmarksDataSource: BookmarkDataSource
+) {
+    operator fun invoke() = flow {
+        val bookmarks = bookmarksDataSource.getRevisionBookmarks()
         emit(bookmarks)
     }
 }

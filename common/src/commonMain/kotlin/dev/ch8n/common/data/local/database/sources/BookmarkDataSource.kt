@@ -22,6 +22,7 @@ interface BookmarkDataSource {
     suspend fun deleteBookmark(id: String)
     suspend fun upsertBookmark(bookmark: Bookmark): String
     suspend fun getBookmarksByLastReadPaging(limit: Long, offset: Long): List<Bookmark>
+    suspend fun getRevisionBookmarks(): List<Bookmark>
     suspend fun allBookmarksPaging(limit: Long, offset: Long): List<Bookmark>
     suspend fun bookmarksByTagPaging(tagId: String, limit: Long, offset: Long): List<Bookmark>
     suspend fun searchAllBookmarksPaging(keyword: String, limit: Long, offset: Long): List<Bookmark>
@@ -137,6 +138,14 @@ class BookmarkDataSourceImpl constructor(
                 it.toBookmark()
             }
         }
+
+    override suspend fun getRevisionBookmarks(): List<Bookmark> {
+        return withContext(dispatcher) {
+            queries.getRevisionBookmarks().executeAsList().map {
+                it.toBookmark()
+            }
+        }
+    }
 
     override suspend fun deleteBookmark(id: String) = withContext(dispatcher) {
         queries.deleteBookmark(id)

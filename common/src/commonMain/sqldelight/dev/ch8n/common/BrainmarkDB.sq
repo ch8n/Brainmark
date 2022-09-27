@@ -73,7 +73,14 @@ SELECT * FROM BookmarkEntity
 LIMIT :limit OFFSET :offset;
 
 getRandomBookmarks :
-SELECT * FROM BookmarkEntity ORDER BY RANDOM() LIMIT 10;
+SELECT * FROM BookmarkEntity
+WHERE isReviewed == 0
+ORDER BY RANDOM() LIMIT 10;
+
+getRevisionBookmarks :
+SELECT * FROM BookmarkEntity
+WHERE isReviewed == 1
+ORDER BY RANDOM() LIMIT 10;
 
 getBookmarksByTagPaging :
 SELECT * FROM BookmarkEntity
