@@ -4,19 +4,18 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import dev.ch8n.common.utils.UiController
-import kotlinx.coroutines.flow.StateFlow
 
 
 fun createNavController(
     componentContext: ComponentContext,
     stackNavigator: StackNavigation<Destinations> = StackNavigation(),
-    deeplinkStack: StateFlow<List<Destinations>>,
+    initialDestination: Destinations,
     createDestinations: NavControllerImpl.(destinations: Destinations, context: ComponentContext) -> UiController
 ): NavController = NavControllerImpl(
     componentContext = componentContext,
     navigation = stackNavigator,
     createDestinations = createDestinations,
-    deeplinkStack = deeplinkStack
+    initialDestination = initialDestination
 )
 
 
@@ -49,12 +48,12 @@ class NavControllerImpl(
         destinations: Destinations,
         context: ComponentContext
     ) -> UiController,
-    private val deeplinkStack: StateFlow<List<Destinations>>
+    private val initialDestination: Destinations
 ) : NavController {
 
     override val destinations = componentContext.childStack(
         source = navigation,
-        initialStack = { deeplinkStack.value },
+        initialConfiguration = initialDestination,
         handleBackButton = true,
         childFactory = { configuration: Destinations, componentContext: ComponentContext ->
             createDestinations(this, configuration, componentContext)
