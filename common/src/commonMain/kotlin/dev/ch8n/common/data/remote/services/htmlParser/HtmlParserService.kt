@@ -73,7 +73,7 @@ class HtmlParserService(
         )
     }
 
-    private inline fun Sequence<String>.getHref(rel: String): String {
+    private fun Sequence<String>.getHref(rel: String): String {
         return this
             .filter { it.contains("rel=\"$rel\"") }
             .map { it.split("href=\"", "\"").getOrNull(7) ?: "" }
