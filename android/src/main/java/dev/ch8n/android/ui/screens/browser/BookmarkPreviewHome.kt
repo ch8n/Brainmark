@@ -51,7 +51,7 @@ fun PreviewBrowserScreen(
     val controller = remember {
         AndroidPreviewBookmarkHomeController(
             EmptyNavController(),
-            Bookmark.Empty
+            Bookmark.SAMPLE
         )
     }
     AndroidPreview(

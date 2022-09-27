@@ -8,7 +8,10 @@ import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import java.util.concurrent.CancellationException
@@ -53,15 +56,12 @@ abstract class PreviewBookmarkHomeController(
 
     fun getBookmark() {
         withLoading {
-            getBookmarkById(bookmark.id)
-                .flatMapMerge { bookmark ->
-                    updateBookmarkReadTime(bookmark)
-                    val tagIds = bookmark.tagIds
-                    _screenState.update {
-                        it.copy(bookmark = bookmark)
-                    }
-                    getTagsById.invoke(tagIds)
-                }
+            updateBookmarkReadTime(bookmark)
+            val tagIds = bookmark.tagIds
+            _screenState.update {
+                it.copy(bookmark = bookmark)
+            }
+            getTagsById.invoke(tagIds)
                 .onEach { tags ->
                     _screenState.update {
                         it.copy(tags = tags)
