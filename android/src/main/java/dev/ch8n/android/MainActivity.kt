@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     fun AppCompatActivity.brainMarkAndroidApp() {
         handleDeeplink(intent)
         val navController = createNavController(
-            deeplinkStack = _deeplinkStack.value,
+            deeplinkStack = _deeplinkStack,
             componentContext = defaultComponentContext(),
             createDestinations = { destinations: Destinations, context: ComponentContext ->
                 when (destinations) {
