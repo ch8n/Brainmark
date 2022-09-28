@@ -2,7 +2,6 @@ package dev.ch8n.android.ui.screens.tagManager
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -133,15 +132,12 @@ fun TagScreenManager(
                 }
             )
 
-            Spacer(
+            Divider(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .height(1.dp)
-                    .background(
-                        shape = RoundedCornerShape(24.dp),
-                        color = MaterialTheme.colors.onSurface
-                    )
+                    .fillMaxWidth(0.6f)
+                    .align(Alignment.CenterHorizontally),
+                color = MaterialTheme.colors.onSurface,
+                thickness = 1.dp
             )
 
             val tags by controller.getAllTags.collectAsState(emptyList())
