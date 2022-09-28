@@ -1,6 +1,8 @@
 package dev.ch8n.android.ui.screens.bookmarks
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -213,6 +216,25 @@ fun BookmarkScreen(
             )
 
             Spacer(Modifier.size(8.dp))
+
+            AnimatedVisibility(
+                visible = bookmarks.isEmpty()
+            ) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                ) {
+                    Text(
+                        text = "You haven't saved any bookmarks...",
+                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
