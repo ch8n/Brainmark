@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -123,7 +124,45 @@ fun HomeScreen(
                 )
             }
 
+            AnimatedVisibility(
+                visible = lastReadBookmarks.firstOrNull() == null
+            ) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                ) {
+                    Text(
+                        text = "You haven't read anything.\nWhat are you waiting for?",
+                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
             Title("Reading Recommendation")
+
+            AnimatedVisibility(
+                visible = readingRecommendations.isEmpty()
+            ) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                ) {
+                    Text(
+                        text = "You don't seem to have any bookmarks...",
+                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
 
             Row(
                 modifier = Modifier
@@ -148,6 +187,25 @@ fun HomeScreen(
             }
 
             Title("Revision?")
+
+            AnimatedVisibility(
+                visible = revisionBookmarks.isEmpty()
+            ) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                ) {
+                    Text(
+                        text = "Don't forget to archive once you read a bookmark...",
+                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
 
             Row(
                 modifier = Modifier

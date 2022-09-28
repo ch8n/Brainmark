@@ -173,7 +173,6 @@ fun TagScreenManager(
         }
 
         if (isColorPickerShown) {
-
             Dialog(
                 onDismissRequest = {
                     setColorPickerShown.invoke(false)
