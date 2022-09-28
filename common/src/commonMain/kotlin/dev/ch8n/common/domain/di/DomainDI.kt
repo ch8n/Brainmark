@@ -27,6 +27,8 @@ object DomainResolver {
             getBookmarksByLastReadPaging = GetBookmarksByLastReadPaging(bookmarkDataSource),
             getReadingRecommendations = GetReadingRecommendations(bookmarkDataSource),
             getRevisionBookmarks = GetRevisionBookmarks(bookmarkDataSource),
+            searchUntaggedBookmarkPaging = SearchUntaggedBookmarkPaging(bookmarkDataSource),
+            getUntaggedBookmarks = GetUntaggedBookmarkPaging(bookmarkDataSource)
         )
     }
 

@@ -67,6 +67,12 @@ END;
 getBookmarks :
 SELECT * FROM BookmarkEntity ;
 
+getUntaggedBookmarks :
+SELECT * FROM BookmarkEntity
+WHERE tagsIds = ''
+LIMIT :limit OFFSET :offset;
+
+
 getBookmarksPaging :
 SELECT * FROM BookmarkEntity
 LIMIT :limit OFFSET :offset;
@@ -89,6 +95,13 @@ LIMIT :limit OFFSET :offset;
 getBookmarksByLastReadPaging :
 SELECT * FROM BookmarkEntity
 ORDER BY lastReadAt DESC
+LIMIT :limit OFFSET :offset;
+
+searchUntaggedBookmarks :
+SELECT * FROM BookmarkEntity
+JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
+WHERE (tagsIds = '')
+AND (BookmarkFTS MATCH :keyword)
 LIMIT :limit OFFSET :offset;
 
 searchAllBookmarkPaging :

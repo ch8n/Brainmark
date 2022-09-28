@@ -57,7 +57,7 @@ fun BottomNavbar(
         NavItem(
             modifier = Modifier
                 .size(width = 88.dp, height = 42.dp)
-                .offset(x = (-4).dp)
+                .offset(x = 4.dp)
                 .align(Alignment.CenterEnd),
             title = "Bookmarks",
             iconResId = R.drawable.bookmark,
@@ -67,7 +67,6 @@ fun BottomNavbar(
         Box(
             modifier = Modifier
                 .size(64.dp)
-                .offset(x = (-8).dp)
                 .align(Alignment.Center)
                 .background(color = MaterialTheme.colors.secondaryVariant, CircleShape)
                 .border(

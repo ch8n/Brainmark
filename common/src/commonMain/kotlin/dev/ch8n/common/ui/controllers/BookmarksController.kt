@@ -33,8 +33,14 @@ abstract class BookmarksController(
                 color = 0,
             )
 
+            val unTaggedOption = Tags(
+                id = "2",
+                name = "Untagged",
+                color = 0,
+            )
+
             fun reset() = ScreenState(
-                selectedTag = allTagOption,
+                selectedTag = unTaggedOption,
                 isLoading = false,
                 isError = false,
                 errorMsg = "",
@@ -66,6 +72,14 @@ abstract class BookmarksController(
         .bookmarkUseCase
         .searchAllBookmarkPaging
 
+    private val searchUntaggedBookmarkPager = DomainInjector
+        .bookmarkUseCase
+        .searchUntaggedBookmarkPaging
+
+    private val untaggedBookmarks = DomainInjector
+        .bookmarkUseCase
+        .getUntaggedBookmarks
+
     private val _bookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val bookmarks = _bookmarks.asStateFlow()
 
@@ -79,16 +93,16 @@ abstract class BookmarksController(
         val selectedTag = _screenState.value.selectedTag
         val searchQuery = _screenState.value.searchQuery.trim()
         val flow = when {
-            searchQuery.isNotEmpty() -> if (selectedTag == ScreenState.allTagOption) {
-                searchAllBookmarkPager.invoke(searchQuery, limit, offset)
-            } else {
-                searchBookmarkByTagPager.invoke(searchQuery, selectedTag.id, limit, offset)
+            searchQuery.isNotEmpty() -> when (selectedTag) {
+                ScreenState.allTagOption -> searchAllBookmarkPager.invoke(searchQuery, limit, offset)
+                ScreenState.unTaggedOption -> searchUntaggedBookmarkPager.invoke(searchQuery, limit, offset)
+                else -> searchBookmarkByTagPager.invoke(searchQuery, selectedTag.id, limit, offset)
             }
 
-            else -> if (selectedTag == ScreenState.allTagOption) {
-                allBookmarkPager.invoke(limit, offset)
-            } else {
-                bookmarkByTagPager.invoke(selectedTag.id, limit, offset)
+            else -> when (selectedTag) {
+                ScreenState.allTagOption -> allBookmarkPager.invoke(limit, offset)
+                ScreenState.unTaggedOption -> untaggedBookmarks.invoke(limit, offset)
+                else -> bookmarkByTagPager.invoke(selectedTag.id, limit, offset)
             }
         }
 
@@ -126,6 +140,10 @@ abstract class BookmarksController(
             it.copy(searchQuery = "")
         }
         invalidatePaging()
+    }
+
+    fun onUntaggedSelected() {
+        onTagSelected(ScreenState.unTaggedOption)
     }
 
 }

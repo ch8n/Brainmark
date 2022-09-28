@@ -25,8 +25,9 @@ interface BookmarkDataSource {
     suspend fun getRevisionBookmarks(): List<Bookmark>
     suspend fun allBookmarksPaging(limit: Long, offset: Long): List<Bookmark>
     suspend fun bookmarksByTagPaging(tagId: String, limit: Long, offset: Long): List<Bookmark>
+    suspend fun untaggedBookmarksPaging(limit: Long, offset: Long): List<Bookmark>
     suspend fun searchAllBookmarksPaging(keyword: String, limit: Long, offset: Long): List<Bookmark>
-    suspend fun searchBookmarksPaging(keyword: String, tagId: String, limit: Long, offset: Long): List<Bookmark>
+    suspend fun searchBookmarksByTagPaging(keyword: String, tagId: String, limit: Long, offset: Long): List<Bookmark>
 }
 
 fun BookmarkEntity.toBookmark() = Bookmark(
@@ -73,6 +74,10 @@ class BookmarkDataSourceImpl constructor(
         return queries.getBookmarksPaging(limit, offset).executeAsList().map { it.toBookmark() }
     }
 
+    override suspend fun untaggedBookmarksPaging(limit: Long, offset: Long): List<Bookmark> {
+        return queries.getUntaggedBookmarks(limit, offset).executeAsList().map { it.toBookmark() }
+    }
+
     override suspend fun bookmarksByTagPaging(tagId: String, limit: Long, offset: Long): List<Bookmark> {
         return queries.getBookmarksByTagPaging(tagId, limit, offset).executeAsList().map { it.toBookmark() }
     }
@@ -114,7 +119,7 @@ class BookmarkDataSourceImpl constructor(
         tagIds = tagsIds
     )
 
-    override suspend fun searchBookmarksPaging(
+    override suspend fun searchBookmarksByTagPaging(
         keyword: String,
         tagId: String,
         limit: Long,

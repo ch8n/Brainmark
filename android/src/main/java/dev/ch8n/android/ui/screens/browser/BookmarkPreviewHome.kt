@@ -227,6 +227,18 @@ fun PreviewBookmarkHome(
                 }
             )
 
+
+            OutlineButton(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+                    .fillMaxWidth()
+                    .height(55.dp),
+                label = "Delete Bookmark",
+                onClick = {
+                    controller.onBookmarkDelete()
+                }
+            )
+
         }
     }
 }

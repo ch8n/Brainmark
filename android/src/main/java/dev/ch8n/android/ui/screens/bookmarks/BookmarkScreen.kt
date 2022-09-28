@@ -120,6 +120,15 @@ fun BookmarkScreen(
                         Text(text = "All Tag")
                     }
 
+                    DropdownMenuItem(
+                        onClick = {
+                            isTagDropDownShow = false
+                            controller.onUntaggedSelected()
+                        }
+                    ) {
+                        Text(text = "Untagged")
+                    }
+
                     allTags.forEach { tag ->
                         DropdownMenuItem(
                             onClick = {

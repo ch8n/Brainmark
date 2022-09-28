@@ -8,10 +8,7 @@ import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import java.util.concurrent.CancellationException
@@ -47,6 +44,10 @@ abstract class PreviewBookmarkHomeController(
     private val updateBookmarkArchived = DomainInjector
         .bookmarkUseCase
         .upsertBookmarkUseCase
+
+    private val deleteBookmark = DomainInjector
+        .bookmarkUseCase
+        .deleteBookmarkUseCase
 
 
     fun archiveBookmark() {
@@ -89,9 +90,12 @@ abstract class PreviewBookmarkHomeController(
         }
     }
 
-    private val getBookmarkById = DomainInjector
-        .bookmarkUseCase
-        .getBookmarkByIdUseCase
+    fun onBookmarkDelete() {
+        deleteBookmark
+            .invoke(bookmark.id)
+            .onCompletion { back() }
+            .onceIn(this)
+    }
 
     private val getTagsById = DomainInjector
         .tagUseCase
