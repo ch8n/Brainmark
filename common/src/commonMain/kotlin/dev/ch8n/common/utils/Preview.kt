@@ -69,6 +69,7 @@ fun AndroidPreview(
         Preview(isDark = isDark) {
             Box(
                 Modifier
+                    .background(MaterialTheme.colors.surface)
                     .fillMaxWidth()
                     .weight(1f)
                     .border(2.dp, Color.Red)
@@ -80,6 +81,7 @@ fun AndroidPreview(
             Preview(isDark = !isDark) {
                 Box(
                     Modifier
+                        .background(MaterialTheme.colors.surface)
                         .fillMaxWidth()
                         .weight(1f)
                         .border(2.dp, Color.Blue)

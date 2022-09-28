@@ -237,7 +237,7 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(16.dp)
                 .align(Alignment.BottomCenter)
-                .width(240.dp),
+                .width(200.dp),
             onTagClicked = {
                 controller.routeTo(TagManagerDestination)
             },

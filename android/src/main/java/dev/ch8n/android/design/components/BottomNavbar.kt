@@ -11,18 +11,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import dev.ch8n.android.R
-import dev.ch8n.common.utils.DevelopmentPreview
+import dev.ch8n.common.utils.AndroidPreview
 
 
 @Composable
 fun PreviewBottomNav() {
-    DevelopmentPreview { isDark ->
+    AndroidPreview {
         BottomNavbar(
             modifier = Modifier
                 .padding(24.dp)
@@ -45,39 +44,31 @@ fun BottomNavbar(
         modifier = modifier
     ) {
 
-        Row(
+        NavItem(
             modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth()
-                .clip(MaterialTheme.shapes.large)
-                .background(MaterialTheme.colors.surface)
-                .border(
-                    width = 2.dp,
-                    color = MaterialTheme.colors.secondaryVariant,
-                    shape = MaterialTheme.shapes.large
-                ),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            NavItem(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                title = "Tags",
-                iconResId = R.drawable.tag,
-                onClick = onTagClicked
-            )
+                .size(width = 72.dp, height = 42.dp)
+                .offset(x = 8.dp)
+                .align(Alignment.CenterStart),
+            title = "Tags",
+            iconResId = R.drawable.tag,
+            onClick = onTagClicked
+        )
 
-            NavItem(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                title = "Bookmarks",
-                iconResId = R.drawable.bookmark,
-                onClick = onBookmarkClicked
-            )
-        }
+        NavItem(
+            modifier = Modifier
+                .size(width = 88.dp, height = 42.dp)
+                .offset(x = (-4).dp)
+                .align(Alignment.CenterEnd),
+            title = "Bookmarks",
+            iconResId = R.drawable.bookmark,
+            onClick = onBookmarkClicked
+        )
 
         Box(
             modifier = Modifier
                 .size(64.dp)
-                .align(Alignment.Center)
                 .offset(x = (-8).dp)
+                .align(Alignment.Center)
                 .background(color = MaterialTheme.colors.secondaryVariant, CircleShape)
                 .border(
                     width = 4.dp,
@@ -100,6 +91,7 @@ fun BottomNavbar(
                 )
             )
         }
+
     }
 
 }
@@ -113,8 +105,9 @@ fun NavItem(
 ) {
     Column(
         modifier = modifier
-            .padding(8.dp)
-            .clickable { onClick.invoke() },
+            .background(MaterialTheme.colors.surface, MaterialTheme.shapes.large)
+            .clickable { onClick.invoke() }
+            .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
