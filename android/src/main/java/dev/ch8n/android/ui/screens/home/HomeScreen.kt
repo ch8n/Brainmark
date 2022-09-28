@@ -25,6 +25,7 @@ import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.ContinueBookmarkCard
 import dev.ch8n.android.design.components.RecommendedReadCard
 import dev.ch8n.android.utils.toast
+import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.ui.controllers.HomeController
 import dev.ch8n.common.ui.navigation.*
 import dev.ch8n.common.utils.AndroidPreview
@@ -109,11 +110,13 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.size(12.dp))
 
+            val lastRead = lastReadBookmarks.firstOrNull() ?: Bookmark.Empty
+
             AnimatedVisibility(
-                visible = lastReadBookmarks.firstOrNull() != null
+                visible = lastRead != Bookmark.Empty
             ) {
                 ContinueBookmarkCard(
-                    bookmark = lastReadBookmarks.first(),
+                    bookmark = lastRead,
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .fillMaxWidth()

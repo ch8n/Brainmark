@@ -22,7 +22,9 @@ fun createNavController(
 class EmptyNavController(
     private val onRouteTo: (Destinations) -> Unit = {},
     private val onBack: () -> Unit = {},
-) : NavController {
+    private val onBackTo: (Destinations) -> Unit = {},
+
+    ) : NavController {
 
     override val destinations = null
 
@@ -33,12 +35,17 @@ class EmptyNavController(
     override fun back() {
         onBack.invoke()
     }
+
+    override fun backTo(destinations: Destinations) {
+        onBackTo.invoke(destinations)
+    }
 }
 
 interface NavController {
     val destinations: Value<ChildStack<Destinations, UiController>>?
     fun routeTo(destinations: Destinations)
     fun back()
+    fun backTo(destinations: Destinations)
 }
 
 class NavControllerImpl(
@@ -66,6 +73,10 @@ class NavControllerImpl(
 
     override fun back() {
         navigation.pop()
+    }
+
+    override fun backTo(destinations: Destinations) {
+        navigation.popWhile { it != destinations }
     }
 }
 

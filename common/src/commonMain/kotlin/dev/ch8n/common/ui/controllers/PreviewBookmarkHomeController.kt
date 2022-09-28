@@ -4,6 +4,7 @@ import androidx.compose.runtime.Stable
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
+import dev.ch8n.common.ui.navigation.HomeDestination
 import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.onceIn
@@ -93,7 +94,7 @@ abstract class PreviewBookmarkHomeController(
     fun onBookmarkDelete() {
         deleteBookmark
             .invoke(bookmark.id)
-            .onCompletion { back() }
+            .onCompletion { backTo(HomeDestination) }
             .onceIn(this)
     }
 
