@@ -41,8 +41,7 @@ fun BookmarkEntity.toBookmark() = Bookmark(
     description = description,
     siteName = siteName,
     favIcon = favIcon,
-    tagIds = tagsIds,
-    flashCardIds = flashCardsIds
+    tagIds = tagsIds
 )
 
 class BookmarkDataSourceImpl constructor(
@@ -97,8 +96,7 @@ class BookmarkDataSourceImpl constructor(
         description = description,
         siteName = siteName,
         favIcon = favIcon,
-        tagIds = tagsIds,
-        flashCardIds = flashCardsIds
+        tagIds = tagsIds
     )
 
     private fun SearchBookmarkByTagPaging.toBookmark() = Bookmark(
@@ -113,8 +111,7 @@ class BookmarkDataSourceImpl constructor(
         description = description,
         siteName = siteName,
         favIcon = favIcon,
-        tagIds = tagsIds,
-        flashCardIds = flashCardsIds
+        tagIds = tagsIds
     )
 
     override suspend fun searchBookmarksPaging(
@@ -164,8 +161,7 @@ class BookmarkDataSourceImpl constructor(
             description = bookmark.description,
             siteName = bookmark.siteName,
             favIcon = bookmark.favIcon,
-            tagsIds = bookmark.tagIds,
-            flashCardsIds = bookmark.flashCardIds
+            tagsIds = bookmark.tagIds
         )
         return@withContext bookmark.id
     }

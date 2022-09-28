@@ -39,8 +39,7 @@ CREATE TABLE BookmarkEntity(
     description TEXT NOT NULL DEFAULT "",
     siteName TEXT NOT NULL DEFAULT "",
     favIcon TEXT NOT NULL DEFAULT "",
-    tagsIds TEXT AS List<String> NOT NULL,
-    flashCardsIds TEXT AS List<String> NOT NULL
+    tagsIds TEXT AS List<String> NOT NULL
 );
 
 CREATE VIRTUAL TABLE BookmarkFTS USING fts4(
@@ -114,8 +113,8 @@ SELECT * FROM BookmarkEntity
 WHERE url = :url;
 
 upsertBookmark:
-INSERT OR REPLACE INTO BookmarkEntity(id, url,createdAt,lastReadAt,isReviewed,notes,mainImage,title ,description ,siteName ,favIcon ,tagsIds,flashCardsIds)
-VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?);
+INSERT OR REPLACE INTO BookmarkEntity(id, url,createdAt,lastReadAt,isReviewed,notes,mainImage,title ,description ,siteName ,favIcon ,tagsIds)
+VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
 
 deleteBookmark:
 DELETE FROM BookmarkEntity

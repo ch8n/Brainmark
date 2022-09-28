@@ -5,29 +5,6 @@ import com.arkivanov.essenty.parcelable.Parcelable
 import com.arkivanov.essenty.parcelable.Parcelize
 import com.benasher44.uuid.uuid4
 
-
-data class FlashCard(
-    val id: String,
-    val bookmarkId: String,
-    val mainImage: String,
-    val question: String,
-    val linkOnWeb: String,
-    val otherNotes: String
-) {
-    companion object {
-        val SAMPLE: FlashCard
-            get() = FlashCard(
-                id = uuid4().toString(),
-                bookmarkId = "",
-                question = "What is LoreIpsome?",
-                linkOnWeb = "https://www.lipsum.com/#:~:text=But%20I%20must%20explain%20to",
-                otherNotes = "",
-                // to be from unsplash images
-                mainImage = "https://samplelib.com/lib/preview/png/sample-boat-400x300.png"
-            )
-    }
-}
-
 @Stable
 @Parcelize
 data class Bookmark(
@@ -42,7 +19,6 @@ data class Bookmark(
     val siteName: String,
     val favIcon: String,
     val bookmarkUrl: String,
-    val flashCardIds: List<String>,
     val notes: String
 ) : Parcelable {
     companion object {
@@ -60,7 +36,6 @@ data class Bookmark(
                 siteName = "",
                 favIcon = "",
                 bookmarkUrl = "",
-                flashCardIds = emptyList(),
                 notes = ""
             )
         val SAMPLE: Bookmark
@@ -76,7 +51,6 @@ data class Bookmark(
                 siteName = "https://www.lipsum.com/",
                 favIcon = "https://www.lipsum.com/favicon.ico",
                 bookmarkUrl = "https://www.lipsum.com/",
-                flashCardIds = emptyList(),
                 notes = ""
             )
     }

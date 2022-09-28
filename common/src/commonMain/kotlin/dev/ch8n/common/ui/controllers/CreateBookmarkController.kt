@@ -59,7 +59,6 @@ abstract class CreateBookmarkController(
                 siteName = siteName,
                 favIcon = favIcon,
                 bookmarkUrl = url,
-                flashCardIds = emptyList(),
                 notes = ""
             )
         }

@@ -1,7 +1,6 @@
 package dev.ch8n.common.ui.controllers
 
 import dev.ch8n.common.data.model.Bookmark
-import dev.ch8n.common.data.model.FlashCard
 import dev.ch8n.common.domain.di.DomainInjector
 import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.UiController
@@ -69,13 +68,6 @@ abstract class HomeController(
         Bookmark.SAMPLE,
         Bookmark.SAMPLE,
         Bookmark.SAMPLE,
-    )
-
-    // TODO create UI model
-    val flashCardSample = listOf(
-        FlashCard.SAMPLE,
-        FlashCard.SAMPLE,
-        FlashCard.SAMPLE
     )
 
     private val _bookmarks = MutableStateFlow(bookmarkSample)

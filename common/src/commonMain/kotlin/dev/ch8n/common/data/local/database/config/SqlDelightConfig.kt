@@ -27,8 +27,7 @@ fun createDatabase(factory: SqlDriverFactory): BrainmarkDB {
     return BrainmarkDB(
         driver = driver,
         BookmarkEntityAdapter = BookmarkEntity.Adapter(
-            tagsIdsAdapter = listOfStringsAdapter,
-            flashCardsIdsAdapter = listOfStringsAdapter
+            tagsIdsAdapter = listOfStringsAdapter
         )
     )
 }
