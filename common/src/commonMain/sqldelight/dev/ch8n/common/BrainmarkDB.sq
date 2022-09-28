@@ -70,11 +70,12 @@ SELECT * FROM BookmarkEntity ;
 getUntaggedBookmarks :
 SELECT * FROM BookmarkEntity
 WHERE tagsIds = ''
+ORDER BY createdAt DESC
 LIMIT :limit OFFSET :offset;
-
 
 getBookmarksPaging :
 SELECT * FROM BookmarkEntity
+ORDER BY createdAt DESC
 LIMIT :limit OFFSET :offset;
 
 getRandomBookmarks :
@@ -90,6 +91,7 @@ ORDER BY RANDOM() LIMIT 10;
 getBookmarksByTagPaging :
 SELECT * FROM BookmarkEntity
 WHERE tagsIds LIKE :tagId
+ORDER BY createdAt DESC
 LIMIT :limit OFFSET :offset;
 
 getBookmarksByLastReadPaging :

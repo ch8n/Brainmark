@@ -40,7 +40,7 @@ abstract class BookmarksController(
             )
 
             fun reset() = ScreenState(
-                selectedTag = unTaggedOption,
+                selectedTag = allTagOption,
                 isLoading = false,
                 isError = false,
                 errorMsg = "",
