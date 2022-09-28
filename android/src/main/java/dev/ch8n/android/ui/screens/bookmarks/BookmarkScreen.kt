@@ -7,10 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -121,7 +123,11 @@ fun BookmarkScreen(
                             controller.allTagSelected()
                         }
                     ) {
-                        Text(text = "All Tag")
+                        Text(
+                            text = "All Tag",
+                            style = MaterialTheme.typography.caption,
+                            color = MaterialTheme.colors.onSurface
+                        )
                     }
 
                     DropdownMenuItem(
@@ -130,7 +136,11 @@ fun BookmarkScreen(
                             controller.onUntaggedSelected()
                         }
                     ) {
-                        Text(text = "Untagged")
+                        Text(
+                            text = "Untagged",
+                            style = MaterialTheme.typography.caption,
+                            color = MaterialTheme.colors.onSurface
+                        )
                     }
 
                     allTags.forEach { tag ->
@@ -140,7 +150,23 @@ fun BookmarkScreen(
                                 controller.onTagSelected(tag)
                             }
                         ) {
-                            Text(text = tag.name)
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    Modifier
+                                        .size(16.dp)
+                                        .background(Color(tag.color), CircleShape)
+                                        .border(1.dp, MaterialTheme.colors.onSurface, CircleShape)
+                                )
+                                Text(
+                                    text = tag.name,
+                                    style = MaterialTheme.typography.caption,
+                                    color = MaterialTheme.colors.onSurface
+                                )
+                            }
                         }
                     }
                 }

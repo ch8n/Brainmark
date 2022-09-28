@@ -1,5 +1,6 @@
 package dev.ch8n.android.ui.screens.tagManager
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,6 +14,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -141,6 +143,26 @@ fun TagScreenManager(
             )
 
             val tags by controller.getAllTags.collectAsState(emptyList())
+
+            AnimatedVisibility(
+                visible = tags.isEmpty()
+            ) {
+                Box(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                ) {
+                    Text(
+                        text = "Woops no tags...\nWe need only name and a color!",
+                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
 
             Column(
                 modifier = Modifier
