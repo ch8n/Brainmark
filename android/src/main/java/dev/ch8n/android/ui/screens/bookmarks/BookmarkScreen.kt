@@ -25,6 +25,7 @@ import dev.ch8n.android.utils.clearFocusOnKeyboardDismiss
 import dev.ch8n.android.utils.rememberMutableState
 import dev.ch8n.android.utils.toast
 import dev.ch8n.common.data.model.Tags
+import dev.ch8n.common.ui.navigation.CreateBookmarksDestination
 import dev.ch8n.common.ui.navigation.EmptyNavController
 import dev.ch8n.common.ui.navigation.PreviewBookmarkHomeDestination
 import dev.ch8n.common.ui.navigation.TagManagerDestination
@@ -221,14 +222,18 @@ fun BookmarkScreen(
                 visible = bookmarks.isEmpty()
             ) {
                 Box(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                    modifier = Modifier.padding(vertical = 16.dp)
                         .fillMaxWidth()
                         .height(150.dp)
                         .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                        .clickable {
+                            controller.routeTo(CreateBookmarksDestination())
+                        }
                 ) {
                     Text(
-                        text = "You haven't saved any bookmarks...",
-                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        text = "Oops! No bookmarks...\nClick to create one",
+                        modifier = Modifier.padding(24.dp)
+                            .align(Alignment.Center),
                         style = MaterialTheme.typography.h3,
                         color = MaterialTheme.colors.onSurface,
                         textAlign = TextAlign.Center
