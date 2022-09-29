@@ -8,9 +8,9 @@ CREATE TABLE TagEntity(
     color INTEGER AS Int NOT NULL
 );
 
-
 getAllTags:
-SELECT * FROM TagEntity;
+SELECT * FROM TagEntity
+LIMIT :limit OFFSET :offset;
 
 getTagById:
 SELECT * FROM TagEntity
@@ -64,46 +64,33 @@ CREATE TRIGGER UpdateBookmarkFTS AFTER UPDATE ON BookmarkEntity BEGIN
   VALUES (new.id, new.title, new.description,new.siteName);
 END;
 
-getBookmarks :
-SELECT * FROM BookmarkEntity ;
-
-getUntaggedBookmarks :
-SELECT * FROM BookmarkEntity
-WHERE tagsIds = ''
-ORDER BY createdAt DESC
-LIMIT :limit OFFSET :offset;
-
-getBookmarksPaging :
-SELECT * FROM BookmarkEntity
-ORDER BY createdAt DESC
-LIMIT :limit OFFSET :offset;
-
-getRandomBookmarks :
+--- Home Screen ---
+getReadingRecommendation :
 SELECT * FROM BookmarkEntity
 WHERE isReviewed == 0
 ORDER BY RANDOM() LIMIT 10;
 
-getRevisionBookmarks :
+getRevisionRecommendation :
 SELECT * FROM BookmarkEntity
 WHERE isReviewed == 1
 ORDER BY RANDOM() LIMIT 10;
-
-getBookmarksByTagPaging :
-SELECT * FROM BookmarkEntity
-WHERE tagsIds LIKE :tagId
-ORDER BY createdAt DESC
-LIMIT :limit OFFSET :offset;
 
 getBookmarksByLastReadPaging :
 SELECT * FROM BookmarkEntity
 ORDER BY lastReadAt DESC
 LIMIT :limit OFFSET :offset;
 
-searchUntaggedBookmarks :
+
+--- Search Screen ---
+getAllBookmarksPaging :
 SELECT * FROM BookmarkEntity
-JOIN BookmarkFTS ON BookmarkEntity.id = BookmarkFTS.id
-WHERE (tagsIds = '')
-AND (BookmarkFTS MATCH :keyword)
+ORDER BY createdAt DESC
+LIMIT :limit OFFSET :offset;
+
+getBookmarksByTagPaging :
+SELECT * FROM BookmarkEntity
+WHERE tagsIds LIKE :tagId
+ORDER BY createdAt DESC
 LIMIT :limit OFFSET :offset;
 
 searchAllBookmarkPaging :
@@ -119,8 +106,15 @@ WHERE (tagsIds LIKE :tagId)
 AND (BookmarkFTS MATCH :keyword)
 LIMIT :limit OFFSET :offset;
 
+--- Detail Screen ---
 getBookmarksById :
 SELECT * FROM BookmarkEntity
+WHERE id = :id;
+
+
+--- CRUD Bookmark Screen ---
+deleteBookmark:
+DELETE FROM BookmarkEntity
 WHERE id = :id;
 
 getBookmarksByUrl :
@@ -130,7 +124,3 @@ WHERE url = :url;
 upsertBookmark:
 INSERT OR REPLACE INTO BookmarkEntity(id, url,createdAt,lastReadAt,isReviewed,notes,mainImage,title ,description ,siteName ,favIcon ,tagsIds)
 VALUES(?,?,?,?,?,?,?,?,?,?,?,?);
-
-deleteBookmark:
-DELETE FROM BookmarkEntity
-WHERE id = :id;
