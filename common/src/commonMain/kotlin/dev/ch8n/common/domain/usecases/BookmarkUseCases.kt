@@ -61,7 +61,7 @@ class GetBookmarksPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke(limit: Long, offset: Long) = flow {
-        val bookmarks = bookmarksDataSource.allBookmarksPaging(limit, offset)
+        val bookmarks = bookmarksDataSource.getAllBookmarksPaging(limit, offset)
         emit(bookmarks)
     }
 }
@@ -80,7 +80,7 @@ class GetRevisionBookmarks(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke() = flow {
-        val bookmarks = bookmarksDataSource.getRevisionBookmarks()
+        val bookmarks = bookmarksDataSource.getRevisionRecommendations()
         emit(bookmarks)
     }
 }
@@ -116,7 +116,7 @@ class GetBookmarkByTagPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke(tagId: String, limit: Long, offset: Long) = flow {
-        val bookmarks = bookmarksDataSource.bookmarksByTagPaging(tagId, limit, offset)
+        val bookmarks = bookmarksDataSource.getBookmarksByTagPaging(tagId, limit, offset)
         emit(bookmarks)
     }
 }
