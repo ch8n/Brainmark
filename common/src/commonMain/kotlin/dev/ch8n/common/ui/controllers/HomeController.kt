@@ -33,7 +33,7 @@ abstract class HomeController(
 
     private val getRevisions = DomainInjector
         .bookmarkUseCase
-        .getRevisionBookmarks
+        .getRevisionRecommendations
 
     fun getRevisionBookmarks() {
         getRevisions.invoke()

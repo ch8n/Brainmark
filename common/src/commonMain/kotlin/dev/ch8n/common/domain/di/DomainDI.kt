@@ -17,8 +17,8 @@ object DomainResolver {
         val bookmarkDataSource = DataInjector.bookmarkDataSource
         return BookmarkUseCases(
             getBookmarkByIdUseCase = GetBookmarkByIdUseCase(bookmarkDataSource),
-            upsertBookmarkUseCase = UpsertBookmarkUseCase(bookmarkDataSource),
-            deleteBookmarkUseCase = DeleteBookmarkUseCase(bookmarkDataSource),
+            upsertBookmark = UpsertBookmarkUseCase(bookmarkDataSource),
+            deleteBookmark = DeleteBookmarkUseCase(bookmarkDataSource),
             getBookmarkByUrl = GetBookmarkByUrlUseCase(bookmarkDataSource),
             getAllBookmarksPaging = GetBookmarksPaging(bookmarkDataSource),
             getBookmarksByTagPaging = GetBookmarkByTagPaging(bookmarkDataSource),
@@ -26,7 +26,7 @@ object DomainResolver {
             searchBookmarkByTagPaging = SearchBookmarkByTagPaging(bookmarkDataSource),
             getBookmarksByLastReadPaging = GetBookmarksByLastReadPaging(bookmarkDataSource),
             getReadingRecommendations = GetReadingRecommendations(bookmarkDataSource),
-            getRevisionBookmarks = GetRevisionBookmarks(bookmarkDataSource),
+            getRevisionRecommendations = GetRevisionRecommendations(bookmarkDataSource),
             searchUntaggedBookmarkPaging = SearchUntaggedBookmarkPaging(bookmarkDataSource),
             getUntaggedBookmarks = GetUntaggedBookmarkPaging(bookmarkDataSource)
         )

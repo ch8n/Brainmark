@@ -28,7 +28,7 @@ interface BookmarkDataSource {
     suspend fun getBookmarkOrDefault(id: String, default: () -> Bookmark): Bookmark
 
     suspend fun upsertBookmark(bookmark: Bookmark): String
-    suspend fun getBookmarkByUrl(url: String): Bookmark?
+    suspend fun getBookmarkByUrlOrDefault(url: String, default: () -> Bookmark): Bookmark
     suspend fun deleteBookmark(id: String)
 }
 
@@ -137,8 +137,10 @@ class BookmarkDataSourceImpl constructor(
         queries.deleteBookmark(id)
     }
 
-    override suspend fun getBookmarkByUrl(url: String): Bookmark? {
-        return queries.getBookmarksByUrl(url).executeAsOneOrNull()?.toBookmark()
+    override suspend fun getBookmarkByUrlOrDefault(url: String, default: () -> Bookmark): Bookmark {
+        return queries.getBookmarksByUrl(url)
+            .executeAsOneOrNull()
+            ?.toBookmark() ?: default.invoke()
     }
 
     private fun Query<BookmarkEntity>.asBookmarks(): List<Bookmark> {
@@ -176,9 +178,6 @@ class BookmarkDataSourceImpl constructor(
         favIcon = favIcon,
         tagIds = tagsIds
     )
-
-
-
 
 
 }
