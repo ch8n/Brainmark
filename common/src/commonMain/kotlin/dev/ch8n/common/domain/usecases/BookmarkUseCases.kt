@@ -5,11 +5,10 @@ import dev.ch8n.common.data.model.Bookmark
 import kotlinx.coroutines.flow.flow
 
 class BookmarkUseCases(
-    //Home Screen
     val getReadingRecommendations: GetReadingRecommendations,
     val getRevisionRecommendations: GetRevisionRecommendations,
     val getBookmarksByLastReadPaging: GetBookmarksByLastReadPaging,
-    // search screen
+
     val getAllBookmarksPaging: GetBookmarksPaging,
     val searchAllBookmarkPaging: SearchAllBookmarkPaging,
 
@@ -19,7 +18,6 @@ class BookmarkUseCases(
     val getUntaggedBookmarks: GetUntaggedBookmarkPaging,
     val searchUntaggedBookmarkPaging: SearchUntaggedBookmarkPaging,
 
-    // detail screen
     val getBookmarkById: GetBookmarkByIdUseCase,
     val getBookmarkByUrl: GetBookmarkByUrlUseCase,
     val upsertBookmark: UpsertBookmarkUseCase,
