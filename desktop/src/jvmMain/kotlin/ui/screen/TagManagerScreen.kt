@@ -168,7 +168,7 @@ fun TagScreenManager(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .height(35.dp),
-                            onTagClicked = controller::selectTag
+                            onTagClicked = controller::onTagSelected
                         )
                     }
                 }

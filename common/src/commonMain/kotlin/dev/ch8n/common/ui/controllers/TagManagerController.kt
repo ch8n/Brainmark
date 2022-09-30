@@ -3,10 +3,11 @@ package dev.ch8n.common.ui.controllers
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
-import dev.ch8n.common.ui.controllers.TagManagerController.ScreenState.Companion.createTag
 import dev.ch8n.common.ui.controllers.TagManagerController.ScreenState.Companion.reset
+import dev.ch8n.common.ui.controllers.TagManagerController.ScreenState.Companion.toTag
 import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.ColorsUtils
 import dev.ch8n.common.utils.UiController
@@ -41,7 +42,7 @@ abstract class TagManagerController(
                     tags = emptyList()
                 )
 
-            fun ScreenState.createTag() = Tags(
+            fun ScreenState.toTag() = Tags(
                 id = selectedId,
                 name = tagName,
                 color = tagColor.toArgb()
@@ -172,7 +173,9 @@ abstract class TagManagerController(
     }
 
     private fun saveTag(current: ScreenState) {
-        val newTag = current.createTag()
+        val newTag = current.toTag().copy(
+            id = uuid4().toString()
+        )
         upsertTag.invoke(newTag)
             .onEach {
                 val updatedTags = mutableListOf<Tags>()
@@ -191,7 +194,7 @@ abstract class TagManagerController(
     }
 
     private fun updateTag(current: ScreenState) {
-        val updateTag = current.createTag()
+        val updateTag = current.toTag()
         upsertTag.invoke(updateTag)
             .onEach {
                 val updatedTags = current.tags.map { oldTag ->
@@ -229,13 +232,13 @@ abstract class TagManagerController(
             .onceIn(this)
     }
 
-    fun selectTag(tag: Tags) {
+    fun onTagSelected(tag: Tags) {
         screenState.update {
             it.copy(
                 selectedId = tag.id,
                 tagName = tag.name,
                 tagColor = Color(tag.color),
-                errorMsg = ""
+                errorMsg = "",
             )
         }
     }
