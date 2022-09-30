@@ -52,9 +52,9 @@ abstract class BookmarksController(
     private val _screenState = MutableStateFlow(ScreenState.reset())
     val screenState = _screenState.asStateFlow()
 
-    val allTags = DomainInjector
+    private val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase()
+        .getAllTagsUseCase
 
     private val allBookmarkPager = DomainInjector
         .bookmarkUseCase
@@ -86,6 +86,20 @@ abstract class BookmarksController(
     private val _pagingInvalidateKey = MutableStateFlow(uuid4().toString())
     val pagingInvalidateKey = _pagingInvalidateKey.asStateFlow()
 
+    private val _tags = MutableStateFlow<List<Tags>>(emptyList())
+    val tags = _tags.asStateFlow()
+
+    fun nextTags() {
+        val current = _tags.value
+        val limit = 5L
+        val offset = current.size.toLong()
+        getAllTags.invoke(limit, offset)
+            .onEach { nextTags ->
+                val updated = current + nextTags
+                _tags.update { updated }
+            }.onceIn(this)
+    }
+
     fun nextBookmark() {
         val current = _bookmarks.value
         val limit = 5L
@@ -94,8 +108,16 @@ abstract class BookmarksController(
         val searchQuery = _screenState.value.searchQuery.trim()
         val flow = when {
             searchQuery.isNotEmpty() -> when (selectedTag) {
-                ScreenState.allTagOption -> searchAllBookmarkPager.invoke(searchQuery, limit, offset)
-                ScreenState.unTaggedOption -> searchUntaggedBookmarkPager.invoke(searchQuery, limit, offset)
+                ScreenState.allTagOption -> searchAllBookmarkPager.invoke(
+                    searchQuery,
+                    limit,
+                    offset
+                )
+                ScreenState.unTaggedOption -> searchUntaggedBookmarkPager.invoke(
+                    searchQuery,
+                    limit,
+                    offset
+                )
                 else -> searchBookmarkByTagPager.invoke(searchQuery, selectedTag.id, limit, offset)
             }
 

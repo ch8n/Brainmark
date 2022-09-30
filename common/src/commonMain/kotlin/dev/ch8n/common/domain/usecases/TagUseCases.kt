@@ -26,7 +26,10 @@ class GetTagsByIdsUseCase(
 class GetAllTagsUseCase(
     private val tagsDataSource: TagsDataSource
 ) {
-    operator fun invoke() = tagsDataSource.getAllTags()
+    operator fun invoke(limit: Long, offset: Long) = flow {
+        val tags = tagsDataSource.getAllTags(limit, offset)
+        emit(tags)
+    }
 }
 
 class GetTagByIdUseCase(

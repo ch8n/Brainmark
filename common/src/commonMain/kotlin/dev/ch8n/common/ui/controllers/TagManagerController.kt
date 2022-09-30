@@ -11,9 +11,11 @@ import dev.ch8n.common.utils.ColorsUtils
 import dev.ch8n.common.utils.Result
 import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.characterAreSame
+import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -51,10 +53,23 @@ abstract class TagManagerController(
         .tagUseCase
         .deleteTagUseCase
 
-    val getAllTags = DomainInjector
+    private val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase()
-        .map { it.sortedBy { it.name } }
+        .getAllTagsUseCase
+
+    private val _tags = MutableStateFlow<List<Tags>>(emptyList())
+    val tags = _tags.asStateFlow()
+
+    fun nextTags() {
+        val current = _tags.value
+        val limit = 5L
+        val offset = current.size.toLong()
+        getAllTags.invoke(limit, offset)
+            .onEach { nextTags ->
+                val updated = current + nextTags
+                _tags.update { updated }
+            }.onceIn(this)
+    }
 
     fun saveTag() {
         state.update { it.copy(isLoading = true, errorMsg = "") }
@@ -78,7 +93,7 @@ abstract class TagManagerController(
                 val color = it.tagColor.toArgb()
 
                 // check match
-                val match: Tags? = getAllTags.first().find {
+                val match: Tags? = tags.first().find {
                     it.name.characterAreSame(name)
                 }
 

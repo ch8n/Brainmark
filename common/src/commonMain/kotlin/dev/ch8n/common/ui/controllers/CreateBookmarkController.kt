@@ -74,7 +74,7 @@ abstract class CreateBookmarkController(
 
     val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase()
+        .getAllTagsUseCase.invoke()
         .map { it.sortedBy { it.name } }
 
     private val createBookmarkUseCase = DomainInjector
