@@ -202,7 +202,7 @@ fun TagScreenManager(
                 modifier = Modifier
                     .padding(start = 24.dp, end = 24.dp)
                     .fillMaxWidth(),
-                cells = GridCells.Adaptive(100.dp)
+                cells = GridCells.Adaptive(150.dp)
             ) {
                 itemsIndexed(screenState.tags) { index, tag ->
                     TagChip(
