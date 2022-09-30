@@ -32,7 +32,7 @@ abstract class TagManagerController(
         val isLoading: Boolean
     ) {
         companion object {
-            val Initial
+            val reset
                 get() = ScreenState(
                     selectedId = "",
                     tagName = "",
@@ -43,7 +43,7 @@ abstract class TagManagerController(
         }
     }
 
-    val state = MutableStateFlow(ScreenState.Initial)
+    val state = MutableStateFlow(ScreenState.reset)
 
     private val createTag = DomainInjector
         .tagUseCase
@@ -67,7 +67,9 @@ abstract class TagManagerController(
         getAllTags.invoke(limit, offset)
             .onEach { nextTags ->
                 val updated = current + nextTags
-                _tags.update { updated }
+                _tags.update {
+                    updated
+                }
             }.onceIn(this)
     }
 
@@ -84,7 +86,7 @@ abstract class TagManagerController(
                 // check tag name
                 val name = it.tagName
                 if (name.length < 3) {
-                    return@update ScreenState.Initial.copy(
+                    return@update ScreenState.reset.copy(
                         errorMsg = "Name > 2 characters"
                     )
                 }
@@ -99,7 +101,7 @@ abstract class TagManagerController(
 
                 val alreadyExists = isNewTag && match != null
                 if (alreadyExists) {
-                    return@update ScreenState.Initial.copy(
+                    return@update ScreenState.reset.copy(
                         errorMsg = "Already Exist!"
                     )
                 }
@@ -108,7 +110,7 @@ abstract class TagManagerController(
                     val isColorChanged = match.color != color
                     val isNameChanged = match.name != name
                     if (!isColorChanged && !isNameChanged) {
-                        return@update ScreenState.Initial.copy(
+                        return@update ScreenState.reset.copy(
                             errorMsg = "Already Exist!"
                         )
                     }
@@ -129,7 +131,7 @@ abstract class TagManagerController(
                     }
 
                     is Result.Success -> {
-                        ScreenState.Initial
+                        ScreenState.reset
                     }
                 }
             }
@@ -150,7 +152,7 @@ abstract class TagManagerController(
                 val id = it.selectedId
                 if (id.isEmpty()) {
                     // a new tag
-                    return@update ScreenState.Initial
+                    return@update ScreenState.reset
                 }
 
                 // delete tag in db
@@ -166,7 +168,7 @@ abstract class TagManagerController(
                     }
 
                     is Result.Success -> {
-                        ScreenState.Initial
+                        ScreenState.reset
                     }
                 }
             }
@@ -195,7 +197,7 @@ abstract class TagManagerController(
 
     fun clearSelectedTag() {
         state.update {
-            ScreenState.Initial
+            ScreenState.reset
         }
     }
 }

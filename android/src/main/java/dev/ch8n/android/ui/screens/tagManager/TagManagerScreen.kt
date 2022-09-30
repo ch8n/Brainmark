@@ -19,9 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -104,6 +102,13 @@ fun TagScreenManager(
     val (isColorPickerShown, setColorPickerShown) = remember {
         mutableStateOf(false)
     }
+    val tags by controller.tags.collectAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        if (tags.isEmpty()) {
+            controller.nextTags()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -170,7 +175,6 @@ fun TagScreenManager(
                 thickness = 1.dp
             )
 
-            val tags by controller.tags.collectAsState(emptyList())
 
             AnimatedVisibility(
                 visible = tags.isEmpty()
@@ -192,41 +196,36 @@ fun TagScreenManager(
             }
 
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                Spacer(modifier = Modifier.size(16.dp))
-                LazyVerticalGrid(
-                    modifier = Modifier
-                        .padding(start = 24.dp, end = 24.dp)
-                        .fillMaxWidth(),
-                    cells = GridCells.Adaptive(100.dp)
-                ) {
-                    itemsIndexed(tags) { index, tag ->
-                        TagChip(
-                            tag = tag,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .height(35.dp),
-                            onTagClicked = controller::selectTag
-                        )
+            Spacer(modifier = Modifier.size(16.dp))
 
-                        LaunchedEffect(index) {
-                            if (index == tags.lastIndex) {
-                                controller.nextTags()
-                            }
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .padding(start = 24.dp, end = 24.dp)
+                    .fillMaxWidth(),
+                cells = GridCells.Adaptive(100.dp)
+            ) {
+                itemsIndexed(tags) { index, tag ->
+                    TagChip(
+                        tag = tag,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .height(35.dp),
+                        onTagClicked = controller::selectTag
+                    )
+
+                    LaunchedEffect(index) {
+                        if (index == tags.lastIndex) {
+                            controller.nextTags()
                         }
                     }
                 }
-
-                Spacer(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                )
             }
+
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+            )
         }
 
         if (isColorPickerShown) {
