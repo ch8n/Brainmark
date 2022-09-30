@@ -165,44 +165,49 @@ fun BookmarkScreen(
                         )
                     }
 
-
-                    LazyColumn(Modifier.fillMaxWidth()) {
-                        itemsIndexed(allTags) { index, tag ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    isTagDropDownShow = false
-                                    controller.onTagSelected(tag)
-                                }
-                            ) {
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        Modifier
-                                            .size(16.dp)
-                                            .background(Color(tag.color), CircleShape)
-                                            .border(
-                                                1.dp,
-                                                MaterialTheme.colors.onSurface,
-                                                CircleShape
-                                            )
-                                    )
-                                    Text(
-                                        text = tag.name,
-                                        style = MaterialTheme.typography.caption,
-                                        color = MaterialTheme.colors.onSurface
-                                    )
-                                }
+                    allTags.forEach { tag ->
+                        DropdownMenuItem(
+                            onClick = {
+                                isTagDropDownShow = false
+                                controller.onTagSelected(tag)
                             }
-
-                            LaunchedEffect(index) {
-                                if (index == allTags.lastIndex) {
-                                    controller.nextTags()
-                                }
+                        ) {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    Modifier
+                                        .size(16.dp)
+                                        .background(Color(tag.color), CircleShape)
+                                        .border(
+                                            1.dp,
+                                            MaterialTheme.colors.onSurface,
+                                            CircleShape
+                                        )
+                                )
+                                Text(
+                                    text = tag.name,
+                                    style = MaterialTheme.typography.caption,
+                                    color = MaterialTheme.colors.onSurface
+                                )
                             }
                         }
+
+                    }
+
+                    DropdownMenuItem(
+                        onClick = {
+                            //isTagDropDownShow = false
+                            controller.nextTags()
+                        }
+                    ) {
+                        Text(
+                            text = "Load More",
+                            style = MaterialTheme.typography.caption,
+                            color = MaterialTheme.colors.onSurface
+                        )
                     }
                 }
             }
@@ -370,12 +375,15 @@ private fun ToolbarBookmark(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth(0.85f)
                 ) {
                     Text(
                         text = selectedTag.name,
                         style = MaterialTheme.typography.h1,
-                        color = MaterialTheme.colors.onSurface
+                        color = MaterialTheme.colors.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
 
                     AsyncImage(
