@@ -100,6 +100,10 @@ fun CreateBookmarkScreen(
         controller.autofillDeeplink()
     }
 
+    LaunchedEffect(Unit) {
+        controller.autofillDeeplink()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
