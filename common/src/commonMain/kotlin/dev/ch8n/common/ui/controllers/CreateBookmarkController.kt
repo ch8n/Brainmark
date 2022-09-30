@@ -76,7 +76,7 @@ abstract class CreateBookmarkController(
 
     private val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase
+        .getAllTags
 
     private val _tags = MutableStateFlow<List<Tags>>(emptyList())
     val tags = _tags.asStateFlow()
@@ -95,7 +95,7 @@ abstract class CreateBookmarkController(
 
     val getTagById = DomainInjector
         .tagUseCase
-        .getTagByIdUseCase
+        .getTagById
 
     private val createBookmarkUseCase = DomainInjector
         .bookmarkUseCase

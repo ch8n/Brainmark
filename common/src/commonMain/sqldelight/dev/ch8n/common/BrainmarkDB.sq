@@ -8,6 +8,10 @@ CREATE TABLE TagEntity(
     color INTEGER AS Int NOT NULL
 );
 
+getTagByName:
+SELECT * FROM TagEntity
+WHERE name = :name;
+
 getAllTags:
 SELECT * FROM TagEntity
 LIMIT :limit OFFSET :offset;

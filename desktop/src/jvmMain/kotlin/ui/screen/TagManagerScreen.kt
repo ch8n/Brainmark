@@ -76,7 +76,7 @@ fun TagScreenManager(
     onSettingsClicked: () -> Unit
 ) {
 
-    val viewState by controller.state.collectAsState()
+    val viewState by controller.screenState.collectAsState()
     val (isColorPickerShown, setColorPickerShown) = remember {
         mutableStateOf(false)
     }
@@ -131,8 +131,8 @@ fun TagScreenManager(
                     setColorPickerShown.invoke(true)
                 },
                 onSaveTagClicked = controller::saveTag,
-                onDeleteTagClicked = controller::deleteTag,
-                onResetSelectedTag = controller::clearSelectedTag,
+                onDeleteTagClicked = controller::onTagDelete,
+                onResetSelectedTag = controller::onClearTagName,
                 onRandomColorPicked = {
                     controller.updateTagColor(ColorsUtils.randomColor)
                 }

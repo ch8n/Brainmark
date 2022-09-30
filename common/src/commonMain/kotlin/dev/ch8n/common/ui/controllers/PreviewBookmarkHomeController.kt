@@ -104,7 +104,7 @@ abstract class PreviewBookmarkHomeController(
 
     private val getTagsById = DomainInjector
         .tagUseCase
-        .getTagsByIdsUseCase
+        .getTagsByIds
 
     @Stable
     data class ScreenState(

@@ -34,14 +34,13 @@ object DomainResolver {
 
     fun provideTagUseCase(): TagUseCases {
         val tagsDataSource = DataInjector.tagDataSource
-        val getTagByIdUseCase = GetTagByIdUseCase(tagsDataSource)
         return TagUseCases(
-            getAllTagsUseCase = GetAllTagsUseCase(tagsDataSource),
-            getTagByIdUseCase = getTagByIdUseCase,
-            getTagsByIdsUseCase = GetTagsByIdsUseCase(tagsDataSource),
-            createTagUseCase = CreateTagUseCase(tagsDataSource),
-            updateTagUseCase = UpdateTagUseCase(tagsDataSource, getTagByIdUseCase),
-            deleteTagUseCase = DeleteTagUseCase(tagsDataSource),
+            getAllTags = GetAllTagsUseCase(tagsDataSource),
+            getTagById = GetTagByIdUseCase(tagsDataSource),
+            getTagsByIds = GetTagsByIdsUseCase(tagsDataSource),
+            upsertTag = UpsertTagUseCase(tagsDataSource),
+            deleteTag = DeleteTagUseCase(tagsDataSource),
+            getTagByName = GetTagByNameUseCase(tagsDataSource)
         )
     }
 

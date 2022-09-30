@@ -3,18 +3,16 @@ package dev.ch8n.common.ui.controllers
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.benasher44.uuid.uuid4
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
+import dev.ch8n.common.ui.controllers.TagManagerController.ScreenState.Companion.createTag
+import dev.ch8n.common.ui.controllers.TagManagerController.ScreenState.Companion.reset
 import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.ColorsUtils
-import dev.ch8n.common.utils.Result
 import dev.ch8n.common.utils.UiController
-import dev.ch8n.common.utils.characterAreSame
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,7 +27,8 @@ abstract class TagManagerController(
         val tagName: String,
         val tagColor: Color,
         val errorMsg: String,
-        val isLoading: Boolean
+        val isLoading: Boolean,
+        val tags: List<Tags>
     ) {
         companion object {
             val reset
@@ -38,145 +37,200 @@ abstract class TagManagerController(
                     tagName = "",
                     tagColor = ColorsUtils.randomColor,
                     errorMsg = "",
-                    isLoading = false
+                    isLoading = false,
+                    tags = emptyList()
                 )
+
+            fun ScreenState.createTag() = Tags(
+                id = selectedId,
+                name = tagName,
+                color = tagColor.toArgb()
+            )
         }
     }
 
-    val state = MutableStateFlow(ScreenState.reset)
+    val screenState = MutableStateFlow(reset)
 
-    private val createTag = DomainInjector
-        .tagUseCase
-        .createTagUseCase
+    fun withLoading(action: suspend () -> Unit) {
+        screenState.update {
+            it.copy(
+                isLoading = true,
+                errorMsg = ""
+            )
+        }
+        try {
+            launch { action.invoke() }
+        } finally {
+            screenState.update {
+                it.copy(
+                    isLoading = false
+                )
+            }
+        }
+    }
 
-    private val deleteTag = DomainInjector
-        .tagUseCase
-        .deleteTagUseCase
-
+    // read
     private val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase
+        .getAllTags
 
-    private val _tags = MutableStateFlow<List<Tags>>(emptyList())
-    val tags = _tags.asStateFlow()
+    private val getTagByName = DomainInjector
+        .tagUseCase
+        .getTagByName
 
     fun nextTags() {
-        val current = _tags.value
+        val current = screenState.value.tags
         val limit = 5L
         val offset = current.size.toLong()
-        getAllTags.invoke(limit, offset)
+        getAllTags
+            .invoke(limit, offset)
             .onEach { nextTags ->
                 val updated = current + nextTags
-                _tags.update {
-                    updated
+                screenState.update {
+                    it.copy(
+                        tags = updated
+                    )
                 }
             }.onceIn(this)
     }
 
-    fun saveTag() {
-        state.update { it.copy(isLoading = true, errorMsg = "") }
-        launch {
-            state.update {
-                // check and update id
-                var id = it.selectedId
-                val isNewTag = id.isEmpty()
-                if (isNewTag) {
-                    id = uuid4().toString()
-                }
-                // check tag name
-                val name = it.tagName
-                if (name.length < 3) {
-                    return@update ScreenState.reset.copy(
-                        errorMsg = "Name > 2 characters"
-                    )
-                }
-
-                // check tag color
-                val color = it.tagColor.toArgb()
-
-                // check match
-                val match: Tags? = tags.first().find {
-                    it.name.characterAreSame(name)
-                }
-
-                val alreadyExists = isNewTag && match != null
-                if (alreadyExists) {
-                    return@update ScreenState.reset.copy(
-                        errorMsg = "Already Exist!"
-                    )
-                }
-
-                if (match != null) {
-                    val isColorChanged = match.color != color
-                    val isNameChanged = match.name != name
-                    if (!isColorChanged && !isNameChanged) {
-                        return@update ScreenState.reset.copy(
-                            errorMsg = "Already Exist!"
-                        )
-                    }
-                }
-
-                // save or update tag db
-                val result = Result.build {
-                    createTag.invoke(id, name, color).first()
-                }
-
-                // collect result
-                return@update when (result) {
-                    is Result.Error -> {
-                        it.copy(
-                            errorMsg = result.error.message ?: "Something went wrong!",
-                            isLoading = false
-                        )
-                    }
-
-                    is Result.Success -> {
-                        ScreenState.reset
-                    }
-                }
-            }
-        }
-    }
+    // create and update
+    private val upsertTag = DomainInjector
+        .tagUseCase
+        .upsertTag
 
     fun updateTagName(name: String) {
-        state.update {
+        screenState.update {
             it.copy(tagName = name)
         }
     }
 
-    fun deleteTag() {
-        state.update { it.copy(isLoading = true, errorMsg = "") }
-        launch {
-            state.update {
-                // get id
-                val id = it.selectedId
-                if (id.isEmpty()) {
-                    // a new tag
-                    return@update ScreenState.reset
-                }
+    fun onTagCreate() {
+        withLoading {
+            val current = screenState.value
 
-                // delete tag in db
-                val result = Result.build { deleteTag.invoke(id).first() }
+            // validate tag name
+            val name = current.tagName
+            if (name.length < 3) {
+                setError("Name > 2 characters")
+                return@withLoading
+            }
 
-                // collect result
-                when (result) {
-                    is Result.Error -> {
-                        it.copy(
-                            errorMsg = result.error.message ?: "Something went wrong!",
-                            isLoading = false
-                        )
+            var id = current.selectedId
+            val isNewTag = id.isEmpty()
+
+            if (isNewTag) {
+                // create tag
+                // check if exist
+                getTagByName.invoke(name)
+                    .onEach {
+                        if (it == Tags.Empty) {
+                            // save to db
+                            saveTag(current)
+                        } else {
+                            // if exist error
+                            setError("Already Exist!")
+                        }
                     }
-
-                    is Result.Success -> {
-                        ScreenState.reset
-                    }
-                }
+                    .onceIn(this)
+            } else {
+                // update tag
+                updateTag(current)
             }
         }
     }
 
+    // delete
+    private val deleteTag = DomainInjector
+        .tagUseCase
+        .deleteTag
+
+    fun onTagDelete() {
+        withLoading {
+            val current = screenState.value
+            val id = current.selectedId
+            if (id.isEmpty()) {
+                // a new tag
+                screenState.update {
+                    reset.copy(
+                        tags = it.tags
+                    )
+                }
+            } else {
+                onTagDelete(id, current)
+            }
+        }
+    }
+
+
+    private fun setError(msg: String) {
+        screenState.update {
+            reset.copy(
+                errorMsg = msg
+            )
+        }
+    }
+
+    private fun saveTag(current: ScreenState) {
+        val newTag = current.createTag()
+        upsertTag.invoke(newTag)
+            .onEach {
+                val updatedTags = mutableListOf<Tags>()
+                updatedTags.add(newTag)
+                updatedTags.addAll(current.tags)
+                screenState.update {
+                    reset.copy(
+                        tags = updatedTags
+                    )
+                }
+            }
+            .catch { error ->
+                setError(error.message ?: "Something went wrong!")
+            }
+            .onceIn(this)
+    }
+
+    private fun updateTag(current: ScreenState) {
+        val updateTag = current.createTag()
+        upsertTag.invoke(updateTag)
+            .onEach {
+                val updatedTags = current.tags.map { oldTag ->
+                    if (oldTag.id == updateTag.id) {
+                        updateTag
+                    } else {
+                        oldTag
+                    }
+                }
+                screenState.update {
+                    reset.copy(
+                        tags = updatedTags
+                    )
+                }
+            }
+            .catch { error ->
+                setError(error.message ?: "Something went wrong!")
+            }
+            .onceIn(this)
+    }
+
+    private fun onTagDelete(id: String, current: ScreenState) {
+        deleteTag.invoke(id)
+            .onEach {
+                val updated = current.tags.filter { it.id != id }
+                screenState.update {
+                    reset.copy(
+                        tags = updated
+                    )
+                }
+            }
+            .catch { error ->
+                setError(error.message ?: "Something went wrong!")
+            }
+            .onceIn(this)
+    }
+
     fun selectTag(tag: Tags) {
-        state.update {
+        screenState.update {
             it.copy(
                 selectedId = tag.id,
                 tagName = tag.name,
@@ -188,16 +242,18 @@ abstract class TagManagerController(
 
 
     fun updateTagColor(color: Color) {
-        state.update {
+        screenState.update {
             it.copy(
                 tagColor = color
             )
         }
     }
 
-    fun clearSelectedTag() {
-        state.update {
-            ScreenState.reset
+    fun onClearTagName() {
+        screenState.update {
+            reset.copy(
+                tags = it.tags
+            )
         }
     }
 }

@@ -98,14 +98,14 @@ fun TagScreenManager(
     onSettingsClicked: () -> Unit
 ) {
 
-    val viewState by controller.state.collectAsState()
+    val screenState by controller.screenState.collectAsState()
+
     val (isColorPickerShown, setColorPickerShown) = remember {
         mutableStateOf(false)
     }
-    val tags by controller.tags.collectAsState(emptyList())
 
     LaunchedEffect(Unit) {
-        if (tags.isEmpty()) {
+        if (screenState.tags.isEmpty()) {
             controller.nextTags()
         }
     }
@@ -148,10 +148,10 @@ fun TagScreenManager(
             Spacer(Modifier.size(18.dp))
 
             CreateTag(
-                tagName = viewState.tagName,
-                tagColor = viewState.tagColor,
-                isLoading = viewState.isLoading,
-                error = viewState.errorMsg,
+                tagName = screenState.tagName,
+                tagColor = screenState.tagColor,
+                isLoading = screenState.isLoading,
+                error = screenState.errorMsg,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
@@ -159,9 +159,9 @@ fun TagScreenManager(
                 onColorPickerClicked = {
                     setColorPickerShown.invoke(true)
                 },
-                onSaveTagClicked = controller::saveTag,
-                onDeleteTagClicked = controller::deleteTag,
-                onResetSelectedTag = controller::clearSelectedTag,
+                onSaveTagClicked = controller::onTagCreate,
+                onDeleteTagClicked = controller::onTagDelete,
+                onResetSelectedTag = controller::onClearTagName,
                 onRandomColorPicked = {
                     controller.updateTagColor(ColorsUtils.randomColor)
                 }
@@ -177,7 +177,7 @@ fun TagScreenManager(
 
 
             AnimatedVisibility(
-                visible = tags.isEmpty()
+                visible = screenState.tags.isEmpty()
             ) {
                 Box(
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
@@ -204,7 +204,7 @@ fun TagScreenManager(
                     .fillMaxWidth(),
                 cells = GridCells.Adaptive(100.dp)
             ) {
-                itemsIndexed(tags) { index, tag ->
+                itemsIndexed(screenState.tags) { index, tag ->
                     TagChip(
                         tag = tag,
                         modifier = Modifier
@@ -214,7 +214,7 @@ fun TagScreenManager(
                     )
 
                     LaunchedEffect(index) {
-                        if (index == tags.lastIndex) {
+                        if (index == screenState.tags.lastIndex) {
                             controller.nextTags()
                         }
                     }

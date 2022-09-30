@@ -54,7 +54,7 @@ abstract class BookmarksController(
 
     private val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase
+        .getAllTags
 
     private val allBookmarkPager = DomainInjector
         .bookmarkUseCase

@@ -12,10 +12,10 @@ import kotlinx.coroutines.withContext
 
 interface TagsDataSource {
     suspend fun getAllTags(limit: Long, offset: Long): List<Tags>
+    suspend fun getTagByName(name: String): Tags?
     suspend fun getTagById(id: String): Tags?
     suspend fun deleteTag(id: String)
-    suspend fun createTag(tag: Tags): String
-    suspend fun updateTag(tag: Tags): String
+    suspend fun upsertTag(tag: Tags): String
     suspend fun getTagsByIds(ids: List<String>): List<Tags>
 }
 
@@ -37,6 +37,12 @@ class TagsDataSourceImpl constructor(
         .executeAsList()
         .map { it.toTags() }
 
+    override suspend fun getTagByName(name: String): Tags? = withContext(dispatcher) {
+        queries
+            .getTagByName(name)
+            .executeAsOneOrNull()?.toTags()
+    }
+
     override suspend fun getTagById(id: String): Tags? = withContext(dispatcher) {
         queries.getTagById(id).executeAsOneOrNull()?.toTags()
     }
@@ -45,12 +51,10 @@ class TagsDataSourceImpl constructor(
         queries.deleteTag(id)
     }
 
-    override suspend fun createTag(tag: Tags): String = withContext(dispatcher) {
+    override suspend fun upsertTag(tag: Tags): String = withContext(dispatcher) {
         queries.upsertTag(tag.id, tag.name, tag.color)
         return@withContext tag.id
     }
-
-    override suspend fun updateTag(tag: Tags): String = createTag(tag)
 
     override suspend fun getTagsByIds(ids: List<String>): List<Tags> = withContext(dispatcher) {
         coroutineScope {
