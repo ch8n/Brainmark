@@ -16,7 +16,7 @@ object DomainResolver {
     fun provideBookmarkUseCase(): BookmarkUseCases {
         val bookmarkDataSource = DataInjector.bookmarkDataSource
         return BookmarkUseCases(
-            getBookmarkByIdUseCase = GetBookmarkByIdUseCase(bookmarkDataSource),
+            getBookmarkById = GetBookmarkByIdUseCase(bookmarkDataSource),
             upsertBookmark = UpsertBookmarkUseCase(bookmarkDataSource),
             deleteBookmark = DeleteBookmarkUseCase(bookmarkDataSource),
             getBookmarkByUrl = GetBookmarkByUrlUseCase(bookmarkDataSource),

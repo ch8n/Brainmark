@@ -12,11 +12,13 @@ import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -72,10 +74,28 @@ abstract class CreateBookmarkController(
         }
     }
 
-    val getAllTags = DomainInjector
+    private val getAllTags = DomainInjector
         .tagUseCase
-        .getAllTagsUseCase.invoke()
-        .map { it.sortedBy { it.name } }
+        .getAllTagsUseCase
+
+    private val _tags = MutableStateFlow<List<Tags>>(emptyList())
+    val tags = _tags.asStateFlow()
+
+    fun nextTags() {
+        val current = _tags.value
+        val limit = 5L
+        val offset = current.size.toLong()
+        getAllTags.invoke(limit, offset)
+            .onEach { nextTags ->
+                val updated = current + nextTags
+                _tags.update { updated }
+            }.onceIn(this)
+    }
+
+
+    val getTagById = DomainInjector
+        .tagUseCase
+        .getTagByIdUseCase
 
     private val createBookmarkUseCase = DomainInjector
         .bookmarkUseCase
@@ -90,11 +110,21 @@ abstract class CreateBookmarkController(
     private val _screenState = MutableStateFlow(ScreenState.reset())
     val screenState = _screenState.asStateFlow()
 
-    val selectedTags = getAllTags.combine(_screenState) { tags, _bookmarkState ->
-        return@combine _bookmarkState.tagIds.mapNotNull { id ->
-            tags.find { it.id == id }
-        }
+    init {
+        _screenState
+            .flatMapConcat { screen -> screen.tagIds.asFlow() }
+            .flatMapConcat { getTagById.invoke(it) }
+            .filter { it != Tags.Empty }
+            .onEach { tag ->
+                val current = selectedTags.value
+                val updated = current.filter { it != tag } + tag
+                _selectedTags.update { updated }
+            }
+            .launchIn(this)
     }
+
+    private val _selectedTags = MutableStateFlow<List<Tags>>(emptyList())
+    val selectedTags = _selectedTags.asStateFlow()
 
     fun autofillDeeplink() {
         val url = url ?: return

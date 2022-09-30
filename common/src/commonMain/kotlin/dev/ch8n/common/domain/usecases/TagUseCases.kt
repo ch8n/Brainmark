@@ -36,7 +36,7 @@ class GetTagByIdUseCase(
     private val tagsDataSource: TagsDataSource
 ) {
     operator fun invoke(id: String) = flow {
-        val tag = tagsDataSource.getTagById(id = id) ?: error("Tag not found")
+        val tag = tagsDataSource.getTagById(id = id) ?: Tags.Empty
         emit(tag)
     }
 }
