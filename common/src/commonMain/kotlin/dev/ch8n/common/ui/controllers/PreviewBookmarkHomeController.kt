@@ -4,12 +4,14 @@ import androidx.compose.runtime.Stable
 import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.data.model.Tags
 import dev.ch8n.common.domain.di.DomainInjector
+import dev.ch8n.common.ui.navigation.HomeDestination
 import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.utils.UiController
 import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -42,11 +44,15 @@ abstract class PreviewBookmarkHomeController(
 
     private val updateBookmarkReadAt = DomainInjector
         .bookmarkUseCase
-        .upsertBookmarkUseCase
+        .upsertBookmark
 
     private val updateBookmarkArchived = DomainInjector
         .bookmarkUseCase
-        .upsertBookmarkUseCase
+        .upsertBookmark
+
+    private val deleteBookmark = DomainInjector
+        .bookmarkUseCase
+        .deleteBookmark
 
 
     fun archiveBookmark() {
@@ -89,13 +95,16 @@ abstract class PreviewBookmarkHomeController(
         }
     }
 
-    private val getBookmarkById = DomainInjector
-        .bookmarkUseCase
-        .getBookmarkByIdUseCase
+    fun onBookmarkDelete() {
+        deleteBookmark
+            .invoke(bookmark.id)
+            .onCompletion { backTo(HomeDestination) }
+            .onceIn(this)
+    }
 
     private val getTagsById = DomainInjector
         .tagUseCase
-        .getTagsByIdsUseCase
+        .getTagsByIds
 
     @Stable
     data class ScreenState(

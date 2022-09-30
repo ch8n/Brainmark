@@ -1,10 +1,40 @@
 package dev.ch8n.android.ui.screens.createBookmark
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuBox
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,7 +94,11 @@ fun CreateBookmarkScreen(
 ) {
 
     val screenState by controller.screenState.collectAsState()
-    val tags by controller.getAllTags.collectAsState(emptyList())
+    val allTags by controller.tags.collectAsState(emptyList())
+
+    LaunchedEffect(Unit) {
+        controller.autofillDeeplink()
+    }
 
     LaunchedEffect(Unit) {
         controller.autofillDeeplink()
@@ -242,14 +276,42 @@ fun CreateBookmarkScreen(
                         Text(text = "Create a new Tag")
                     }
 
-                    tags.forEach { tag ->
-                        DropdownMenuItem(
-                            onClick = {
-                                controller.onTagAdded(tag)
-                                setDropDownShown.invoke(false)
+                    LazyColumn(Modifier.fillMaxWidth()) {
+                        itemsIndexed(allTags) { index, tag ->
+                            DropdownMenuItem(
+                                onClick = {
+                                    setDropDownShown.invoke(false)
+                                    controller.onTagAdded(tag)
+                                }
+                            ) {
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        Modifier
+                                            .size(16.dp)
+                                            .background(Color(tag.color), CircleShape)
+                                            .border(
+                                                1.dp,
+                                                MaterialTheme.colors.onSurface,
+                                                CircleShape
+                                            )
+                                    )
+                                    Text(
+                                        text = tag.name,
+                                        style = MaterialTheme.typography.caption,
+                                        color = MaterialTheme.colors.onSurface
+                                    )
+                                }
                             }
-                        ) {
-                            Text(text = tag.name)
+
+                            LaunchedEffect(index) {
+                                if (index == allTags.lastIndex) {
+                                    controller.nextTags()
+                                }
+                            }
                         }
                     }
                 }
@@ -269,7 +331,7 @@ fun CreateBookmarkScreen(
                     .padding(start = 4.dp)
                     .fillMaxWidth()
             ) {
-                val selectedTags by controller.selectedTags.collectAsState(emptyList())
+                val selectedTags by controller.selectedTags.collectAsState()
                 selectedTags.forEach { tag ->
                     TagChip(
                         tag = tag,

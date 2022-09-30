@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.arkivanov.decompose.defaultComponentContext
-import dev.ch8n.android.ui.screens.browser.PreviewBrowserScreen
+import dev.ch8n.android.design.components.PreviewBottomNav
 import dev.ch8n.common.foundations.ApplicationContext
 
 class BrainMarkPreviewActivity : AppCompatActivity() {
@@ -24,8 +24,10 @@ class BrainMarkPreviewActivity : AppCompatActivity() {
             val context = defaultComponentContext()
             //PreviewCreateBookmark(context)
             //PreviewBookmarkScreen(context)
-            PreviewBrowserScreen(context)
+            //PreviewBrowserScreen(context)
             // ReaderView()
+
+            PreviewBottomNav()
         }
     }
 }

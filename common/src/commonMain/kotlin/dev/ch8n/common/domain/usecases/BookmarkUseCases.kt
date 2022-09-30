@@ -5,24 +5,32 @@ import dev.ch8n.common.data.model.Bookmark
 import kotlinx.coroutines.flow.flow
 
 class BookmarkUseCases(
-    val getBookmarkByUrl: GetBookmarkByUrlUseCase,
-    val getBookmarkByIdUseCase: GetBookmarkByIdUseCase,
-    val upsertBookmarkUseCase: UpsertBookmarkUseCase,
-    val deleteBookmarkUseCase: DeleteBookmarkUseCase,
-    val getAllBookmarksPaging: GetBookmarksPaging,
-    val getBookmarksByTagPaging: GetBookmarkByTagPaging,
-    val searchAllBookmarkPaging: SearchAllBookmarkPaging,
-    val searchBookmarkByTagPaging: SearchBookmarkByTagPaging,
-    val getBookmarksByLastReadPaging: GetBookmarksByLastReadPaging,
     val getReadingRecommendations: GetReadingRecommendations,
-    val getRevisionBookmarks: GetRevisionBookmarks,
+    val getRevisionRecommendations: GetRevisionRecommendations,
+    val getBookmarksByLastReadPaging: GetBookmarksByLastReadPaging,
+
+    val getAllBookmarksPaging: GetBookmarksPaging,
+    val searchAllBookmarkPaging: SearchAllBookmarkPaging,
+
+    val getBookmarksByTagPaging: GetBookmarkByTagPaging,
+    val searchBookmarkByTagPaging: SearchBookmarkByTagPaging,
+
+    val getUntaggedBookmarks: GetUntaggedBookmarkPaging,
+    val searchUntaggedBookmarkPaging: SearchUntaggedBookmarkPaging,
+
+    val getBookmarkById: GetBookmarkByIdUseCase,
+    val getBookmarkByUrl: GetBookmarkByUrlUseCase,
+    val upsertBookmark: UpsertBookmarkUseCase,
+    val deleteBookmark: DeleteBookmarkUseCase,
 )
 
 class GetBookmarkByUrlUseCase(
     private val bookmarkDataSource: BookmarkDataSource
 ) {
     operator fun invoke(url: String) = flow {
-        val bookmark = bookmarkDataSource.getBookmarkByUrl(url)
+        val bookmark = bookmarkDataSource.getBookmarkByUrlOrDefault(url) {
+            Bookmark.Empty
+        }
         emit(bookmark)
     }
 }
@@ -31,7 +39,9 @@ class GetBookmarkByIdUseCase(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke(id: String) = flow {
-        val bookmark = bookmarksDataSource.getBookmarkById(id = id) ?: error("Bookmark not found")
+        val bookmark = bookmarksDataSource.getBookmarkOrDefault(id = id) {
+            Bookmark.Empty
+        }
         emit(bookmark)
     }
 }
@@ -59,7 +69,7 @@ class GetBookmarksPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke(limit: Long, offset: Long) = flow {
-        val bookmarks = bookmarksDataSource.allBookmarksPaging(limit, offset)
+        val bookmarks = bookmarksDataSource.getAllBookmarksPaging(limit, offset)
         emit(bookmarks)
     }
 }
@@ -74,11 +84,11 @@ class GetBookmarksByLastReadPaging(
 }
 
 
-class GetRevisionBookmarks(
+class GetRevisionRecommendations(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke() = flow {
-        val bookmarks = bookmarksDataSource.getRevisionBookmarks()
+        val bookmarks = bookmarksDataSource.getRevisionRecommendations()
         emit(bookmarks)
     }
 }
@@ -92,11 +102,29 @@ class GetReadingRecommendations(
     }
 }
 
+class GetUntaggedBookmarkPaging(
+    private val bookmarksDataSource: BookmarkDataSource
+) {
+    operator fun invoke(limit: Long, offset: Long) = flow {
+        val bookmarks = bookmarksDataSource.getBookmarksByTagPaging(tagId = "", limit, offset)
+        emit(bookmarks)
+    }
+}
+
+class SearchUntaggedBookmarkPaging(
+    private val bookmarksDataSource: BookmarkDataSource
+) {
+    operator fun invoke(query: String, limit: Long, offset: Long) = flow {
+        val bookmarks = bookmarksDataSource.searchBookmarksByTagPaging(query, "", limit, offset)
+        emit(bookmarks)
+    }
+}
+
 class GetBookmarkByTagPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke(tagId: String, limit: Long, offset: Long) = flow {
-        val bookmarks = bookmarksDataSource.bookmarksByTagPaging(tagId, limit, offset)
+        val bookmarks = bookmarksDataSource.getBookmarksByTagPaging(tagId, limit, offset)
         emit(bookmarks)
     }
 }
@@ -105,7 +133,8 @@ class SearchBookmarkByTagPaging(
     private val bookmarksDataSource: BookmarkDataSource
 ) {
     operator fun invoke(keyword: String, tagId: String, limit: Long, offset: Long) = flow {
-        val bookmarks = bookmarksDataSource.searchBookmarksPaging(keyword, tagId, limit, offset)
+        val bookmarks =
+            bookmarksDataSource.searchBookmarksByTagPaging(keyword, tagId, limit, offset)
         emit(bookmarks)
     }
 }

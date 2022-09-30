@@ -16,9 +16,9 @@ object DomainResolver {
     fun provideBookmarkUseCase(): BookmarkUseCases {
         val bookmarkDataSource = DataInjector.bookmarkDataSource
         return BookmarkUseCases(
-            getBookmarkByIdUseCase = GetBookmarkByIdUseCase(bookmarkDataSource),
-            upsertBookmarkUseCase = UpsertBookmarkUseCase(bookmarkDataSource),
-            deleteBookmarkUseCase = DeleteBookmarkUseCase(bookmarkDataSource),
+            getBookmarkById = GetBookmarkByIdUseCase(bookmarkDataSource),
+            upsertBookmark = UpsertBookmarkUseCase(bookmarkDataSource),
+            deleteBookmark = DeleteBookmarkUseCase(bookmarkDataSource),
             getBookmarkByUrl = GetBookmarkByUrlUseCase(bookmarkDataSource),
             getAllBookmarksPaging = GetBookmarksPaging(bookmarkDataSource),
             getBookmarksByTagPaging = GetBookmarkByTagPaging(bookmarkDataSource),
@@ -26,20 +26,21 @@ object DomainResolver {
             searchBookmarkByTagPaging = SearchBookmarkByTagPaging(bookmarkDataSource),
             getBookmarksByLastReadPaging = GetBookmarksByLastReadPaging(bookmarkDataSource),
             getReadingRecommendations = GetReadingRecommendations(bookmarkDataSource),
-            getRevisionBookmarks = GetRevisionBookmarks(bookmarkDataSource),
+            getRevisionRecommendations = GetRevisionRecommendations(bookmarkDataSource),
+            searchUntaggedBookmarkPaging = SearchUntaggedBookmarkPaging(bookmarkDataSource),
+            getUntaggedBookmarks = GetUntaggedBookmarkPaging(bookmarkDataSource)
         )
     }
 
     fun provideTagUseCase(): TagUseCases {
         val tagsDataSource = DataInjector.tagDataSource
-        val getTagByIdUseCase = GetTagByIdUseCase(tagsDataSource)
         return TagUseCases(
-            getAllTagsUseCase = GetAllTagsUseCase(tagsDataSource),
-            getTagByIdUseCase = getTagByIdUseCase,
-            getTagsByIdsUseCase = GetTagsByIdsUseCase(tagsDataSource),
-            createTagUseCase = CreateTagUseCase(tagsDataSource),
-            updateTagUseCase = UpdateTagUseCase(tagsDataSource, getTagByIdUseCase),
-            deleteTagUseCase = DeleteTagUseCase(tagsDataSource),
+            getAllTags = GetAllTagsUseCase(tagsDataSource),
+            getTagById = GetTagByIdUseCase(tagsDataSource),
+            getTagsByIds = GetTagsByIdsUseCase(tagsDataSource),
+            upsertTag = UpsertTagUseCase(tagsDataSource),
+            deleteTag = DeleteTagUseCase(tagsDataSource),
+            getTagByName = GetTagByNameUseCase(tagsDataSource)
         )
     }
 

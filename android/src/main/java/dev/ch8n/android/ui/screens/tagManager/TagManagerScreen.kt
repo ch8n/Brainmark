@@ -1,11 +1,38 @@
 package dev.ch8n.android.ui.screens.tagManager
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -14,13 +41,13 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
-import com.google.accompanist.flowlayout.FlowRow
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.TagChip
 import dev.ch8n.android.ui.screens.colorPicker.ColorPicker
@@ -64,16 +91,23 @@ class AndroidTagManagerController(
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun TagScreenManager(
     controller: AndroidTagManagerController,
     onSettingsClicked: () -> Unit
 ) {
 
-    val viewState by controller.state.collectAsState()
+    val screenState by controller.screenState.collectAsState()
+
     val (isColorPickerShown, setColorPickerShown) = remember {
         mutableStateOf(false)
+    }
+
+    LaunchedEffect(Unit) {
+        if (screenState.tags.isEmpty()) {
+            controller.nextTags()
+        }
     }
 
     Box(
@@ -114,10 +148,10 @@ fun TagScreenManager(
             Spacer(Modifier.size(18.dp))
 
             CreateTag(
-                tagName = viewState.tagName,
-                tagColor = viewState.tagColor,
-                isLoading = viewState.isLoading,
-                error = viewState.errorMsg,
+                tagName = screenState.tagName,
+                tagColor = screenState.tagColor,
+                isLoading = screenState.isLoading,
+                error = screenState.errorMsg,
                 modifier = Modifier
                     .padding(horizontal = 24.dp)
                     .fillMaxWidth(),
@@ -125,59 +159,76 @@ fun TagScreenManager(
                 onColorPickerClicked = {
                     setColorPickerShown.invoke(true)
                 },
-                onSaveTagClicked = controller::saveTag,
-                onDeleteTagClicked = controller::deleteTag,
-                onResetSelectedTag = controller::clearSelectedTag,
+                onSaveTagClicked = controller::onTagCreate,
+                onDeleteTagClicked = controller::onTagDelete,
+                onResetSelectedTag = controller::onClearTagName,
                 onRandomColorPicked = {
                     controller.updateTagColor(ColorsUtils.randomColor)
                 }
             )
 
-            Spacer(
+            Divider(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .height(1.dp)
-                    .background(
-                        shape = RoundedCornerShape(24.dp),
-                        color = MaterialTheme.colors.onSurface
-                    )
+                    .fillMaxWidth(0.6f)
+                    .align(Alignment.CenterHorizontally),
+                color = MaterialTheme.colors.onSurface,
+                thickness = 1.dp
             )
 
-            val tags by controller.getAllTags.collectAsState(emptyList())
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
+            AnimatedVisibility(
+                visible = screenState.tags.isEmpty()
             ) {
-                Spacer(modifier = Modifier.size(16.dp))
-                FlowRow(
-                    modifier = Modifier
-                        .padding(start = 24.dp, end = 24.dp)
+                Box(
+                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
                         .fillMaxWidth()
+                        .height(150.dp)
+                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
                 ) {
-                    tags.forEach { tag ->
-                        TagChip(
-                            tag = tag,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .height(35.dp),
-                            onTagClicked = controller::selectTag
-                        )
+                    Text(
+                        text = "Woops no tags...\nWe need only name and a color!",
+                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.colors.onSurface,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            LazyVerticalGrid(
+                modifier = Modifier
+                    .padding(start = 24.dp, end = 24.dp)
+                    .fillMaxWidth(),
+                cells = GridCells.Adaptive(150.dp)
+            ) {
+                itemsIndexed(screenState.tags) { index, tag ->
+                    TagChip(
+                        tag = tag,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .height(35.dp),
+                        onTagClicked = controller::onTagSelected
+                    )
+
+                    LaunchedEffect(index) {
+                        if (index == screenState.tags.lastIndex) {
+                            controller.nextTags()
+                        }
                     }
                 }
-
-                Spacer(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                )
             }
+
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+            )
         }
 
         if (isColorPickerShown) {
-
             Dialog(
                 onDismissRequest = {
                     setColorPickerShown.invoke(false)
