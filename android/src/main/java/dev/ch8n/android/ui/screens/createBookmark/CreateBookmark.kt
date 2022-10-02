@@ -96,6 +96,7 @@ fun CreateBookmarkScreen(
 
     LaunchedEffect(Unit) {
         controller.autofillDeeplink()
+        controller.nextTags()
     }
 
     Box(

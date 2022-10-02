@@ -122,7 +122,6 @@ abstract class CreateBookmarkController(
         onChangeBookmarkUrl(url)
     }
 
-
     private var metaParseJob: Job? = null
     fun onChangeBookmarkUrl(url: String) {
         _screenState.update {
