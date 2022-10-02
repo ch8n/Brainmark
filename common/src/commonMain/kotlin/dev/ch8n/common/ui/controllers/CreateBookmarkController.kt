@@ -140,7 +140,7 @@ abstract class CreateBookmarkController(
 
     private suspend fun isAlreadyExistingBookmark(url: String): Boolean {
         val existingBookmark = getBookmarkByUrl.invoke(url).firstOrNull()
-        return existingBookmark != null
+        return existingBookmark != Bookmark.Empty
     }
 
     private suspend fun updateBookmarkMeta(url: String) {
@@ -260,7 +260,9 @@ abstract class CreateBookmarkController(
                 }
                 .onCompletion { error ->
                     if (error == null) {
-                        _screenState.update { ScreenState.reset() }
+                        _screenState.update {
+                            ScreenState.reset()
+                        }
                     }
                 }
                 .onceIn(this)
