@@ -14,8 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -95,10 +93,6 @@ fun CreateBookmarkScreen(
 
     val screenState by controller.screenState.collectAsState()
     val allTags by controller.tags.collectAsState(emptyList())
-
-    LaunchedEffect(Unit) {
-        controller.autofillDeeplink()
-    }
 
     LaunchedEffect(Unit) {
         controller.autofillDeeplink()
@@ -276,44 +270,47 @@ fun CreateBookmarkScreen(
                         Text(text = "Create a new Tag")
                     }
 
-                    LazyColumn(Modifier.fillMaxWidth()) {
-                        itemsIndexed(allTags) { index, tag ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    setDropDownShown.invoke(false)
-                                    controller.onTagAdded(tag)
-                                }
-                            ) {
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        Modifier
-                                            .size(16.dp)
-                                            .background(Color(tag.color), CircleShape)
-                                            .border(
-                                                1.dp,
-                                                MaterialTheme.colors.onSurface,
-                                                CircleShape
-                                            )
-                                    )
-                                    Text(
-                                        text = tag.name,
-                                        style = MaterialTheme.typography.caption,
-                                        color = MaterialTheme.colors.onSurface
-                                    )
-                                }
+                    allTags.forEach { tag ->
+                        DropdownMenuItem(
+                            onClick = {
+                                setDropDownShown.invoke(false)
+                                controller.onTagAdded(tag)
                             }
-
-                            LaunchedEffect(index) {
-                                if (index == allTags.lastIndex) {
-                                    controller.nextTags()
-                                }
+                        ) {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    Modifier
+                                        .size(16.dp)
+                                        .background(Color(tag.color), CircleShape)
+                                        .border(
+                                            1.dp,
+                                            MaterialTheme.colors.onSurface,
+                                            CircleShape
+                                        )
+                                )
+                                Text(
+                                    text = tag.name,
+                                    style = MaterialTheme.typography.caption,
+                                    color = MaterialTheme.colors.onSurface
+                                )
                             }
                         }
                     }
+
+                    DropdownMenuItem(
+                        onClick = controller::nextTags
+                    ) {
+                        Text(
+                            text = "Load More",
+                            style = MaterialTheme.typography.caption,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                    }
+
                 }
             }
 
