@@ -1,7 +1,3 @@
-import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.kotlin.dsl.DependencyHandlerScope
-
-
 object Common {
 
     object Versions {
@@ -65,6 +61,9 @@ object Android {
 
             //https://google.github.io/accompanist/placeholder/
             const val placeholder = baseVersion
+
+            //https://google.github.io/accompanist/swiperefresh/
+            const val pullRefresh = baseVersion
         }
 
         const val ktorVersion = Common.Versions.ktorVersion
@@ -107,7 +106,10 @@ object Android {
 
         object Accompanist {
             val flowLayout = "com.google.accompanist:accompanist-flowlayout:${Versions.accompanist.flowLayout}"
-            val placeHolder = "com.google.accompanist:accompanist-placeholder:${Versions.accompanist.placeholder}"
+            val placeHolder =
+                "com.google.accompanist:accompanist-placeholder:${Versions.accompanist.placeholder}"
+            val pullRefresh =
+                "com.google.accompanist:accompanist-swiperefresh:${Versions.accompanist.pullRefresh}"
         }
 
         object Ktor {

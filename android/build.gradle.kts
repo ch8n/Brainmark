@@ -57,4 +57,5 @@ fun DependencyHandlerScope.decompose() {
 fun DependencyHandlerScope.accompanist() {
     implementation(Android.Dependencies.Accompanist.flowLayout)
     implementation(Android.Dependencies.Accompanist.placeHolder)
+    implementation(Android.Dependencies.Accompanist.pullRefresh)
 }
