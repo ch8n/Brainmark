@@ -12,10 +12,8 @@ import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.launchIn
@@ -92,10 +90,9 @@ abstract class CreateBookmarkController(
             }.onceIn(this)
     }
 
-
-    val getTagById = DomainInjector
+    private val getTagByIds = DomainInjector
         .tagUseCase
-        .getTagById
+        .getTagsByIds
 
     private val createBookmarkUseCase = DomainInjector
         .bookmarkUseCase
@@ -112,14 +109,8 @@ abstract class CreateBookmarkController(
 
     init {
         _screenState
-            .flatMapConcat { screen -> screen.tagIds.asFlow() }
-            .flatMapConcat { getTagById.invoke(it) }
-            .filter { it != Tags.Empty }
-            .onEach { tag ->
-                val current = selectedTags.value
-                val updated = current.filter { it != tag } + tag
-                _selectedTags.update { updated }
-            }
+            .flatMapConcat { screen -> getTagByIds.invoke(screen.tagIds) }
+            .onEach { tags -> _selectedTags.update { tags } }
             .launchIn(this)
     }
 

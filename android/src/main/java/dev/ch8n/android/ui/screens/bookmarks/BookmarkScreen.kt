@@ -198,10 +198,7 @@ fun BookmarkScreen(
                     }
 
                     DropdownMenuItem(
-                        onClick = {
-                            //isTagDropDownShow = false
-                            controller.nextTags()
-                        }
+                        onClick = controller::nextTags
                     ) {
                         Text(
                             text = "Load More",

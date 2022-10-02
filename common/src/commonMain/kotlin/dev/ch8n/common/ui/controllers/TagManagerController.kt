@@ -167,7 +167,8 @@ abstract class TagManagerController(
     private fun setError(msg: String) {
         screenState.update {
             reset.copy(
-                errorMsg = msg
+                errorMsg = msg,
+                tags = it.tags
             )
         }
     }
