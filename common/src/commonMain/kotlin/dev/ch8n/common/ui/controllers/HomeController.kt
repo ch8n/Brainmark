@@ -27,7 +27,7 @@ abstract class HomeController(
             }
             .onceIn(this)
     }
-
+    
     private val _revisionRecommendations = MutableStateFlow<List<Bookmark>>(emptyList())
     val revisionRecommendations = _revisionRecommendations.asStateFlow()
 
