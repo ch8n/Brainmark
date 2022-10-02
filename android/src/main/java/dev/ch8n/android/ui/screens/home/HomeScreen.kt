@@ -39,6 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.arkivanov.decompose.DefaultComponentContext
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.ch8n.android.R
 import dev.ch8n.android.design.components.BottomNavbar
 import dev.ch8n.android.design.components.ContinueBookmarkCard
@@ -105,6 +107,8 @@ fun HomeScreen(
         val lastReadBookmarks by controller.lastReadBookmarks.collectAsState()
         val readingRecommendations by controller.readingRecommendations.collectAsState()
         val revisionBookmarks by controller.revisionRecommendations.collectAsState()
+        val isRefreshing by controller.isLoading.collectAsState()
+
 
         LaunchedEffect(Unit) {
             controller.getLastReadBookmarks()
@@ -121,143 +125,160 @@ fun HomeScreen(
             }
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = 100.dp)
-                .verticalScroll(rememberScrollState())
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(isRefreshing),
+            onRefresh = controller::onSwipeRefresh,
         ) {
-
-            Spacer(modifier = Modifier.size(24.dp))
-
-            Greet(name = "Chetan")
-
-            Spacer(modifier = Modifier.size(12.dp))
-
-            val lastRead = lastReadBookmarks.firstOrNull() ?: Bookmark.Empty
-
-            AnimatedVisibility(
-                visible = lastRead != Bookmark.Empty
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 100.dp)
+                    .verticalScroll(rememberScrollState())
             ) {
-                ContinueBookmarkCard(
-                    bookmark = lastRead,
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp)
-                        .fillMaxWidth()
-                        .height(176.dp),
-                    onClicked = {
-                        controller.routeTo(PreviewBookmarkHomeDestination(it))
+
+                Spacer(modifier = Modifier.size(24.dp))
+
+                Greet(name = "Chetan")
+
+                Spacer(modifier = Modifier.size(12.dp))
+
+                val lastRead = lastReadBookmarks.firstOrNull() ?: Bookmark.Empty
+
+                AnimatedVisibility(
+                    visible = lastRead != Bookmark.Empty
+                ) {
+                    ContinueBookmarkCard(
+                        bookmark = lastRead,
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .fillMaxWidth()
+                            .height(176.dp),
+                        onClicked = {
+                            controller.routeTo(PreviewBookmarkHomeDestination(it))
+                        }
+                    )
+                }
+
+                AnimatedVisibility(
+                    visible = lastReadBookmarks.firstOrNull() == null
+                ) {
+                    Box(
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colors.onSurface,
+                                MaterialTheme.shapes.large
+                            )
+                    ) {
+                        Text(
+                            text = "You haven't read anything.\nWhat are you waiting for?",
+                            modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                            style = MaterialTheme.typography.h3,
+                            color = MaterialTheme.colors.onSurface,
+                            textAlign = TextAlign.Center
+                        )
                     }
-                )
-            }
+                }
 
-            AnimatedVisibility(
-                visible = lastReadBookmarks.firstOrNull() == null
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                Title("Reading Recommendation")
+
+                AnimatedVisibility(
+                    visible = readingRecommendations.isEmpty()
                 ) {
-                    Text(
-                        text = "You haven't read anything.\nWhat are you waiting for?",
-                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
-                        style = MaterialTheme.typography.h3,
-                        color = MaterialTheme.colors.onSurface,
-                        textAlign = TextAlign.Center
-                    )
+                    Box(
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colors.onSurface,
+                                MaterialTheme.shapes.large
+                            )
+                    ) {
+                        Text(
+                            text = "You don't seem to have any bookmarks...",
+                            modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                            style = MaterialTheme.typography.h3,
+                            color = MaterialTheme.colors.onSurface,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-            }
 
-            Title("Reading Recommendation")
-
-            AnimatedVisibility(
-                visible = readingRecommendations.isEmpty()
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
-                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                        .horizontalScroll(rememberScrollState())
                 ) {
-                    Text(
-                        text = "You don't seem to have any bookmarks...",
-                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
-                        style = MaterialTheme.typography.h3,
-                        color = MaterialTheme.colors.onSurface,
-                        textAlign = TextAlign.Center
-                    )
+                    readingRecommendations.forEach { bookmark ->
+                        RecommendedReadCard(
+                            bookmark = bookmark,
+                            modifier = Modifier
+                                .padding(start = 24.dp)
+                                .width(216.dp)
+                                .height(240.dp),
+                            onMenuClicked = {
+
+                            },
+                            onClicked = {
+                                controller.routeTo(PreviewBookmarkHomeDestination(it))
+                            }
+                        )
+                    }
                 }
-            }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                readingRecommendations.forEach { bookmark ->
-                    RecommendedReadCard(
-                        bookmark = bookmark,
-                        modifier = Modifier
-                            .padding(start = 24.dp)
-                            .width(216.dp)
-                            .height(240.dp),
-                        onMenuClicked = {
+                Title("Revision?")
 
-                        },
-                        onClicked = {
-                            controller.routeTo(PreviewBookmarkHomeDestination(it))
-                        }
-                    )
+                AnimatedVisibility(
+                    visible = revisionBookmarks.isEmpty()
+                ) {
+                    Box(
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                            .fillMaxWidth()
+                            .height(150.dp)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colors.onSurface,
+                                MaterialTheme.shapes.large
+                            )
+                    ) {
+                        Text(
+                            text = "Don't forget to archive once you read a bookmark...",
+                            modifier = Modifier.padding(24.dp).align(Alignment.Center),
+                            style = MaterialTheme.typography.h3,
+                            color = MaterialTheme.colors.onSurface,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
-            }
 
-            Title("Revision?")
-
-            AnimatedVisibility(
-                visible = revisionBookmarks.isEmpty()
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+                Row(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .height(150.dp)
-                        .border(1.dp, MaterialTheme.colors.onSurface, MaterialTheme.shapes.large)
+                        .horizontalScroll(rememberScrollState())
                 ) {
-                    Text(
-                        text = "Don't forget to archive once you read a bookmark...",
-                        modifier = Modifier.padding(24.dp).align(Alignment.Center),
-                        style = MaterialTheme.typography.h3,
-                        color = MaterialTheme.colors.onSurface,
-                        textAlign = TextAlign.Center
-                    )
+                    revisionBookmarks.forEach { bookmark ->
+                        RecommendedReadCard(
+                            bookmark = bookmark,
+                            modifier = Modifier
+                                .padding(start = 24.dp)
+                                .width(216.dp)
+                                .height(240.dp),
+                            onMenuClicked = {
+
+                            },
+                            onClicked = {
+                                controller.routeTo(PreviewBookmarkHomeDestination(it))
+                            }
+                        )
+                    }
                 }
+
+
+                Spacer(modifier = Modifier.size(100.dp))
             }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                revisionBookmarks.forEach { bookmark ->
-                    RecommendedReadCard(
-                        bookmark = bookmark,
-                        modifier = Modifier
-                            .padding(start = 24.dp)
-                            .width(216.dp)
-                            .height(240.dp),
-                        onMenuClicked = {
-
-                        },
-                        onClicked = {
-                            controller.routeTo(PreviewBookmarkHomeDestination(it))
-                        }
-                    )
-                }
-            }
-
-
-            Spacer(modifier = Modifier.size(100.dp))
         }
 
         BottomNavbar(

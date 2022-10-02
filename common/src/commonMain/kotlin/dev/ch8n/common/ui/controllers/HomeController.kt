@@ -8,6 +8,8 @@ import dev.ch8n.common.utils.onceIn
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 abstract class HomeController(
     navController: NavController
@@ -15,6 +17,24 @@ abstract class HomeController(
 
     private val _lastReadBookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
     val lastReadBookmarks = _lastReadBookmarks.asStateFlow()
+
+    val isLoading = MutableStateFlow(false)
+
+    fun onSwipeRefresh() {
+        launch {
+            isLoading.update { true }
+            try {
+                _lastReadBookmarks.update { emptyList() }
+                _revisionRecommendations.update { emptyList() }
+                _readingRecommendations.update { emptyList() }
+                getLastReadBookmarks()
+                getRevisionBookmarks()
+                getReadingRecommendations()
+            } finally {
+                isLoading.update { false }
+            }
+        }
+    }
 
     private val getLastRead = DomainInjector
         .bookmarkUseCase
@@ -27,7 +47,7 @@ abstract class HomeController(
             }
             .onceIn(this)
     }
-    
+
     private val _revisionRecommendations = MutableStateFlow<List<Bookmark>>(emptyList())
     val revisionRecommendations = _revisionRecommendations.asStateFlow()
 
