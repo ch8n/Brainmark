@@ -19,7 +19,17 @@ import dev.ch8n.android.ui.screens.createBookmark.AndroidCreateBookmarkControlle
 import dev.ch8n.android.ui.screens.home.AndroidHomeController
 import dev.ch8n.android.ui.screens.tagManager.AndroidTagManagerController
 import dev.ch8n.common.data.di.DataInjector
-import dev.ch8n.common.ui.navigation.*
+import dev.ch8n.common.ui.controllers.DeeplinkController
+import dev.ch8n.common.ui.navigation.BookmarksDestination
+import dev.ch8n.common.ui.navigation.CreateBookmarksDestination
+import dev.ch8n.common.ui.navigation.Destinations
+import dev.ch8n.common.ui.navigation.HomeDestination
+import dev.ch8n.common.ui.navigation.PreviewBookmarkChromeTabDestination
+import dev.ch8n.common.ui.navigation.PreviewBookmarkEmbeddedWebDestination
+import dev.ch8n.common.ui.navigation.PreviewBookmarkHomeDestination
+import dev.ch8n.common.ui.navigation.PreviewBookmarkReaderModeDestination
+import dev.ch8n.common.ui.navigation.TagManagerDestination
+import dev.ch8n.common.ui.navigation.createNavController
 import dev.ch8n.common.ui.theme.BrainMarkTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -81,7 +91,10 @@ class MainActivity : AppCompatActivity() {
                         destinations.bookmark
                     )
 
-                    is CreateBookmarksDestination -> AndroidCreateBookmarkController(this, destinations.url)
+                    is CreateBookmarksDestination -> AndroidCreateBookmarkController(
+                        this,
+                        destinations.url
+                    )
                 }
             }
         )
@@ -89,12 +102,12 @@ class MainActivity : AppCompatActivity() {
 
             LaunchedEffect(Unit) {
                 _deeplinkIntent.collect {
-                    delay(500)
                     val intent = _deeplinkIntent.value ?: return@collect
-                    val url = intent.extras?.getString("android.intent.extra.TEXT")
-                    if (url != null) {
-                        navController.routeTo(CreateBookmarksDestination(url))
-                    }
+                    val url =
+                        intent.extras?.getString("android.intent.extra.TEXT") ?: return@collect
+                    val destination = DeeplinkController.handleDeeplink(url) ?: return@collect
+                    delay(500)
+                    navController.routeTo(destination)
                 }
             }
 
