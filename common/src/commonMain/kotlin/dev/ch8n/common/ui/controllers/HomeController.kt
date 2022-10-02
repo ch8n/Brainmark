@@ -28,8 +28,8 @@ abstract class HomeController(
             .onceIn(this)
     }
 
-    private val _revisionBookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
-    val revisionBookmarks = _revisionBookmarks.asStateFlow()
+    private val _revisionRecommendations = MutableStateFlow<List<Bookmark>>(emptyList())
+    val revisionRecommendations = _revisionRecommendations.asStateFlow()
 
     private val getRevisions = DomainInjector
         .bookmarkUseCase
@@ -38,27 +38,10 @@ abstract class HomeController(
     fun getRevisionBookmarks() {
         getRevisions.invoke()
             .onEach {
-                _revisionBookmarks.emit(it)
+                _revisionRecommendations.emit(it)
             }
             .onceIn(this)
     }
-
-
-    private val _revisionBookmarks = MutableStateFlow<List<Bookmark>>(emptyList())
-    val revisionBookmarks = _revisionBookmarks.asStateFlow()
-
-    private val getRevisions = DomainInjector
-        .bookmarkUseCase
-        .getRevisionBookmarks
-
-    fun getRevisionBookmarks() {
-        getRevisions.invoke()
-            .onEach {
-                _revisionBookmarks.emit(it)
-            }
-            .onceIn(this)
-    }
-
 
     private val _readingRecommendations = MutableStateFlow<List<Bookmark>>(emptyList())
     val readingRecommendations = _readingRecommendations.asStateFlow()
