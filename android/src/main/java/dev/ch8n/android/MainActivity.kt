@@ -19,11 +19,13 @@ import dev.ch8n.android.ui.screens.createBookmark.AndroidCreateBookmarkControlle
 import dev.ch8n.android.ui.screens.home.AndroidHomeController
 import dev.ch8n.android.ui.screens.tagManager.AndroidTagManagerController
 import dev.ch8n.common.data.di.DataInjector
+import dev.ch8n.common.data.model.Bookmark
 import dev.ch8n.common.ui.controllers.DeeplinkController
 import dev.ch8n.common.ui.navigation.BookmarksDestination
 import dev.ch8n.common.ui.navigation.CreateBookmarksDestination
 import dev.ch8n.common.ui.navigation.Destinations
 import dev.ch8n.common.ui.navigation.HomeDestination
+import dev.ch8n.common.ui.navigation.NavController
 import dev.ch8n.common.ui.navigation.PreviewBookmarkChromeTabDestination
 import dev.ch8n.common.ui.navigation.PreviewBookmarkEmbeddedWebDestination
 import dev.ch8n.common.ui.navigation.PreviewBookmarkHomeDestination
@@ -38,6 +40,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class MainActivity : AppCompatActivity() {
 
     private val _deeplinkIntent = MutableStateFlow<Intent?>(null)
+
     private fun handleDeeplink(intent: Intent?) {
         _deeplinkIntent.tryEmit(intent)
     }
@@ -61,6 +64,39 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    private fun NavController.bookmarkController() = AndroidBookmarksController(this)
+    private fun NavController.homeController() = AndroidHomeController(this)
+    private fun NavController.bookmarkHomeController(bookmark: Bookmark) =
+        AndroidPreviewBookmarkHomeController(
+            this,
+            bookmark
+        )
+
+    private fun NavController.tagManagerController() = AndroidTagManagerController(this)
+
+    private fun NavController.createBookmarkController(url: String?) =
+        AndroidCreateBookmarkController(
+            this,
+            url = url
+        )
+
+    private fun NavController.readerModeController(bookmark: Bookmark) =
+        AndroidPreviewReaderModeController(
+            this,
+            bookmark
+        )
+
+    private fun NavController.embeddedWebController(bookmark: Bookmark) =
+        AndroidPreviewEmbeddedWebController(
+            this,
+            bookmark
+        )
+
+    private fun NavController.chromeTab(bookmark: Bookmark) = AndroidPreviewBookmarkHomeController(
+        this,
+        bookmark
+    )
+
     @OptIn(ExperimentalDecomposeApi::class)
     fun AppCompatActivity.brainMarkAndroidApp() {
         val navController = createNavController(
@@ -68,33 +104,14 @@ class MainActivity : AppCompatActivity() {
             componentContext = defaultComponentContext(),
             createDestinations = { destinations: Destinations, context: ComponentContext ->
                 when (destinations) {
-                    is BookmarksDestination -> AndroidBookmarksController(this)
-                    is HomeDestination -> AndroidHomeController(this)
-                    is PreviewBookmarkHomeDestination -> AndroidPreviewBookmarkHomeController(
-                        this,
-                        destinations.bookmark
-                    )
-
-                    is TagManagerDestination -> AndroidTagManagerController(this)
-                    is PreviewBookmarkChromeTabDestination -> AndroidPreviewBookmarkHomeController(
-                        this,
-                        destinations.bookmark
-                    )
-
-                    is PreviewBookmarkEmbeddedWebDestination -> AndroidPreviewEmbeddedWebController(
-                        this,
-                        destinations.bookmark
-                    )
-
-                    is PreviewBookmarkReaderModeDestination -> AndroidPreviewReaderModeController(
-                        this,
-                        destinations.bookmark
-                    )
-
-                    is CreateBookmarksDestination -> AndroidCreateBookmarkController(
-                        this,
-                        destinations.url
-                    )
+                    is BookmarksDestination -> bookmarkController()
+                    is HomeDestination -> homeController()
+                    is PreviewBookmarkHomeDestination -> bookmarkHomeController(destinations.bookmark)
+                    is TagManagerDestination -> tagManagerController()
+                    is PreviewBookmarkChromeTabDestination -> chromeTab(destinations.bookmark)
+                    is PreviewBookmarkEmbeddedWebDestination -> embeddedWebController(destinations.bookmark)
+                    is PreviewBookmarkReaderModeDestination -> readerModeController(destinations.bookmark)
+                    is CreateBookmarksDestination -> createBookmarkController(destinations.url)
                 }
             }
         )
@@ -103,8 +120,8 @@ class MainActivity : AppCompatActivity() {
             LaunchedEffect(Unit) {
                 _deeplinkIntent.collect {
                     val intent = _deeplinkIntent.value ?: return@collect
-                    val url =
-                        intent.extras?.getString("android.intent.extra.TEXT") ?: return@collect
+                    val url = intent.extras
+                        ?.getString("android.intent.extra.TEXT") ?: return@collect
                     val destination = DeeplinkController.handleDeeplink(url) ?: return@collect
                     delay(500)
                     navController.routeTo(destination)

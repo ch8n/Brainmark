@@ -109,7 +109,6 @@ fun HomeScreen(
         val revisionBookmarks by controller.revisionRecommendations.collectAsState()
         val isRefreshing by controller.isLoading.collectAsState()
 
-
         LaunchedEffect(Unit) {
             controller.getLastReadBookmarks()
             controller.getReadingRecommendations()
@@ -275,7 +274,6 @@ fun HomeScreen(
                         )
                     }
                 }
-
 
                 Spacer(modifier = Modifier.size(100.dp))
             }
